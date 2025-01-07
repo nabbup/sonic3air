@@ -224,7 +224,10 @@ void MenuBackground::render()
 
 		if (splitLight < splitBlue)
 		{
-			detail::drawQuad(drawer, splitLight, splitBlue, global::mDataSelectBackground);
+			if (!Game::instance().isInMainMenuMode())
+			{
+				detail::drawQuad(drawer, splitLight, splitBlue, global::mDataSelectBackground);
+			}
 		}
 
 		if (splitBlue < splitMax)
@@ -246,7 +249,7 @@ void MenuBackground::render()
 
 		if (splitLight > splitMin && splitLight < splitMax)
 		{
-			detail::drawSeparator(drawer, splitLight, separatorAnimationOffset, false);
+			//detail::drawSeparator(drawer, splitLight, separatorAnimationOffset, false);
 		}
 
 		if (splitBlue > splitMin && splitBlue < splitMax)
