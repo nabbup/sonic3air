@@ -65,6 +65,7 @@ void OptionsConfig::build()
 	buildGameplay();
 	buildControls();
 	buildTweaks();
+	buildOther();
 }
 
 #define CATEGORY(_name_) configBuilder.addCategory(_name_);
@@ -399,6 +400,10 @@ void OptionsConfig::buildVisuals()
 		configBuilder.addSetting("Monitor Style:", option::MONITOR_STYLE)
 			.addOption("Sonic 1 / 2", 1)
 			.addOption("Sonic 3 & Knuckles", 0);
+
+		configBuilder.addSetting("Show Hidden Monitor Hint:", option::HIDDEN_MONITOR_HINT)
+			.addOption("Off", 0)
+			.addOption("On", 1);
 	}
 
 	CATEGORY("Color Changes")
@@ -650,6 +655,59 @@ void OptionsConfig::buildTweaks()
 			.addOption("No glitch fixes", 0)
 			.addOption("Only basic fixes", 1)
 			.addOption("All (recommended)", 2);
+	}
+}
+
+void OptionsConfig::buildOther()
+{
+	ConfigBuilder configBuilder(mOtherOptions);
+
+	//CATEGORY("Debugging")
+	//{
+	//	configBuilder.addSetting("Restart Discord RPC manually", option::_RESTART_DISCORD_RPC);
+	//}
+
+	CATEGORY("Visual")
+	{
+		configBuilder.addSetting("Classic Transparency:", option::CLASSIC_TRANSPARENCY)
+			.addOption("Off", 0)
+			.addOption("Afterimages Only", 1)
+			.addOption("On", 2);
+
+		configBuilder.addSetting("Game Branding:", option::GAME_BRANDING)
+			.addOption("Sonic 3", 1)
+			.addOption("Sonic & Knuckles", 2)
+			.addOption("Sonic 3 A.I.R.", 0)
+			.addOption("Pick by Zone", 3);
+	}
+
+	CATEGORY("Audio")
+	{
+		configBuilder.addSetting("New Sound Cues:", option::NEW_SOUND_CUES)
+			.addOption("Off", 0)
+			.addOption("On", 1);
+	}
+
+	CATEGORY("Gameplay")
+	{
+		configBuilder.addSetting("Insta-Shield Style:", option::INSTA_SHIELD_STYLE)
+			.addOption("Sonic 3 & Knuckles", 0)
+			.addOption("Sonic 3 A.I.R.", 1)
+			.addOption("Origins", 2);
+	}
+
+	CATEGORY("Miscellaneous")
+	{
+		configBuilder.addSetting("Title Screen Menu Options:", option::TITLE_SCREEN_MENU_OPTIONS)
+			.addOption("Disabled", 0)
+			.addOption("Sonic 3 & Knuckles", 1)
+			.addOption("Origins", 2);
+
+	#if (defined(PLATFORM_WINDOWS) && !defined(__GNUC__)) || (defined(PLATFORM_LINUX) && !defined(__arm__)) || (defined(PLATFORM_MAC) && !defined(NO_DISCORD))
+		configBuilder.addSetting("Discord RPC Details:", option::DISCORD_RPC_DETAILS)
+			.addOption("Basic", 0)
+			.addOption("Detailed", 1);
+	#endif
 	}
 }
 

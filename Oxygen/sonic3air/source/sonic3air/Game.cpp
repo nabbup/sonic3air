@@ -52,6 +52,12 @@ namespace
 			DiscordIntegration::setModdedState(text.getString());
 	}
 
+	void setDiscordDetailsPlus(lemon::StringRef text)
+	{
+		if (text.isValid())
+			DiscordIntegration::setModdedDetails(text.getString());
+	}
+
 	void setDiscordLargeImage(lemon::StringRef imageName)
 	{
 		if (imageName.isValid())
@@ -110,7 +116,7 @@ void Game::update(float timeElapsed)
 		if (mTimeoutUntilDiscordRefresh <= 0.0f)
 		{
 			DiscordIntegration::updateInfo(mMode, mSubMode, *mEmulatorInterface);
-			mTimeoutUntilDiscordRefresh = 3.0f;
+			mTimeoutUntilDiscordRefresh = 0.0f;
 		}
 		DiscordIntegration::update();
 	}
@@ -228,6 +234,9 @@ void Game::registerScriptBindings(lemon::Module& module)
 			.setParameterInfo(0, "text");
 
 		module.addNativeFunction("Game.setDiscordState", lemon::wrap(&setDiscordState), defaultFlags)
+			.setParameterInfo(0, "text");
+
+		module.addNativeFunction("Game.setDiscordDetailsPlus", lemon::wrap(&setDiscordDetailsPlus), defaultFlags)
 			.setParameterInfo(0, "text");
 
 		module.addNativeFunction("Game.setDiscordLargeImage", lemon::wrap(&setDiscordLargeImage), defaultFlags)

@@ -13,6 +13,7 @@
 //  - Windows
 //  - Linux, except if it's ARM architecture (like when building on a RasPi)
 //  - Mac. Sorry about having 3 checks. Command line build has issues finding the discord dylib since it can't be embedded. And temporarily ignore discord for ARM64 until they add support.
+// PLEASE UPDATE OptionsConfig.cpp IF YOU CHANGE **ANY** OF THIS
 #if (defined(PLATFORM_WINDOWS) && !defined(__GNUC__)) || (defined(PLATFORM_LINUX) && !defined(__arm__)) || (defined(PLATFORM_MAC) && !defined(NO_DISCORD))
 	#define SUPPORT_DISCORD
 #endif
@@ -78,9 +79,33 @@ void DiscordIntegration::updateInfo(Game::Mode gameMode, uint32 subMode, Emulato
 {
 #ifdef SUPPORT_DISCORD
 
+	//This helps with save states and Title Screen options
+	if (gameMode == Game::Mode::UNDEFINED || gameMode == Game::Mode::TITLE_SCREEN)
+	{
+		const uint8 innerGameMode = emulatorInterface.readMemory8(0xfffff600) & 0x7f;
+		if (innerGameMode == 0x0c && gameMode != Game::Mode::TITLE_SCREEN)
+		{
+			gameMode = Game::Mode::NORMAL_GAME;
+		}
+		else if (innerGameMode >= 0x38 && innerGameMode <= 0x44)
+		{
+			gameMode = Game::Mode::COMPETITION;
+			newInfo.mSubMode = emulatorInterface.readMemory8(0xffffef48);
+		}
+		else if (innerGameMode == 0x2c)
+		{
+			gameMode = Game::Mode::BLUE_SPHERE;
+		}
+		else if (innerGameMode == 0x1c || innerGameMode == 0x24 || innerGameMode == 0x28)
+		{
+			gameMode = Game::Mode::ACT_SELECT;
+		}
+	}
+
 	// Update game data in info struct contents
 	newInfo.clearGameData();
 	newInfo.mGameMode = gameMode;
+
 	if (gameMode == Game::Mode::NORMAL_GAME || gameMode == Game::Mode::ACT_SELECT || gameMode == Game::Mode::TIME_ATTACK)
 	{
 		const uint8 innerGameMode = emulatorInterface.readMemory8(0xfffff600) & 0x7f;
@@ -171,97 +196,103 @@ void DiscordIntegration::updateInfo(Game::Mode gameMode, uint32 subMode, Emulato
 		case Game::Mode::ACT_SELECT:
 		case Game::Mode::TIME_ATTACK:
 		{
-			if (currentInfo.mCharacters != 0xff)
+			details = currentInfo.mDetailedDetails;
+
+			if (currentInfo.mDetailedDetails.empty())
 			{
-				if (currentInfo.mGameMode == Game::Mode::TIME_ATTACK)
+				if (currentInfo.mCharacters != 0xff)
 				{
-					if (currentInfo.mSubMode == 0x11)
+					if (currentInfo.mGameMode == Game::Mode::TIME_ATTACK)
 					{
-						details += " (Sonic - Max Control)";  smallImage = "character_sonic";
-					}
-					else
-					{
-						switch (currentInfo.mCharacters)
+						if (currentInfo.mSubMode == 0x11)
 						{
+							details += " (Sonic - Max Control)";  smallImage = "character_sonic";
+						}
+						else
+						{
+							switch (currentInfo.mCharacters)
+							{
 							case 1:  details += " (Sonic)";		smallImage = "character_sonic";  break;
 							case 2:  details += " (Tails)";		smallImage = "character_tails";  break;
 							case 3:  details += " (Knuckles)";	smallImage = "character_knuckles";  break;
+							}
 						}
 					}
-				}
-				else
-				{
-					if (!details.empty())
-						details += ", ";
-
-					switch (currentInfo.mCharacters)
+					else
 					{
+						if (!details.empty())
+							details += ", ";
+
+						switch (currentInfo.mCharacters)
+						{
 						case 0:  details += "Sonic & Tails";	smallImage = "character_sonic_tails";	  break;
 						case 1:  details += "Sonic";			smallImage = "character_sonic";			  break;
 						case 2:  details += "Tails";			smallImage = "character_tails";			  break;
 						case 3:  details += "Knuckles";			smallImage = "character_knuckles";		  break;
 						case 4:  details += "Knuckles & Tails";	smallImage = "character_knuckles_tails";  break;
-					}
-				}
-			}
-
-			if (currentInfo.mZoneAct != 0xffff)
-			{
-				const SharedDatabase::Zone* zone = SharedDatabase::getZoneByInternalIndex(currentInfo.mZoneAct >> 8);
-				if (nullptr != zone)
-				{
-					if (currentInfo.mGameMode == Game::Mode::TIME_ATTACK)
-					{
-						String initials = zone->mInitials;
-						initials.upperCase();
-						state += *initials;
-						const bool multipleActs = (zone->mActsNormal >= 2);
-						if (multipleActs)
-						{
-							state = state + " " + ((currentInfo.mZoneAct & 1) ? "2" : "1");
 						}
 					}
-					else
+				}
+
+				if (currentInfo.mZoneAct != 0xffff)
+				{
+					const SharedDatabase::Zone* zone = SharedDatabase::getZoneByInternalIndex(currentInfo.mZoneAct >> 8);
+					if (nullptr != zone)
 					{
-						state += zone->mDisplayName;
-						const bool multipleActs = (zone->mActsNormal >= 2);
-						if (multipleActs)
+						if (currentInfo.mGameMode == Game::Mode::TIME_ATTACK)
 						{
-							state = state + " Act " + ((currentInfo.mZoneAct & 1) ? "2" : "1");
+							String initials = zone->mInitials;
+							initials.upperCase();
+							state += *initials;
+							const bool multipleActs = (zone->mActsNormal >= 2);
+							if (multipleActs)
+							{
+								state = state + " " + ((currentInfo.mZoneAct & 1) ? "2" : "1");
+							}
+						}
+						else
+						{
+							state += zone->mDisplayName;
+							const bool multipleActs = (zone->mActsNormal >= 2);
+							if (multipleActs)
+							{
+								state = state + " Act " + ((currentInfo.mZoneAct & 1) ? "2" : "1");
+							}
+						}
+
+						largeImage = zone->mShortName;
+					}
+				}
+
+				if (currentInfo.mChaosEmeralds != 0xff)
+				{
+					if (currentInfo.mGameMode != Game::Mode::TIME_ATTACK && currentInfo.mChaosEmeralds > 0)
+					{
+						const bool showSuperEmeralds = (currentInfo.mSuperEmeralds > 0 && currentInfo.mSuperEmeralds != 0xff);
+						const int count = showSuperEmeralds ? currentInfo.mSuperEmeralds  : currentInfo.mChaosEmeralds;
+						const char* type = showSuperEmeralds ? "Super" : "Chaos";
+
+						if (count == 7)
+						{
+							details = details + " (All " + type + " Emeralds)";
+						}
+						else if (count == 1)
+						{
+							details = details + " (1 " + type + " Emerald)";
+						}
+						else
+						{
+							details = details + " (" + (std::to_string(count)) + " " + type + " Emeralds)";
 						}
 					}
-
-					largeImage = zone->mShortName;
 				}
-			}
 
-			if (currentInfo.mChaosEmeralds != 0xff)
-			{
-				if (currentInfo.mGameMode != Game::Mode::TIME_ATTACK && currentInfo.mChaosEmeralds > 0)
+				if (currentInfo.mRecordTime != 0xffffffff)
 				{
-					const bool showSuperEmeralds = (currentInfo.mSuperEmeralds > 0 && currentInfo.mSuperEmeralds != 0xff);
-					const int count = showSuperEmeralds ? currentInfo.mSuperEmeralds  : currentInfo.mChaosEmeralds;
-					const char* type = showSuperEmeralds ? "Super" : "Chaos";
-
-					if (count == 7)
-					{
-						details = details + " (All " + type + " Emeralds)";
-					}
-					else if (count == 1)
-					{
-						details = details + " (1 " + type + " Emerald)";
-					}
-					else
-					{
-						details = details + " (" + (std::to_string(count)) + " " + type + " Emeralds)";
-					}
+					state = state + ", Best Time: " + TimeAttackData::getTimeString(currentInfo.mRecordTime);
 				}
 			}
 
-			if (currentInfo.mRecordTime != 0xffffffff)
-			{
-				state = state + ", Best Time: " + TimeAttackData::getTimeString(currentInfo.mRecordTime);
-			}
 			break;
 		}
 
@@ -346,6 +377,13 @@ void DiscordIntegration::setModdedState(std::string_view text)
 {
 #ifdef SUPPORT_DISCORD
 	newInfo.mModdedState = text;
+#endif
+}
+
+void DiscordIntegration::setDetailsPlus(std::string_view text)
+{
+#ifdef SUPPORT_DISCORD
+	newInfo.mDetailedDetails = text;
 #endif
 }
 

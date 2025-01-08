@@ -28,6 +28,7 @@ public:
 		uint32	mRecordTime = 0xffffffff;		// In frames
 
 		std::string mModdedDetails;
+		std::string mDetailedDetails;
 		std::string mModdedState;
 		std::string mModdedLargeImage;
 		std::string mModdedSmallImage;
@@ -78,6 +79,7 @@ public:
 
 	static void setModdedDetails(std::string_view text);
 	static void setModdedState(std::string_view text);
+	static void setDetailsPlus(std::string_view text);
 	static void setModdedLargeImage(std::string_view imageName);
 	static void setModdedSmallImage(std::string_view imageName);
 };

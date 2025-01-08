@@ -59,6 +59,8 @@ public:
 	// Time Attack
 	int mInstantTimeAttackRestart = 0;
 
+	int mRestartDiscordRPC = 0;
+
 	// Settings game version
 	std::string mGameVersionInSettings;
 

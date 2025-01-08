@@ -125,3 +125,14 @@ constant u32 SETTING_AUDIO_OUTRO				= 0x80400801
 constant u32 SETTING_AUDIO_COMPETITION_MENU		= 0x80400900
 constant u32 SETTING_AUDIO_CONTINUE_SCREEN		= 0x80400a01
 
+//-------------------------------------------------------//
+// Custom options                                        //
+//-------------------------------------------------------//
+
+constant u32 SETTING_CLASSIC_TRANSPARENCY		= 0x80400b00
+constant u32 SETTING_GAME_BRANDING				= 0x80400c00
+constant u32 SETTING_NEW_SOUND_CUES				= 0x80400d00
+constant u32 SETTING_INSTA_SHIELD_STYLE			= 0x80400e00
+constant u32 SETTING_TITLE_SCREEN_MENU_OPTIONS	= 0x80400f00
+constant u32 SETTING_DISCORD_RPC_DETAILS		= 0x80401000
+

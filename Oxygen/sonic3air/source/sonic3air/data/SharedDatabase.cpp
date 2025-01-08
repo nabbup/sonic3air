@@ -299,6 +299,7 @@ void SharedDatabase::setupSettings()
 
 	addSetting(IDPARAMS(Setting::SETTING_SUPERFAST_RUNANIM), Setting::SerializationType::ALWAYS);
 	addSetting(IDPARAMS(Setting::SETTING_MONITOR_STYLE), Setting::SerializationType::ALWAYS);
+	addSetting(IDPARAMS(Setting::SETTING_HIDDEN_MONITOR_HINT), Setting::SerializationType::ALWAYS);
 	addSetting(IDPARAMS(Setting::SETTING_HYPER_DASH_CONTROLS), Setting::SerializationType::ALWAYS);
 	addSetting(IDPARAMS(Setting::SETTING_SUPER_SONIC_ABILITY), Setting::SerializationType::ALWAYS);
 	addSetting(IDPARAMS(Setting::SETTING_MONITOR_BEHAVIOR), Setting::SerializationType::ALWAYS);
@@ -328,6 +329,13 @@ void SharedDatabase::setupSettings()
 	addSetting(IDPARAMS(Setting::SETTING_AUDIO_OUTRO), Setting::SerializationType::ALWAYS);
 	addSetting(IDPARAMS(Setting::SETTING_AUDIO_COMPETITION_MENU), Setting::SerializationType::ALWAYS);
 	addSetting(IDPARAMS(Setting::SETTING_AUDIO_CONTINUE_SCREEN), Setting::SerializationType::ALWAYS);
+
+	addSetting(IDPARAMS(Setting::SETTING_CLASSIC_TRANSPARENCY), Setting::SerializationType::ALWAYS);
+	addSetting(IDPARAMS(Setting::SETTING_GAME_BRANDING), Setting::SerializationType::ALWAYS);
+	addSetting(IDPARAMS(Setting::SETTING_NEW_SOUND_CUES), Setting::SerializationType::ALWAYS);
+	addSetting(IDPARAMS(Setting::SETTING_INSTA_SHIELD_STYLE), Setting::SerializationType::ALWAYS);
+	addSetting(IDPARAMS(Setting::SETTING_TITLE_SCREEN_MENU_OPTIONS), Setting::SerializationType::ALWAYS);
+	addSetting(IDPARAMS(Setting::SETTING_DISCORD_RPC_DETAILS), Setting::SerializationType::ALWAYS);
 
 	// Hidden settings
 	addSetting(IDPARAMS(Setting::SETTING_DROPDASH), Setting::SerializationType::HIDDEN);

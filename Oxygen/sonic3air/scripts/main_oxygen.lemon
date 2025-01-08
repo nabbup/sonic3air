@@ -170,6 +170,12 @@ function void Game.setDiscordState(string text)
 	// Feature not supported in Oxygen project
 }
 
+function void Game.setDiscordDetailsPlus(string text)
+{
+	// I'm not even sure what is this. I set up functions on the C++ side to not need to use the two functions above,
+	// but the detailed RPC is set within the Lemon Script side. -Useott
+}
+
 function void Game.setDiscordLargeImage(string imageName)
 {
 	// Feature not supported in Oxygen project

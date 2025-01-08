@@ -47,6 +47,7 @@ public:
 	OptionsTab mGameplayOptions;
 	OptionsTab mControlsOptions;
 	OptionsTab mTweaksOptions;
+	OptionsTab mOtherOptions;
 
 public:
 	void build();
@@ -59,4 +60,5 @@ private:
 	void buildGameplay();
 	void buildControls();
 	void buildTweaks();
+	void buildOther();
 };

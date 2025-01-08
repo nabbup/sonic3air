@@ -64,6 +64,7 @@ private:
 			GAMEPLAY = 5,
 			CONTROLS = 6,
 			TWEAKS	 = 7,
+			OTHER	 = 8,
 			_NUM
 		};
 		GameMenuEntries mMenuEntries;

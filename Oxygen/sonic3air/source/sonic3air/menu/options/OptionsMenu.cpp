@@ -136,6 +136,7 @@ OptionsMenu::OptionsMenu(MenuBackground& menuBackground) :
 		setupOptionEntry(option::SPEEDUP_AFTER_IMAGES,		SharedDatabase::Setting::SETTING_SPEEDUP_AFTERIMGS);
 		setupOptionEntry(option::FAST_RUN_ANIM,				SharedDatabase::Setting::SETTING_SUPERFAST_RUNANIM);
 		setupOptionEntry(option::MONITOR_STYLE,				SharedDatabase::Setting::SETTING_MONITOR_STYLE);
+		setupOptionEntry(option::HIDDEN_MONITOR_HINT,		SharedDatabase::Setting::SETTING_HIDDEN_MONITOR_HINT);
 		setupOptionEntry(option::TIME_DISPLAY,				SharedDatabase::Setting::SETTING_EXTENDED_HUD);
 		setupOptionEntry(option::LIVES_DISPLAY,				SharedDatabase::Setting::SETTING_LIVES_DISPLAY);
 		setupOptionEntry(option::SPECIAL_STAGE_VISUALS,		SharedDatabase::Setting::SETTING_BS_VISUAL_STYLE);
@@ -188,6 +189,13 @@ OptionsMenu::OptionsMenu(MenuBackground& menuBackground) :
 		setupOptionEntry(option::DEBUG_MODE,				SharedDatabase::Setting::SETTING_DEBUG_MODE);
 		setupOptionEntry(option::TITLE_SCREEN,				SharedDatabase::Setting::SETTING_TITLE_SCREEN);
 
+		setupOptionEntry(option::CLASSIC_TRANSPARENCY,		SharedDatabase::Setting::SETTING_CLASSIC_TRANSPARENCY);
+		setupOptionEntry(option::GAME_BRANDING,				SharedDatabase::Setting::SETTING_GAME_BRANDING);
+		setupOptionEntry(option::NEW_SOUND_CUES,			SharedDatabase::Setting::SETTING_NEW_SOUND_CUES);
+		setupOptionEntry(option::INSTA_SHIELD_STYLE,		SharedDatabase::Setting::SETTING_INSTA_SHIELD_STYLE);
+		setupOptionEntry(option::TITLE_SCREEN_MENU_OPTIONS,	SharedDatabase::Setting::SETTING_TITLE_SCREEN_MENU_OPTIONS);
+		setupOptionEntry(option::DISCORD_RPC_DETAILS,		SharedDatabase::Setting::SETTING_DISCORD_RPC_DETAILS);
+
 		setupOptionEntryBitmask(option::LEVELMUSIC_CNZ1,	SharedDatabase::Setting::SETTING_CNZ_PROTOTYPE_MUSIC);
 		setupOptionEntryBitmask(option::LEVELMUSIC_CNZ2,	SharedDatabase::Setting::SETTING_CNZ_PROTOTYPE_MUSIC);
 		setupOptionEntryBitmask(option::LEVELMUSIC_ICZ1,	SharedDatabase::Setting::SETTING_ICZ_PROTOTYPE_MUSIC);
@@ -205,7 +213,8 @@ OptionsMenu::OptionsMenu(MenuBackground& menuBackground) :
 		.addOption("VISUALS",  Tab::Id::VISUALS)
 		.addOption("GAMEPLAY", Tab::Id::GAMEPLAY)
 		.addOption("CONTROLS", Tab::Id::CONTROLS)
-		.addOption("TWEAKS",   Tab::Id::TWEAKS);
+		.addOption("TWEAKS",   Tab::Id::TWEAKS)
+		.addOption("OTHER",    Tab::Id::OTHER);
 
 	for (int i = 0; i < Tab::Id::_NUM; ++i)
 	{
@@ -223,6 +232,7 @@ OptionsMenu::OptionsMenu(MenuBackground& menuBackground) :
 	createOptionMenuTab(Tab::Id::GAMEPLAY,	mOptionsConfig.mGameplayOptions);
 	createOptionMenuTab(Tab::Id::CONTROLS,	mOptionsConfig.mControlsOptions);
 	createOptionMenuTab(Tab::Id::TWEAKS,	mOptionsConfig.mTweaksOptions);
+	createOptionMenuTab(Tab::Id::OTHER,		mOptionsConfig.mOtherOptions);
 
 	// Post-processing
 	for (int i = 1; i < Tab::Id::_NUM; ++i)		// Exclude Mods tab
@@ -704,6 +714,13 @@ void OptionsMenu::update(float timeElapsed)
 						case option::_OPEN_MANUAL:
 						{
 							PlatformFunctions::openURLExternal("https://sonic3air.org/Manual.pdf");
+							break;
+						}
+
+						case option::_RESTART_DISCORD_RPC:
+						{
+							Simulation& simulation = Application::instance().getSimulation();
+							simulation.resetState();
 							break;
 						}
 

@@ -151,6 +151,17 @@ function void PostFrameUpdate()
 	// Debug output
 	Debugging.debugDraw()
 	setWorldSpaceOffset(s32(s16(camera.position.x.u16)), s32(s16(camera.position.y.u16)))
+	
+	if (Game.getSetting(SETTING_DISCORD_RPC_DETAILS) && global.game_mode == 0x0c)
+	{
+		Game.setDiscordDetailsPlus(stringformat("Score: %d | Time: %d:%02d | Rings: %d", player.score * 10, timer.minutes, timer.seconds, ring_counter))
+		Game.setDiscordState(stringformat("In %s | Char. %s", getZoneActInitials2(global.zone_act.apparent), getCharacterStateName()))
+	}
+	else
+	{
+		Game.setDiscordDetailsPlus("")
+		Game.setDiscordState("")
+	}
 }
 
 
@@ -204,4 +215,135 @@ function void restartTimeAttack()
 	Game.triggerRestart()
 
 	yieldInWhiteScreen()
+}
+
+function string getZoneInitials2(u8 zone)
+{
+	// This expects internal zone index
+	if (zone == 0x00)
+		return "AIZ"
+	if (zone == 0x01)
+		return "HCZ"
+	if (zone == 0x02)
+		return "MGZ"
+	if (zone == 0x03)
+		return "CNZ"
+	if (zone == 0x05)
+		return "ICZ"
+	if (zone == 0x06)
+		return "LBZ"
+	if (zone == 0x07)
+		return "MHZ"
+	if (zone == 0x04)
+		return "FBZ"
+	if (zone == 0x08)
+		return "SOZ"
+	if (zone == 0x09)
+		return "LRZ"
+	if (zone == 0x16)
+		return "HPZ"
+	if (zone == 0x0a)
+		return "SSZ"
+	if (zone == 0x0b)
+		return "DEZ"
+	if (zone == 0x0c)
+		return "DDZ"
+	return ""
+}
+
+
+function string getZoneActInitials2(u16 zoneAndAct)
+{
+	string zoneInitials = getZoneInitials2(zoneAndAct >> 8)
+	if (zoneInitials == "")
+		return ""
+
+	return stringformat("%s%d", zoneInitials, (zoneAndAct & 0x01) ? 2 : 1)
+}
+
+function string getCharacterStateName()
+{
+	string state = characterStates[u8[0xffffb000 + 0x20]]
+	if (u8[0xffffb000 + 0x20] > 0x1e)
+	{
+		if (u8[0xffffb000 + 0x38] == 0)
+			state = characterStates0[u8[0xffffb000 + 0x20] - 0x1f]
+		else if (u8[0xffffb000 + 0x38] == 1)
+			state = characterStates1[u8[0xffffb000 + 0x20] - 0x1f]
+		else state = characterStates2[u8[0xffffb000 + 0x20] - 0x1f]
+	}
+	if (state == "")
+		state = "is on an unknown state"
+	if (level.boss_encounter)
+		state = stringformat("%s while on a boss", state)
+
+	return stringformat("%s", state)
+}
+
+constant array<string> characterStates =
+{
+	"is running",
+	"is running",
+	"is rolling",
+	"is rolling",
+	"is pushing something",
+	"is still",
+	"is balancing",
+	"is looking up",
+	"is looking down",
+	"is spindashing",	
+	"is whistling",
+	"is on a pulley",
+	"is balancing",
+	"is braking",
+	"got grabbed",
+	"is being lifted",
+	"got bounced up",
+	"is holding on to something",
+	"is on an unused state",
+	"got through act",
+	"is hanging on something",
+	"inhaled an air bubble",
+	"got burned",
+	"drowned",
+	"just died",
+	"is panicking",
+	"got hurt",
+	"is panicking",
+	"isn't visible",
+	"is on an unused state",
+	"is on an unused state",
+}
+
+constant array<string> characterStates0 =
+{
+	"is transforming",
+	"is dropdashing",
+	"is on an unused state",
+	"is holding onto Tails",
+}
+
+constant array<string> characterStates1 =
+{
+	"is running",
+	"is flying down",
+	"is flying up",
+	"is carrying someone down",
+	"is carrying someone up",
+	"is tired from flying",
+	"is swimming up",
+	"is swimming down",
+	"is carrying someone underwater",
+	"is tired from swimming",
+	"is transforming",
+}
+
+constant array<string> characterStates2 =
+{
+	"is transforming",
+	"is gliding or climbing",
+	"is falling",
+	"is sliding",
+	"is standing up",
+	"is- umm idk",
 }

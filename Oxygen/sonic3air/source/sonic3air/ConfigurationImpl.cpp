@@ -135,6 +135,8 @@ void ConfigurationImpl::serializeSettingsInternal(JsonSerializer& serializer)
 	// Time Attack
 	serializer.serialize("InstantTimeAttackRestart", mInstantTimeAttackRestart);
 
+	serializer.serialize("RestartDiscordRPC", mRestartDiscordRPC);
+
 	// Game settings
 	if (serializer.isReading())
 	{
