@@ -1,0 +1,8 @@
+{
+	// Warning: These sprites are experimental and likely subject to change in the future
+
+	"touch_joystick":			{ "File": "touch_joystick.png", "Rect": "0,0,496,496", "Center": "248,248" },
+	"touch_joystick_overlay":	{ "File": "touch_joystick_overlay.png", "Rect": "0,0,496,496", "Center": "248,248" },
+	"touch_void":				{ "File": "touch_overlay.png", "Rect": "0,0,1,1", "Center": "0,0" },
+	"touch_void_hl":			{ "File": "touch_overlay.png", "Rect": "0,0,1,1", "Center": "0,0" },
+}

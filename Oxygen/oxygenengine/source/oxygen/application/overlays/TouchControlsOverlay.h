@@ -23,6 +23,7 @@ public:
 	struct Setup
 	{
 		Vec2f mDirectionalPadCenter;
+		Vec2f mJoystickStickLocation;
 		float mDirectionalPadSize = 1.0f;
 		Vec2f mFaceButtonsCenter;
 		float mFaceButtonsSize = 1.0f;
@@ -106,6 +107,8 @@ private:
 	void buildPointButton(const Vec2f& center, float radius, float priority, InputManager::Control& control, InputManager::Control* control2);
 	void buildRectangularButton(const Vec2f& center, const Vec2f& halfExtend, const char* spriteKey, InputManager::Control* control, ConfigMode::State reactToState, TouchArea::SpecialType specialType = TouchArea::SpecialType::NONE, float radius = 0.35f);
 	void buildRoundButton(const Vec2f& center, float radius, const char* spriteKey, InputManager::Control& control, ConfigMode::State reactToState);
+	void buildVisualButton(const Vec2f& center, const Vec2f& halfExtend, const char* spriteKey);
+	void buildStickButton(const Vec2f& center, const Vec2f& halfExtend, const char* spriteKey);
 
 	const TouchArea* getTouchAreaAtNormalizedPosition(const Vec2f& position) const;
 	Vec2f getNormalizedTouchFromScreenPosition(Vec2f vec) const;

@@ -76,10 +76,23 @@ void TouchControlsOverlay::buildTouchControls()
 	// Create touch areas and visual elements
 	{
 		const float size = mSetup.mDirectionalPadSize;
-		buildRectangularButton(mSetup.mDirectionalPadCenter + Vec2f(-0.3f, 0.0f) * size, Vec2f(0.2f, 0.125f) * size, "touch_overlay_left",  &controller.Left,  ConfigMode::State::MOVING_DPAD);
-		buildRectangularButton(mSetup.mDirectionalPadCenter + Vec2f(+0.3f, 0.0f) * size, Vec2f(0.2f, 0.125f) * size, "touch_overlay_right", &controller.Right, ConfigMode::State::MOVING_DPAD);
-		buildRectangularButton(mSetup.mDirectionalPadCenter + Vec2f(0.0f, -0.3f) * size, Vec2f(0.125f, 0.2f) * size, "touch_overlay_up",    &controller.Up,	   ConfigMode::State::MOVING_DPAD);
-		buildRectangularButton(mSetup.mDirectionalPadCenter + Vec2f(0.0f, +0.3f) * size, Vec2f(0.125f, 0.2f) * size, "touch_overlay_down",  &controller.Down,  ConfigMode::State::MOVING_DPAD);
+		if (InputManager::instance().isUsingJoystick())
+		{
+			buildVisualButton(mSetup.mDirectionalPadCenter + Vec2f(0.0f, 0.0f) * size, Vec2f(0.5f, 0.5f) * size, "touch_joystick");
+			buildStickButton(mSetup.mJoystickStickLocation, Vec2f(0.5f, 0.5f) * mSetup.mDirectionalPadSize, "touch_joystick_overlay");
+
+			buildRectangularButton(mSetup.mDirectionalPadCenter + Vec2f(-0.3f, 0.0f) * size, Vec2f(0.2f, 0.125f) * size, "touch_void", &controller.Left, ConfigMode::State::MOVING_DPAD);
+			buildRectangularButton(mSetup.mDirectionalPadCenter + Vec2f(+0.3f, 0.0f) * size, Vec2f(0.2f, 0.125f) * size, "touch_void", &controller.Right, ConfigMode::State::MOVING_DPAD);
+			buildRectangularButton(mSetup.mDirectionalPadCenter + Vec2f(0.0f, -0.3f) * size, Vec2f(0.125f, 0.2f) * size, "touch_void", &controller.Up, ConfigMode::State::MOVING_DPAD);
+			buildRectangularButton(mSetup.mDirectionalPadCenter + Vec2f(0.0f, +0.3f) * size, Vec2f(0.125f, 0.2f) * size, "touch_void", &controller.Down, ConfigMode::State::MOVING_DPAD);
+		}
+		else
+		{
+			buildRectangularButton(mSetup.mDirectionalPadCenter + Vec2f(-0.3f, 0.0f) * size, Vec2f(0.2f, 0.125f) * size, "touch_overlay_left",  &controller.Left,  ConfigMode::State::MOVING_DPAD);
+			buildRectangularButton(mSetup.mDirectionalPadCenter + Vec2f(+0.3f, 0.0f) * size, Vec2f(0.2f, 0.125f) * size, "touch_overlay_right", &controller.Right, ConfigMode::State::MOVING_DPAD);
+			buildRectangularButton(mSetup.mDirectionalPadCenter + Vec2f(0.0f, -0.3f) * size, Vec2f(0.125f, 0.2f) * size, "touch_overlay_up",    &controller.Up,	   ConfigMode::State::MOVING_DPAD);
+			buildRectangularButton(mSetup.mDirectionalPadCenter + Vec2f(0.0f, +0.3f) * size, Vec2f(0.125f, 0.2f) * size, "touch_overlay_down",  &controller.Down,  ConfigMode::State::MOVING_DPAD);
+		}
 	}
 	{
 		const float size = mSetup.mDirectionalPadSize;
@@ -225,11 +238,20 @@ void TouchControlsOverlay::render()
 			Color color = (mConfigMode.mEnabled && visualElement.mReactToState == mConfigMode.mState) ? Color::CYAN : Color::WHITE;
 			color.a = alpha;
 
-			Rectf rect(visualElement.mCenter - visualElement.mHalfExtend, visualElement.mHalfExtend * 2.0f);
-			rect = getScreenFromNormalizedTouchRect(rect);
-			const Vec2f scale = rect.getSize() / Vec2f(item->mSprite->getSize());
-
-			drawer.drawSprite(Vec2i(rect.getCenter()), spriteKey, color, scale);
+			if (visualElement.mSpriteKeys[0] == rmx::getMurmur2_64("touch_joystick_overlay"))
+			{
+				Rectf rect(mSetup.mJoystickStickLocation - visualElement.mHalfExtend, visualElement.mHalfExtend * 2.0f);
+				rect = getScreenFromNormalizedTouchRect(rect);
+				const Vec2f scale = rect.getSize() / Vec2f(item->mSprite->getSize());
+				drawer.drawSprite(Vec2i(rect.getCenter()), spriteKey, color, scale);
+			}
+			else
+			{
+				Rectf rect(visualElement.mCenter - visualElement.mHalfExtend, visualElement.mHalfExtend * 2.0f);
+				rect = getScreenFromNormalizedTouchRect(rect);
+				const Vec2f scale = rect.getSize() / Vec2f(item->mSprite->getSize());
+				drawer.drawSprite(Vec2i(rect.getCenter()), spriteKey, color, scale);
+			}
 		}
 		drawer.setSamplingMode(SamplingMode::POINT);
 	}
@@ -280,6 +302,22 @@ void TouchControlsOverlay::buildRoundButton(const Vec2f& center, float radius, c
 	touchArea.mRadius = radius + 0.4f;
 	touchArea.mPriority = 1.0f;
 	touchArea.mControls.push_back(&control);
+}
+
+void TouchControlsOverlay::buildVisualButton(const Vec2f& center, const Vec2f& halfExtend, const char* spriteKey)
+{
+	VisualElement& visualElement = vectorAdd(mVisualElements);
+	visualElement.mCenter.set(center);
+	visualElement.mHalfExtend = halfExtend;
+	visualElement.mSpriteKeys[0] = rmx::getMurmur2_64(spriteKey);
+}
+
+void TouchControlsOverlay::buildStickButton(const Vec2f& center, const Vec2f& halfExtend, const char* spriteKey)
+{
+	VisualElement& visualElement = vectorAdd(mVisualElements);
+	visualElement.mCenter.set(mSetup.mJoystickStickLocation);
+	visualElement.mHalfExtend = halfExtend;
+	visualElement.mSpriteKeys[0] = rmx::getMurmur2_64(spriteKey);
 }
 
 Vec2f TouchControlsOverlay::getNormalizedTouchFromScreenPosition(Vec2f vec) const
@@ -343,13 +381,32 @@ void TouchControlsOverlay::updateControls()
 					}
 					default:
 					{
+						const InputManager::Touch& touch = mInputManager->getActiveTouches()[0];
+						const Vec2f touchPosition = getNormalizedTouchFromScreenPosition(touch.mPosition * Vec2f(FTX::screenSize()));
+						if (touchPosition.sqrDist(mSetup.mDirectionalPadCenter) < square(mSetup.mDirectionalPadSize * 1.2))
+						{
+							mSetup.mJoystickStickLocation = touchPosition;
+						}
+						else
+						{
+							mSetup.mJoystickStickLocation = mSetup.mDirectionalPadCenter;
+						}
+
 						for (InputManager::Control* control : touchArea->mControls)
 							control->mState = true;
 						break;
 					}
 				}
 			}
+			else
+			{
+				mSetup.mJoystickStickLocation = mSetup.mDirectionalPadCenter;
+			}
 		}
+	}
+	else
+	{
+		mSetup.mJoystickStickLocation = mSetup.mDirectionalPadCenter;
 	}
 
 	if (gameRecPressed != mGameRecPressed)

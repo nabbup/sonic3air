@@ -62,6 +62,7 @@ private:
 	GameMenuControlsDisplay mGameMenuControlsDisplay;
 
 	bool mUsingControlsLR = false;
+	bool mUsingJoystick = false;
 	uint32 mLastGamepadsChangeCounter = 0;
 
 	int mCurrentlyAssigningButtonIndex = -1;

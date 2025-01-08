@@ -173,7 +173,8 @@ public:
 
 	void setControllerLEDsForPlayer(int playerIndex, const Color& color) const;
 
-	inline bool isUsingControlsLR() const  { return mUsingControlsLR; }
+	inline bool isUsingControlsLR() const { return mUsingControlsLR; }
+	inline bool isUsingJoystick() const { return mUsingJoystick; }
 	void handleActiveModsChanged();
 
 private:
@@ -238,4 +239,5 @@ private:
 	WaitInputState mWaitingForSingleInput = WaitInputState::NONE;
 
 	bool mUsingControlsLR = false;
+	bool mUsingJoystick = false;
 };

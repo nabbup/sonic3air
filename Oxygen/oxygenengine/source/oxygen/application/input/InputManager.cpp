@@ -949,6 +949,9 @@ void InputManager::handleActiveModsChanged()
 	constexpr uint64 FEATURE_NAME_HASH = rmx::constMurmur2_64("Controls_LR");
 	mUsingControlsLR = ModManager::instance().anyActiveModUsesFeature(FEATURE_NAME_HASH);
 
+	constexpr uint64 FEATURE_USE_TOUCH_JOYSTICK = rmx::constMurmur2_64("Controls_TouchJoystick");
+	mUsingJoystick = ModManager::instance().anyActiveModUsesFeature(FEATURE_USE_TOUCH_JOYSTICK);
+
 	if (TouchControlsOverlay::hasInstance())
 	{
 		TouchControlsOverlay::instance().buildTouchControls();
