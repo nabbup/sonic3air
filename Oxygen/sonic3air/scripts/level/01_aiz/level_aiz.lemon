@@ -1187,7 +1187,7 @@ function void fn01c550()
 
 	if (camera.position.x.u16 >= 0x2b00)
 	{
-		u16[0xfffffc5e] = u16[0xfffffc76] // fix for palette mods
+		u16[0xfffffc5e] = 0x0004
 	}
 	if (camera.position.x.u16 >= 0x2c00 - getScreenExtend()) // fix for ultrawide
 	{
@@ -1195,7 +1195,7 @@ function void fn01c550()
 	}
 	if (camera.position.x.u16 >= 0x2d80)
 	{
-		u16[0xfffffc5e] = isMainCharacter(CHARACTER_KNUCKLES) ? u16[0x04faea] : 0x0c02
+		u16[0xfffffc5e] = u16[0xfffffc76] // fix for palette mods
 		move_area.left = 0x2d80
 		requestLoadingPatterns(0x5a)		// Boss sprites
 		camera.update_routine += 2
