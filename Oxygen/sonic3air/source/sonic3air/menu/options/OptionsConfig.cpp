@@ -677,8 +677,9 @@ void OptionsConfig::buildOther()
 		configBuilder.addSetting("Game Branding:", option::GAME_BRANDING)
 			.addOption("Sonic 3", 1)
 			.addOption("Sonic & Knuckles", 2)
+			.addOption("Sonic 3 & Knuckles", 3)
 			.addOption("Sonic 3 A.I.R.", 0)
-			.addOption("Pick by Zone", 3);
+			.addOption("Pick by Zone", 4);
 	}
 
 	CATEGORY("Audio")
@@ -693,7 +694,7 @@ void OptionsConfig::buildOther()
 		configBuilder.addSetting("Insta-Shield Style:", option::INSTA_SHIELD_STYLE)
 			.addOption("Sonic 3 & Knuckles", 0)
 			.addOption("Sonic 3 A.I.R.", 1)
-			.addOption("Origins", 2);
+			.addOption("Sonic Origins", 2);
 	}
 
 	CATEGORY("Miscellaneous")
@@ -701,7 +702,7 @@ void OptionsConfig::buildOther()
 		configBuilder.addSetting("Title Screen Menu Options:", option::TITLE_SCREEN_MENU_OPTIONS)
 			.addOption("Disabled", 0)
 			.addOption("Sonic 3 & Knuckles", 1)
-			.addOption("Origins", 2);
+			.addOption("Sonic Origins", 2);
 
 	#if (defined(PLATFORM_WINDOWS) && !defined(__GNUC__)) || (defined(PLATFORM_LINUX) && !defined(__arm__)) || (defined(PLATFORM_MAC) && !defined(NO_DISCORD))
 		configBuilder.addSetting("Discord RPC Details:", option::DISCORD_RPC_DETAILS)

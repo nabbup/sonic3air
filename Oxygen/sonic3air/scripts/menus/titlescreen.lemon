@@ -393,7 +393,7 @@ function void TitleScreen()
 	}
 
 	u32[0xffffb000] = 0x00482c		// Banner ("Sonic 3 - Sonic The Hedgehog")
-	u32[0xffffb04a] = 0x004a5c		// Menu items
+	u32[0xffffb04a] = Game.getSetting(SETTING_TITLE_SCREEN_MENU_OPTIONS) == 2 ? 0x004a86 : 0x004a5c		// Menu items
 	u32[0xffffb0de] = 0x004a1e		// Copyright info
 	u32[0xffffb128] = 0x004ae4		// Sonic's hand wagging
 	u32[0xffffb172] = 0x004b54		// Sonic's eye blinking
@@ -432,6 +432,10 @@ function void TitleScreen()
 		if (global.demo_countdown == 0)
 			break
 
+		A1 = 0xffffb04a
+		if (objA1.value3a)
+			continue
+
 		if ((control.pad1.pressed | control.pad2.pressed) & CONTROL_START)
 		{
 			global.game_mode = 0x0c			// Main Game
@@ -449,14 +453,15 @@ function void TitleScreen()
 
 			playSound(MUSIC_CTRL_FADEOUT)
 
-		#if GAMEAPP
-			// In S3AIR, there is no choice, always go to the main menu
-			FadeOutScreenBlocking()
-			Game.returnToMainMenu()
-			Audio.fadeOutChannel(0, 0.25f)	// Do the rest of music fade out relatively quickly
-			yieldExecution()
+			if (Game.getSetting(SETTING_TITLE_SCREEN_MENU_OPTIONS) == 0)
+			{
+				// In S3AIR, there is no choice, always go to the main menu
+				FadeOutScreenBlocking()
+				Game.returnToMainMenu()
+				Audio.fadeOutChannel(0, 0.25f)	// Do the rest of music fade out relatively quickly
+				yieldExecution()
+			}
 
-		#else
 			D0 = titlescreen.selection
 			if (D0.u8 == 0)
 			{
@@ -473,7 +478,6 @@ function void TitleScreen()
 				// Level Select
 				global.game_mode = 0x28
 			}
-		#endif
 			return
 		}
 	}
@@ -725,18 +729,11 @@ function void fn00486c()
 
 	D0.s16 = 0xd4 - s16[A0 + 0x30]
 	objA0.position.y.u16 = D0.u16
-#if STANDALONE
-	// Move it down
-	objA0.position.y.u16 += 0x1c
-#else
-
-	// Movement of Sonic and the ring around him
-	if (scrolloffset.y.planeA != 0x10)
-	{
+	if (Game.getSetting(SETTING_GAME_BRANDING) < 2)	// Move it down
+		objA0.position.y.u16 += 0x1c
+	else if (scrolloffset.y.planeA != 0x10)	// Movement of Sonic and the ring around him
 		++scrolloffset.y.planeA
-	}
-#endif
-
+	
 	fn0048dc()
 }
 
@@ -764,27 +761,29 @@ function void fn0048dc()
 
 	u16 px = getScreenWidth() / 2
 	u16 py = objA0.position.y.u16 - 53
-	Renderer.drawCustomSprite("title_screen_air", px, py, 0x00, SPRITE_FLAG_PRIO, 0xa000)
 
 	if (time > 0)
 	{
-		if (time < 65)
+		if (time < 65 && Game.getSetting(SETTING_GAME_BRANDING) == 0)
 		{
 			u8 alpha = (time < 20) ? (time * 255 / 20) : ((65 - time) * 255 / 45)
 			Renderer.drawCustomSprite("title_screen_air_h", px, py, 0x00, SPRITE_FLAG_PRIO, 0xa001, 0, alpha)
 		}
 
-	#if GAMEAPP
-		Renderer.drawCustomSprite("title_screen_start", getScreenWidth() / 2, 208 + max((50 - time) * 2, 0), 0x00, 0, 0x9f7e)
-	#endif
+		if (Game.getSetting(SETTING_TITLE_SCREEN_MENU_OPTIONS) == 0)
+			Renderer.drawCustomSprite("title_screen_start", getScreenWidth() / 2, 208 + max((50 - time) * 2, 0), 0x00, 0, 0x9f7e)
 	}
 
 	Renderer.drawCustomSprite("title_screen_cr", getScreenWidth() - 88, 204, 0x00, 0, 0x9f7e)
 
 	// Clear "Sonic The Hedgehog" text in VRAM
-	for (u16 x = 0xb000; x < 0xb700; x += 0x80)
-		for (u16 y = 0; y < 0x40; y += 2)
-			setVRAM(x + y, 0)
+	if (Game.getSetting(SETTING_GAME_BRANDING) == 0)
+	{
+		Renderer.drawCustomSprite("title_screen_air", px, py, 0x00, SPRITE_FLAG_PRIO, 0xa000)
+		for (u16 x = 0xb000; x < 0xb700; x += 0x80)
+			for (u16 y = 0; y < 0x40; y += 2)
+				setVRAM(x + y, 0)
+	}
 #endif
 }
 
@@ -795,31 +794,50 @@ function void fn0048dc()
 //# address-hook(0x004a5c) end(0x004a82)
 function void fn004a5c()
 {
-#if GAMEAPP
-	// Leave this out in S3AIR
-	UnloadObject()
-	return
-#endif
+	if (Game.getSetting(SETTING_TITLE_SCREEN_MENU_OPTIONS) == 0)
+	{
+		UnloadObject()
+		return
+	}
 
 	objA0.position.x.u16 = 0xf0 + getScreenExtend()
 	objA0.position.y.u16 = 0x0140
 	objA0.mapping_offset = 0x004c9c
 	objA0.sprite_attributes = (sprite_attribute.PRIORITY | sprite_attribute.PALETTE.LINE2 | (TitleScreen.Menu.targetInVRAM >> 5))
-	titlescreen.selection &= 0x01
+	titlescreen.selection = 0
 	objA0.animation.sprite = titlescreen.selection
 
 	objA0.update_address = 0x004a88
 	fn004a88()
 }
 
+//# address-hook(0x004a86)
+function void AIRFreshener.OriginsStartText()
+{
+	objA0.value3a = 2
+	D0.u8 = (control.pad1.pressed | control.pad2.pressed)
+	if (global.framecounter/20 & 0x01)
+		Renderer.drawCustomSprite("press_start", getScreenWidth()/2, getScreenHeight()-24, 0x00, SPRITE_FLAG_PRIO, 0xa002)
+	if (D0.u8 & CONTROL_START)
+	{
+		objA0.update_address = 0x004a5c
+		playSound(0x9c)
+	}
+}
+
 
 //# address-hook(0x004a88) end(0x004ade)
 function void fn004a88()
 {
+	objA0.value3a = max(s16(objA0.value3a - 1), 0)
 	D2 = titlescreen.selection
-	u8 maxMenuSelection = (levelselect.unlocked) ? 2 : 1
+	u8 maxMenuSelection = (Game.isSecretUnlocked(0x10)) ? 2 : 1 // checking level select unlock
 
 	D0.u8 = (control.pad1.pressed | control.pad2.pressed)
+	if (D0 & CONTROL_B && Game.getSetting(SETTING_TITLE_SCREEN_MENU_OPTIONS) == 2)
+	{
+		objA0.update_address = 0x004a86
+	}
 	if (D0 & CONTROL_UP)
 	{
 		D2.u8 = (D2.u8 > 0) ? (D2.u8 - 1) : maxMenuSelection
@@ -855,10 +873,8 @@ function void fn004924()
 	objA0.box_size.y = 0x04
 	objA0.animation.sprite = 1
 
-#if STANDALONE
-	// Move it down
-	objA0.position.y.u16 += 0x1c
-#endif
+	if (Game.getSetting(SETTING_GAME_BRANDING) < 2)	// Move it down
+		objA0.position.y.u16 += 0x1c
 
 	objA0.update_address = 0x00495c
 	fn00495c()
@@ -868,13 +884,10 @@ function void fn004924()
 //# address-hook(0x00495c) end(0x004968)
 function void fn00495c()
 {
-	// Trademark -- leave this out in S3AIR for all regions
-#if !STANDALONE
-	if (global.region_code & 0x80)
+	if (global.region_code & 0x80 && Game.getSetting(SETTING_GAME_BRANDING) != 0)
 	{
 		DrawObject()
 	}
-#endif
 }
 
 
@@ -884,11 +897,11 @@ function void fn00495c()
 //# address-hook(0x00496a) end(0x004996)
 function void fn00496a()
 {
-#if STANDALONE
-	// Leave this out in S3AIR
-	UnloadObject()
-	return
-#endif
+	if (Game.getSetting(SETTING_GAME_BRANDING) < 2)
+	{
+		UnloadObject()
+		return
+	}
 
 	objA0.mapping_offset = 0x0049ae
 	objA0.sprite_attributes = (sprite_attribute.PRIORITY | sprite_attribute.PALETTE.LINE3 | (TitleScreen.AndKnucklesTitle.targetInVRAM >> 5))
