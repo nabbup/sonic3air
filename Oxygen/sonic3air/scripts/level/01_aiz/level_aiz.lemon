@@ -1187,9 +1187,9 @@ function void fn01c550()
 
 	if (camera.position.x.u16 >= 0x2b00)
 	{
-		u16[0xfffffc5e] = 0x0004
+		u16[0xfffffc5e] = u16[0xfffffc76] // fix for palette mods
 	}
-	if (camera.position.x.u16 >= 0x2c00)
+	if (camera.position.x.u16 >= 0x2c00 - getScreenExtend()) // fix for ultrawide
 	{
 		level.vertical_wrap = 0x2e0
 	}
