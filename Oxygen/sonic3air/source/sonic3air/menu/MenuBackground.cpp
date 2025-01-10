@@ -26,7 +26,6 @@
 #include "oxygen/simulation/CodeExec.h"
 #include "oxygen/simulation/Simulation.h"
 
-
 namespace detail
 {
 	template<typename T>
@@ -44,9 +43,11 @@ namespace detail
 		quad[2].mPosition.set(splitX1 - 15.0f, 224.0f);
 		quad[3].mPosition.set(splitX2 - 15.0f, 224.0f);
 
+		int extend = abs(int(VideoOut::instance().getScreenWidth() - 496)) / 2;
+
 		for (int i = 0; i < 4; ++i)
 		{
-			quad[i].mTexcoords.x = (quad[i].mPosition.x + 8.0f) / 416.0f;
+			quad[i].mTexcoords.x = (quad[i].mPosition.x + 8.0f + extend) / 512.0f;
 			quad[i].mTexcoords.y = (quad[i].mPosition.y) / 224.0f;
 		}
 		drawer.drawQuad(quad, texture);
@@ -183,7 +184,7 @@ void MenuBackground::render()
 	const float normalizedTitleRight = std::min(normalizedSplitLight, normalizedSplitBlue);
 
 	const float splitMin = -30.0f;
-	const float splitMax = 430.0f;
+	const float splitMax = 512.0f;
 	const float splitLight = interpolate(splitMin, splitMax, saturate(normalizedSplitLight));
 	const float splitBlue  = interpolate(splitMin, splitMax, saturate(normalizedSplitBlue));
 	const float splitAlter = interpolate(splitMin, splitMax, saturate(normalizedSplitAlter));
@@ -207,7 +208,7 @@ void MenuBackground::render()
 			static const lemon::FlyweightString SCROLL_OFFSET_NAME("MainMenuBG.scrollOffset");
 			static const lemon::FlyweightString LOGO_POSITION_NAME("MainMenuBG.logoPosition");
 			runtime.setGlobalVariableValue_int64(SCROLL_OFFSET_NAME, roundToInt(-mBackgroundLayer.mCurrentPosition * 150.0f));
-			runtime.setGlobalVariableValue_int64(LOGO_POSITION_NAME, roundToInt(interpolate(splitMin, splitMax, normalizedTitleRight) - 91.0f));
+			runtime.setGlobalVariableValue_int64(LOGO_POSITION_NAME, roundToInt(interpolate(splitMin, 430.0f, normalizedTitleRight) - 91.0f));
 			mAnimatedBackgroundActive = true;
 		}
 		else
@@ -455,7 +456,7 @@ void MenuBackground::setGameStartedMenu()
 void MenuBackground::openMenu(GameMenuBase& menu)
 {
 	// The menus only really work in a fixed resolution, so make sure that one is set
-	VideoOut::instance().setScreenSize(400, 224);
+	//VideoOut::instance().setScreenSize(400, 224);
 
 	GameApp::instance().getGameMenuManager().addMenu(menu);
 

@@ -17,6 +17,8 @@
 #include "oxygen/helper/FileHelper.h"
 #include "oxygen/simulation/Simulation.h"
 
+#include "oxygen/application/video/VideoOut.h"
+
 
 namespace
 {
@@ -105,6 +107,9 @@ void TimeAttackResultsMenu::render()
 {
 	Drawer& drawer = EngineMain::instance().getDrawer();
 
+	int width = VideoOut::instance().getScreenWidth();
+	int extend = int(VideoOut::instance().getScreenWidth() - 320) / 2;
+
 	constexpr float FADE1_TIME = 0.15f;
 	constexpr float FADE2_TIME = 0.45f;
 
@@ -121,19 +126,19 @@ void TimeAttackResultsMenu::render()
 		drawer.drawRect(rect, global::mTimeAttackResultsBG);
 
 		const String text = String("Your time:   ") + formatTime(mYourTime, true);
-		drawer.printText(global::mSonicFontC, Vec2i(76 + std::min(roundToInt(mTime * 500) - 160, 0), 97), text, 1);
+		drawer.printText(global::mSonicFontC, Vec2i(33+extend, 97), text, 1);
 
 		if (!mBetterTimes.empty())
 		{
 			const String text = (mBetterTimes.size() == 1) ? "Time to beat:" : "Times to beat:";
-			const int px = 232 + ((int)mBetterTimes.size() + 1) * 2 + roundToInt(std::max(0.45f - mTime, 0.0f) * 750);
+			const int px = width/2+32 + ((int)mBetterTimes.size() + 1) * 2 + roundToInt(std::max(0.45f - mTime, 0.0f) * 750);
 			const int py = 79 - ((int)mBetterTimes.size() + 1) * 16;
 			drawer.printText(global::mOxyfontRegular, Vec2i(px, py), text, 1);
 		}
 		else if (!mWorseTimes.empty())
 		{
 			const String text = "NEW RECORD!";
-			const int px = 238 + roundToInt(std::max(0.45f - mTime, 0.0f) * 750);
+			const int px = width/2+38 + roundToInt(std::max(0.45f - mTime, 0.0f) * 750);
 			const int py = 64;
 			drawer.printText(global::mOxyfontRegular, Vec2i(px, py), text, 1, roundToInt(mTime * 8.0f) % 2 ? Color::YELLOW : Color::WHITE);
 		}
@@ -141,7 +146,7 @@ void TimeAttackResultsMenu::render()
 		for (int index = 0; index < (int)mBetterTimes.size(); ++index)
 		{
 			const String text = formatTime(mBetterTimes[index]);
-			const int px = 260 + ((int)mBetterTimes.size() - index) * 2 + roundToInt(std::max(0.6f + (float)index * 0.15f - mTime, 0.0f) * 750);
+			const int px = width/2+60 + ((int)mBetterTimes.size() - index) * 2 + roundToInt(std::max(0.6f + (float)index * 0.15f - mTime, 0.0f) * 750);
 			const int py = 81 - ((int)mBetterTimes.size() - index) * 16;
 			drawer.printText(global::mOxyfontRegular, Vec2i(px, py), text, 1);
 		}
@@ -149,7 +154,7 @@ void TimeAttackResultsMenu::render()
 		for (int index = 0; index < (int)mWorseTimes.size(); ++index)
 		{
 			const String text = formatTime(mWorseTimes[index]);
-			const int px = 252 - index * 2 + roundToInt(std::max(0.6f + (float)(mBetterTimes.size() + index) * 0.15f - mTime, 0.0f) * 750);
+			const int px = width/2+52 - index * 2 + roundToInt(std::max(0.6f + (float)(mBetterTimes.size() + index) * 0.15f - mTime, 0.0f) * 750);
 			const int py = 129 + index * 16;
 			drawer.printText(global::mOxyfontRegular, Vec2i(px, py), text, 1);
 		}

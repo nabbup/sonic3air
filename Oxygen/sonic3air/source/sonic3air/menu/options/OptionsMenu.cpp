@@ -793,7 +793,9 @@ void OptionsMenu::render()
 	renderContext.mDeltaSeconds = std::min(mDeltaSecondsForRendering, 0.1f);
 	mDeltaSecondsForRendering = 0.0f;
 
-	int anchorX = 200;
+	const int width = VideoOut::instance().getScreenWidth();
+
+	int anchorX = width/2;
 	int anchorY = 0;
 	float alpha = 1.0f;
 	if (mState != State::SHOW && mState != State::FADE_TO_GAME)
@@ -888,7 +890,7 @@ void OptionsMenu::render()
 		// Tab titles (must be rendered afterwards because it's meant to be on top)
 		{
 			// Background
-			drawer.drawRect(Recti(anchorX - 200, anchorY - 6, 400, 48), global::mOptionsTopBar, Color(1.0f, 1.0f, 1.0f, alpha));
+			drawer.drawRect(Recti(anchorX - 256, anchorY - 6, 512, 48), global::mOptionsTopBar, Color(1.0f, 1.0f, 1.0f, alpha));
 
 			const int py = anchorY + 4;
 			const auto& entry = mTabMenuEntries[0];
@@ -960,7 +962,7 @@ void OptionsMenu::render()
 			if (visibility > 0.0f && nullptr != message)
 			{
 				bottomY -= 16;
-				const Recti rect(0, bottomY + roundToInt((1.0f - visibility) * 20.0f), 400, 20);
+				const Recti rect(0, bottomY + roundToInt((1.0f - visibility) * 20.0f), width, 20);
 
 				drawer.drawRect(rect, Color(1.0f, 0.75f, 0.5f, alpha * 0.95f));
 				drawer.printText(global::mOxyfontSmall, rect - Vec2i(0, 2), message, 5, Color(1.0f, 0.9f, 0.8f, alpha));

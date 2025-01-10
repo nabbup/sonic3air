@@ -22,6 +22,8 @@
 #include "oxygen/application/mainview/GameView.h"
 #include "oxygen/simulation/Simulation.h"
 
+#include "oxygen/application/video/VideoOut.h"
+
 
 namespace
 {
@@ -259,11 +261,13 @@ void TimeAttackMenu::render()
 
 	Drawer& drawer = EngineMain::instance().getDrawer();
 
-	int anchorX = 200;
+	int width = VideoOut::instance().getScreenWidth();
+
+	int anchorX = int(width) / 2;
 	float alpha = 1.0f;
 	if (mState != State::SHOW && mState != State::FADE_TO_GAME)
 	{
-		anchorX += roundToInt((1.0f - mVisibility) * 200.0f);
+		anchorX += roundToInt((1.0f - mVisibility) * int(width) / 2);
 		alpha = mVisibility;
 	}
 
@@ -290,11 +294,11 @@ void TimeAttackMenu::render()
 			arrowAnimOffset = (arrowAnimOffset > 3) ? (6 - arrowAnimOffset) : arrowAnimOffset;
 		}
 
-		int px = 200;
+		int px = int(width) / 2;
 		if (mState != State::SHOW && mState != State::FADE_TO_GAME)
 		{
 			const int lineOffset = (mState < State::SHOW) ? (int)(mMenuEntries.size() - 1 - line) : (int)line;
-			px = 200 + roundToInt(saturate(1.0f - alpha - lineOffset * 0.15f) * 200.0f);
+			px = width/2 + roundToInt(saturate(1.0f - alpha - lineOffset * 0.15f) * int(width) / 2);
 		}
 
 		if (canGoLeft)
@@ -307,7 +311,7 @@ void TimeAttackMenu::render()
 
 	for (int i = 0; i < 5; ++i)
 	{
-		Recti rect(anchorX + 90, 118 + i * 18, 80, 18);
+		Recti rect(width-110, 118 + i * 18, 80, 18);
 		if (i < (int)mBestTimes.size())
 			drawer.printText(global::mOxyfontRegular, rect, mBestTimes[i], 5, Color(1.0f, 1.0f, 1.0f, alpha));
 		else

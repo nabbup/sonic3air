@@ -24,6 +24,8 @@
 #include "oxygen/application/modding/ModManager.h"
 #include "oxygen/helper/Utils.h"
 
+#include "oxygen/application/video/VideoOut.h"
+
 
 namespace mainmenu
 {
@@ -244,6 +246,8 @@ void MainMenu::render()
 
 	Drawer& drawer = EngineMain::instance().getDrawer();
 
+	const int width = VideoOut::instance().getScreenWidth();
+
 	const int positionY[] = { 31, 58, 85,  125, 146, 167,  195 };
 	for (size_t line = 0; line < mMenuEntries.size(); ++line)
 	{
@@ -252,8 +256,11 @@ void MainMenu::render()
 		const auto& entry = mMenuEntries[line];
 		const std::string& text = entry.mOptions.empty() ? entry.mText : entry.mOptions[entry.mSelectedIndex].mText;
 
+		const int mainEntryOffset = width > 400 ? width / 2 + 18 : width - 182;
+		const int secondaryEntryoffset = width > 400 ? width / 2 + 32 : width - 168;
+
 		const int lineOffset = (mState < State::SHOW) ? (int)(mMenuEntries.size() - 1 - line) : (int)line;
-		const int px = (isMainEntry ? 218 : 232) + roundToInt(saturate(1.0f - mVisibility - lineOffset * 0.1f) * 200.0f - mMenuEntries[line].mAnimation.mVisibility * 10.0f);
+		const int px = (isMainEntry ? mainEntryOffset : secondaryEntryoffset) + roundToInt(saturate(1.0f - mVisibility - lineOffset * 0.1f) * 200.0f - mMenuEntries[line].mAnimation.mVisibility * 10.0f);
 		const int py = positionY[line];
 		const bool isSelected = ((int)line == mMenuEntries.mSelectedEntryIndex);
 		const bool isSelectable = entry.isFullyInteractable();
