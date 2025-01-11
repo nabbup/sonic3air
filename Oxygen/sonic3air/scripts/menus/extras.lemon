@@ -192,9 +192,9 @@ function void Extras.DrawMenu(u8 selectedTab, u8 selectedEntry)
 	
 	u8 unlockedAchievements
 	u8 openAchievements
-	for (u16 k; k < 0x2000; ++k)
+	for (u16 k; k < 0xff; ++k)
 	{
-		if (Game.isAchievementComplete(k) && u32[0x8b0030 + ((k % 256) * 64)] != 0x0000)
+		if (Game.isAchievementComplete(u32[0x8b0030 + (k * 64)]))
 			++unlockedAchievements
 	}
 	openAchievements = Extras.achievementsEntryList - unlockedAchievements
@@ -219,8 +219,13 @@ function void Extras.DrawMenu(u8 selectedTab, u8 selectedEntry)
 			additional_offset = 41
 		else additional_offset = 0
 		
-		if (unlockedAchievements > 0 && l == openAchievements - 1)
-			Renderer.drawText(BLUE_TEXT, 200 - Math.roundToInt(camera.foreground.x.u16 * 1.5) + 660, 61 - camera.foreground.y.u16 + (52 + l * 56) + (openAchievements > 1 ? 41 : 0), "* completed achievements *", u32(0x99ccffff - Extras.opacityAchievements), 5, 0, 0x5fff, false, true)
+		if (unlockedAchievements > 0)
+		{
+			if (openAchievements > 0 && l == openAchievements - 1)
+				Renderer.drawText(BLUE_TEXT, 200 - Math.roundToInt(camera.foreground.x.u16 * 1.5) + 660, 61 - camera.foreground.y.u16 + (52 + l * 56) + 41, "* completed achievements *", u32(0x99ccffff - Extras.opacityAchievements), 5, 0, 0x5fff, false, true)
+			else if (openAchievements == 0 && l == 0)
+				Renderer.drawText(BLUE_TEXT, 200 - Math.roundToInt(camera.foreground.x.u16 * 1.5) + 660, 61 - camera.foreground.y.u16, "* completed achievements *", u32(0x99ccffff - Extras.opacityAchievements), 5, 0, 0x5fff, false, true)
+		}
 		
 		Renderer.drawSpriteTinted(key, 29 - Math.roundToInt(camera.foreground.x.u16 * 1.7) + 748 - ((selectedEntry == l + 1) * 12), (52 + l * 56) - camera.foreground.y.u16 + 31 + additional_offset, 0, 0x00, 0x6001, 0, u32(0xffffffff - Extras.opacityAchievements), 0x10000)
 		Renderer.drawSpriteTinted("achievements_frame", 27 - Math.roundToInt(camera.foreground.x.u16 * 1.5) + 660 - ((selectedEntry == l + 1) * 12), (50 + l * 56) - camera.foreground.y.u16 + 31 + additional_offset, 0, 0x00, 0x6000, 0, u32(0xffffffff - Extras.opacityAchievements), 0x10000)
