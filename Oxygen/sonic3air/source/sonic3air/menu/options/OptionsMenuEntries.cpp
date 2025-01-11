@@ -278,48 +278,6 @@ void UpdateCheckMenuEntry::renderEntry(RenderContext& renderContext_)
 	drawer.printText(global::mOxyfontSmall, Recti(baseX + 100, py, 0, 10), "v" BUILD_STRING, 6, Color(0.8f, 1.0f, 0.8f, alpha));
 	py += 12;
 
-	UpdateCheck& updateCheck = GameClient::instance().getUpdateCheck();
-	switch (updateCheck.getState())
-	{
-		case UpdateCheck::State::FAILED:
-		{
-			drawer.printText(global::mOxyfontSmall, Recti(baseX, py, 0, 10), "Can't connect to server", 5, Color(1.0f, 0.0f, 0.0f, alpha));
-			break;
-		}
-		case UpdateCheck::State::SEND_QUERY:
-		case UpdateCheck::State::WAITING_FOR_RESPONSE:
-		{
-			drawer.printText(global::mOxyfontSmall, Recti(baseX, py, 0, 10), "Connecting to server...", 5, Color(1.0f, 1.0f, 1.0f, alpha));
-			break;
-		}
-		case UpdateCheck::State::HAS_RESPONSE:
-		{
-			if (updateCheck.hasUpdate())
-			{
-				drawer.printText(global::mOxyfontSmall, Recti(baseX - 100, py, 0, 10), "Update available:", 4, Color(1.0f, 1.0f, 1.0f, alpha));
-				drawer.printText(global::mOxyfontSmall, Recti(baseX + 100, py, 0, 10), getVersionString(updateCheck.getResponse()->mAvailableAppVersion), 6, Color(1.0f, 1.0f, 0.6f, alpha));
-			}
-			else
-			{
-				drawer.printText(global::mOxyfontSmall, Recti(baseX, py, 0, 10), "You're using the latest version", 5, Color(0.8f, 1.0f, 0.8f, alpha));
-			}
-			break;
-		}
-		default:
-		{
-			drawer.printText(global::mOxyfontSmall, Recti(baseX, py, 0, 10), "Ready to check for updates", 5, Color(0.8f, 0.8f, 0.8f, alpha));
-			break;
-		}
-	}
-	py += 20;
-
-	const bool useTextUpdateLink = updateCheck.hasUpdate();
-	if (mTextUpdateLink != useTextUpdateLink)
-	{
-		mTextUpdateLink = useTextUpdateLink;
-		mText = useTextUpdateLink ? "Open download page" : "Check for updates";
-	}
-
 	OptionsMenuEntry::renderEntry(renderContext);
 }
 

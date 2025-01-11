@@ -710,6 +710,12 @@ void OptionsMenu::update(float timeElapsed)
 							PlatformFunctions::openURLExternal("https://sonic3air.org/");
 							break;
 						}
+						
+						case option::_OPEN_AIRFRESHENERPAGE:
+						{
+							PlatformFunctions::openURLExternal("https://github.com/nabbup/sonic3air/releases/");
+							break;
+						}
 
 						case option::_OPEN_MANUAL:
 						{
@@ -1105,13 +1111,9 @@ void OptionsMenu::createOptionMenuEntry(GameMenuEntries& entries, const OptionsC
 	// Some settings require special handling, though most use the default
 	switch (setting.mKey)
 	{
-		case option::_CHECK_FOR_UPDATE:
+		case option::_OPEN_AIRFRESHENERPAGE:
 		{
-			entries.addEntry<UpdateCheckMenuEntry>().initEntry(setting.mName, option::_CHECK_FOR_UPDATE);
-			entries.addEntry<OptionsMenuEntry>()
-				.setUseSmallFont(true)
-				.initEntry("", option::RELEASE_CHANNEL)
-				.addOptions(setting);
+			entries.addEntry<UpdateCheckMenuEntry>().initEntry(setting.mName, option::_OPEN_AIRFRESHENERPAGE);
 			break;
 		}
 

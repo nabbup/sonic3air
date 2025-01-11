@@ -77,10 +77,7 @@ void OptionsConfig::buildSystem()
 #if !defined(PLATFORM_VITA)
 	CATEGORY("Update")
 	{
-		configBuilder.addSetting("Check for updates", option::_CHECK_FOR_UPDATE)
-			.addOption("Stable updates", 0)
-			.addOption("Stable & preview", 1)
-			.addOption("All incl. test builds", 2);
+		configBuilder.addSetting("Open A.I.R. Freshener Download Page", option::_OPEN_AIRFRESHENERPAGE);
 	}
 
 	CATEGORY("Ghost Sync")
@@ -98,7 +95,7 @@ void OptionsConfig::buildSystem()
 
 	CATEGORY("More Info")
 	{
-		configBuilder.addSetting("Open Game Homepage", option::_OPEN_HOMEPAGE);
+		configBuilder.addSetting("Open Original Game Homepage", option::_OPEN_HOMEPAGE);
 		configBuilder.addSetting("Open Manual", option::_OPEN_MANUAL);
 	}
 
