@@ -22,6 +22,8 @@
 #include "oxygen/helper/FileHelper.h"
 #include "oxygen/helper/Utils.h"
 
+#include "oxygen/application/video/VideoOut.h"
+
 
 namespace
 {
@@ -334,7 +336,7 @@ void ExtrasMenu::render()
 
 	Drawer& drawer = EngineMain::instance().getDrawer();
 
-	int anchorX = 200;
+	int anchorX = int(VideoOut::instance().getScreenWidth())/2;
 	float alpha = 1.0f;
 	if (mState != State::SHOW && mState != State::FADE_TO_GAME)
 	{
@@ -427,7 +429,7 @@ void ExtrasMenu::render()
 				if (line == 1)
 				{
 					py += 15;
-					drawer.printText(global::mSonicFontB, Recti(baseX, py, 0, 10), String(0, "%d of %d achievements completed", mAchievementsCompleted, (int)SharedDatabase::getAchievements().size()), 5, Color(0.6f, 0.8f, 1.0f, alpha));
+					drawer.printText(global::mSonicFontB, Recti(baseX, py, 0, 10), String(0, "%d of %d achievements completed", mAchievementsCompleted, (int)SharedDatabase::getAchievements().size()), 5, Color(0.6f, 0.8f, 1.0f, tabAlpha));
 					py += 16;
 				}
 
@@ -575,7 +577,7 @@ void ExtrasMenu::render()
 	// Tab titles
 	{
 		// Title background
-		drawer.drawRect(Recti(anchorX - 200, -6, 400, 48), global::mOptionsTopBar, Color(1.0f, 1.0f, 1.0f, alpha));
+		drawer.drawRect(Recti(anchorX - 256, -6, 512, 48), global::mOptionsTopBar, Color(1.0f, 1.0f, 1.0f, alpha));
 
 		int py = 4;
 		const auto& entry = mTabMenuEntries[0];

@@ -25,6 +25,8 @@
 #include "oxygen/helper/FileHelper.h"
 #include "oxygen/platform/PlatformFunctions.h"
 
+#include "oxygen/application/video/VideoOut.h"
+
 
 namespace
 {
@@ -628,8 +630,9 @@ void ModsMenu::render()
 	Drawer& drawer = EngineMain::instance().getDrawer();
 	ModsMenuRenderContext renderContext;
 	renderContext.mDrawer = &drawer;
+	const int width = VideoOut::instance().getScreenWidth();
 
-	const int globalOffsetX = -roundToInt(saturate(1.0f - mVisibility) * 300.0f);
+	const int globalOffsetX = -roundToInt(saturate(1.0f - mVisibility) * width);
 
 	if (!mHasAnyMods)
 	{
@@ -666,7 +669,7 @@ void ModsMenu::render()
 	if (mInfoOverlay.mVisibility > 0.0f)
 	{
 		infoOverlayPosition -= getInfoOverlayHeight();
-		drawer.pushScissor(Recti(0, 0, 400, infoOverlayPosition));
+		drawer.pushScissor(Recti(0, 0, width, infoOverlayPosition));
 	}
 
 	const int minTabIndex = 0;
@@ -691,7 +694,7 @@ void ModsMenu::render()
 		}
 		else
 		{
-			drawer.pushScissor(Recti(rightTabStart + globalOffsetX, 0, 400, 224));
+			drawer.pushScissor(Recti(rightTabStart + globalOffsetX, 0, width, 224));
 		}
 
 		{
@@ -738,7 +741,7 @@ void ModsMenu::render()
 
 				Recti visualRect = rect;
 				visualRect.x -= roundToInt(saturate(1.0f - mVisibility - lineOffset / 500.0f) * 300.0f);
-				visualRect.x += roundToInt(entry.mAnimation.mOffset.x * 200.0f);
+				visualRect.x += roundToInt(entry.mAnimation.mOffset.x * width/2);
 				visualRect.y += roundToInt(entry.mAnimation.mOffset.y * rect.height);
 
 				renderContext.mVisualRect = visualRect;
@@ -797,7 +800,7 @@ void ModsMenu::render()
 	{
 		drawer.popScissor();
 
-		Recti rect(globalOffsetX, infoOverlayPosition, 400, 224 - infoOverlayPosition);
+		Recti rect(globalOffsetX, infoOverlayPosition, width, 224 - infoOverlayPosition);
 		drawer.drawRect(rect, Color(0.0f, 0.0f, 0.0f, mVisibility * 0.9f));
 		drawer.drawRect(Recti(rect.x, rect.y - 1, rect.width, 1), Color(1.0f, 1.0f, 1.0f, mVisibility));
 
@@ -870,7 +873,7 @@ void ModsMenu::render()
 	// "Applying changes" box
 	if (mApplyingChangesFrameCounter > 0)
 	{
-		Recti rect(100, 94, 200, 35);
+		Recti rect(width/2-100, 94, 200, 35);
 		DrawerHelper::drawBorderedRect(drawer, rect, 1, Color(1.0f, 1.0f, 1.0f, 0.95f), Color(0.2f, 0.2f, 0.2f, 0.9f));
 		drawer.printText(global::mOxyfontRegular, rect, "Applying changes...", 5);
 	}
