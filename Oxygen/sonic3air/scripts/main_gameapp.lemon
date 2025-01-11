@@ -15,6 +15,7 @@
 	COMPILER_ERROR
 #endif
 
+#define AIRFRESHENER
 
 global u16 unlockedWindowFrameCounter
 

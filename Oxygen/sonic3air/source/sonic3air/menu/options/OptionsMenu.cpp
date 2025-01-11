@@ -492,6 +492,17 @@ void OptionsMenu::update(float timeElapsed)
 				mActiveTab = mTabMenuEntries[option::_TAB_SELECTION].mSelectedIndex;
 				playMenuSound(0xb7);
 				refreshControlsDisplay();
+				mOnOtherTab = mActiveTab == 8;
+				if (!mShowedAIRFreshenerWarningMessage)
+				{
+					mAIRFreshenerWarningMessageTimeout = 4.0f;
+					mShowedAIRFreshenerWarningMessage = true;
+				}
+				if (mOnOtherTab)
+				{
+					mWarningMessageTimeout = 0.0f;
+					mAudioWarningMessageTimeout = 0.0f;
+				}
 			}
 			else
 			{
@@ -781,6 +792,10 @@ void OptionsMenu::update(float timeElapsed)
 	{
 		mAudioWarningMessageTimeout = std::max(0.0f, mAudioWarningMessageTimeout - timeElapsed);
 	}
+	if (mAIRFreshenerWarningMessageTimeout > 0.0f)
+	{
+		mAIRFreshenerWarningMessageTimeout = std::max(0.0f, mAIRFreshenerWarningMessageTimeout - timeElapsed);
+	}
 
 	// Check for changes in connected gamepads
 	refreshGamepadLists();
@@ -979,6 +994,25 @@ void OptionsMenu::render()
 			}
 		}
 
+		if (mOnOtherTab)
+		{
+			const char* message = "Note: As of right now, most of the settings are partially or not\n  yet implemented into the game. Keep that in mind while using\n                           AIR Freshener.";
+			float visibility = saturate(mAIRFreshenerWarningMessageTimeout / 0.3f);
+
+			if (nullptr != message)
+			{
+				bottomY -= 16;
+				const Recti rect(0, bottomY + roundToInt((1.0f - visibility) * 40.0f), width, 0);
+
+				drawer.drawRect(Recti(rect.x, rect.y - 20, rect.width, 40), Color(1.0f, 0.75f, 0.5f, alpha * 0.95f));
+				drawer.printText(global::mOxyfontSmall, Recti(rect.x, rect.y - 30, rect.width, 40), message, 5, Color(1.0f, 0.9f, 0.8f, alpha));
+				drawer.drawRect(Recti(rect.x, rect.y - 21, rect.width, 1), Color(0.4f, 0.2f, 0.0f, alpha * 0.95f));
+				drawer.drawRect(Recti(rect.x, rect.y - 22, rect.width, 1), Color(0.9f, 0.9f, 0.9f, alpha * 0.9f));
+				drawer.drawRect(Recti(rect.x, rect.y - 23, rect.width, 1), Color(0.9f, 0.9f, 0.9f, alpha * 0.6f));
+				drawer.drawRect(Recti(rect.x, rect.y - 24, rect.width, 1), Color(0.9f, 0.9f, 0.9f, alpha * 0.3f));
+			}
+		}
+
 		if (ConfigurationImpl::instance().mShowControlsDisplay)
 		{
 			mGameMenuControlsDisplay.render(drawer, alpha);
@@ -1025,7 +1059,14 @@ void OptionsMenu::setupOptionsMenu(bool enteredFromIngame)
 		}
 	}
 
-	mWarningMessageTimeout = enteredFromIngame ? 4.0f : 0.0f;
+	mOnOtherTab = mActiveTab == 8;
+	mAIRFreshenerWarningMessageTimeout = 4.0f;
+	if (mShowedAIRFreshenerWarningMessage == false)
+	{
+		mShowedAIRFreshenerWarningMessage = mOnOtherTab;
+	}
+
+	mWarningMessageTimeout = mOnOtherTab ? 0.0f : enteredFromIngame ? 4.0f : 0.0f;
 	mAudioWarningMessageTimeout = 0.0f;
 	mShowedAudioWarningMessage = false;
 

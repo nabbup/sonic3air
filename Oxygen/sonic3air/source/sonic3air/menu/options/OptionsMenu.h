@@ -118,9 +118,12 @@ private:
 	GameMenuControlsDisplay mGameMenuControlsDisplay;
 
 	bool mEnteredFromIngame = false;
+	bool mOnOtherTab = false;
 	float mWarningMessageTimeout = 0.0f;
 	float mAudioWarningMessageTimeout = 0.0f;
+	float mAIRFreshenerWarningMessageTimeout = 0.0f;
 	bool mShowedAudioWarningMessage = false;
+	bool mShowedAIRFreshenerWarningMessage = false;
 	int mOriginalScriptOptimizationLevel = -1;
 
 	bool mHasAnyModOptions = false;
