@@ -22,10 +22,8 @@ friend class DevModeMainWindow;
 public:
 	enum class Category
 	{
-		GAME_CONTROLS,
-		DEBUGGING,
-		SCRIPTS,
-		ASSET_BROWSERS,
+		SIMULATION,
+		GRAPHICS,
 		MISC
 	};
 
@@ -38,6 +36,8 @@ public:
 
 	virtual bool buildWindow();
 	virtual void buildContent() = 0;
+
+	float getUIScale() const;
 
 protected:
 	const std::string mTitle;

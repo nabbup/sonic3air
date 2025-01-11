@@ -14,6 +14,7 @@
 #include "oxygen/devmode/ImGuiHelpers.h"
 #include "oxygen/devmode/windows/AudioBrowserWindow.h"
 #include "oxygen/devmode/windows/CallFramesWindow.h"
+#include "oxygen/devmode/windows/DebugLogWindow.h"
 #include "oxygen/devmode/windows/GameSimWindow.h"
 #include "oxygen/devmode/windows/GameVisualizationsWindow.h"
 #include "oxygen/devmode/windows/MemoryHexViewWindow.h"
@@ -37,21 +38,20 @@ DevModeMainWindow::DevModeMainWindow() :
 	//  -> Note that the order of creation defines the listing order inside each category
 	{
 		createWindow(mGameSimWindow);
-
-		createWindow(mGameVisualizationsWindow);
-		createWindow(mRenderedGeometryWindow);
-		createWindow(mVRAMWritesWindow);
-		createWindow(mPaletteViewWindow);
+		createWindow(mCallFramesWindow);
+		createWindow(mScriptBuildWindow);
 		createWindow(mMemoryHexViewWindow);
 		createWindow(mWatchesWindow);
+		createWindow(mDebugLogWindow);
 
-		createWindow(mScriptBuildWindow);
-		createWindow(mCallFramesWindow);
-
-		createWindow(mAudioBrowserWindow);
+		createWindow(mGameVisualizationsWindow);
+		createWindow(mPaletteViewWindow);
+		createWindow(mRenderedGeometryWindow);
+		createWindow(mVRAMWritesWindow);
 		createWindow(mSpriteBrowserWindow);
 		createWindow(mPaletteBrowserWindow);
 
+		createWindow(mAudioBrowserWindow);
 		createWindow(mSettingsWindow);
 	#ifdef DEBUG
 		createWindow(mNetworkingWindow);
@@ -109,47 +109,91 @@ void DevModeMainWindow::buildContent()
 	ImGui::SetWindowSize(ImVec2(150.0f, 200.0f), ImGuiCond_FirstUseEver);
 	ImGui::SetWindowCollapsed(true, ImGuiCond_FirstUseEver);
 
-	const float uiScale = ImGui::GetIO().FontGlobalScale;
+	const float uiScale = getUIScale();
+
+	int& configActiveTab = Configuration::instance().mDevMode.mActiveMainWindowTab;
+	const bool firstRun = (mActiveTab == -1);
 
 	const char* TEXT_BY_CATEGORY[] =
 	{
 		"Simulation",
-		"Debugging",
-		"Scripts",
-		"Assets",
+		"Graphics",
 		"Misc"
 	};
 	constexpr int NUM_CATEGORIES = (int)DevModeWindowBase::Category::MISC + 1;
 	static_assert(sizeof(TEXT_BY_CATEGORY) / sizeof(const char*) == NUM_CATEGORIES);
 
-	if (ImGui::BeginTable("Table", 2, ImGuiTableFlags_BordersInnerV | ImGuiTableFlags_SizingStretchProp, ImVec2(270 * uiScale, 0)))
+	if (ImGui::BeginTabBar("Tab Bar", 0))
 	{
-		ImGui::TableNextRow();
+		std::vector<DevModeWindowBase*> windows;
 
 		for (int categoryIndex = 0; categoryIndex < NUM_CATEGORIES; ++categoryIndex)
 		{
-			if (categoryIndex == 0 || categoryIndex == 2)
-				ImGui::TableSetColumnIndex(categoryIndex / 2);
-
-			ImGui::SeparatorText(TEXT_BY_CATEGORY[categoryIndex]);
+			windows.clear();
 			for (DevModeWindowBase* window : mAllWindows)
 			{
 				if (window->mCategory == (DevModeWindowBase::Category)categoryIndex)
 				{
-					ImGui::Checkbox(window->mTitle.c_str(), &window->mIsWindowOpen);
+					windows.push_back(window);
+				}
+			}
+
+		#ifdef DEBUG
+			if (categoryIndex == NUM_CATEGORIES - 1)
+			{
+				// For ImGui demo
+				windows.push_back(nullptr);
+			}
+		#endif
+
+			if (!windows.empty())
+			{
+				const size_t itemsPerColumn = std::max<size_t>(3, (windows.size() + 1) / 2);
+				const size_t numColumns = (windows.size() + itemsPerColumn - 1) / itemsPerColumn;
+				const int flags = (firstRun && configActiveTab == categoryIndex) ? ImGuiTabItemFlags_SetSelected : 0;
+
+				if (ImGui::BeginTabItem(TEXT_BY_CATEGORY[categoryIndex], nullptr, flags))
+				{
+					mActiveTab = categoryIndex;
+
+					if (ImGui::BeginTable("Table", numColumns, ImGuiTableFlags_BordersInnerV | ImGuiTableFlags_SizingStretchProp, ImVec2(270 * uiScale, 0)))
+					{
+						ImGui::TableNextRow();
+
+						for (size_t k = 0; k < windows.size(); ++k)
+						{
+							if ((k % itemsPerColumn) == 0)
+							ImGui::TableSetColumnIndex(k / itemsPerColumn);
+
+							DevModeWindowBase* window = windows[k];
+							if (nullptr != window)
+							{
+								ImGui::Checkbox(window->mTitle.c_str(), &window->mIsWindowOpen);
+							}
+						#ifdef DEBUG
+							else
+							{
+								ImGui::Checkbox("ImGui Demo", &mShowImGuiDemo);
+							}
+						#endif
+						}
+
+						ImGui::EndTable();
+					}
+					ImGui::EndTabItem();
 				}
 			}
 		}
-
-	#ifdef DEBUG
-		ImGui::Checkbox("ImGui Demo", &mShowImGuiDemo);
-
-		// Just for debugging
-		//ImGui::Text("ImGui Capture:   %s %s", ImGui::GetIO().WantCaptureMouse ? "[M]" : "      ", ImGui::GetIO().WantCaptureKeyboard ? "[K]" : "");
-	#endif
-
-		ImGui::EndTable();
+		ImGui::EndTabBar();
 	}
+
+	configActiveTab = mActiveTab;
+
+#if defined(DEBUG) && 0
+	// Just for debugging
+	ImGui::Separator();
+	ImGui::Text("ImGui Capture:   %s %s", ImGui::GetIO().WantCaptureMouse ? "[M]" : "      ", ImGui::GetIO().WantCaptureKeyboard ? "[K]" : "");
+#endif
 }
 
 void DevModeMainWindow::openWatchesWindow()

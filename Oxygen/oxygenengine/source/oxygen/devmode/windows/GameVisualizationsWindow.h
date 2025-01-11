@@ -23,6 +23,9 @@ public:
 	virtual void buildContent() override;
 
 private:
+	Vec2i mScreenSizeInput;
+	bool mUnappliedScreenX = false;
+	bool mUnappliedScreenY = false;
 };
 
 #endif

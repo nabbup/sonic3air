@@ -20,16 +20,16 @@
 
 
 RenderedGeometryWindow::RenderedGeometryWindow() :
-	DevModeWindowBase("Rendered Geometry", Category::DEBUGGING, 0)
+	DevModeWindowBase("Rendered Geometry", Category::GRAPHICS, 0)
 {
 }
 
 void RenderedGeometryWindow::buildContent()
 {
-	ImGui::SetWindowPos(ImVec2(350.0f, 10.0f), ImGuiCond_FirstUseEver);
+	ImGui::SetWindowPos(ImVec2(300.0f, 180.0f), ImGuiCond_FirstUseEver);
 	ImGui::SetWindowSize(ImVec2(500.0f, 250.0f), ImGuiCond_FirstUseEver);
 
-	const float uiScale = ImGui::GetIO().FontGlobalScale;
+	const float uiScale = getUIScale();
 
 	CodeExec& codeExec = Application::instance().getSimulation().getCodeExec();
 	Drawer& drawer = EngineMain::instance().getDrawer();

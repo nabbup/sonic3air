@@ -20,7 +20,7 @@
 
 
 CallFramesWindow::CallFramesWindow() :
-	DevModeWindowBase("Call Frames", Category::SCRIPTS, 0)
+	DevModeWindowBase("Call Frames", Category::SIMULATION, 0)
 {
 }
 
@@ -29,7 +29,7 @@ void CallFramesWindow::buildContent()
 	ImGui::SetWindowPos(ImVec2(500.0f, 240.0f), ImGuiCond_FirstUseEver);
 	ImGui::SetWindowSize(ImVec2(450.0f, 300.0f), ImGuiCond_FirstUseEver);
 
-	const float uiScale = ImGui::GetIO().FontGlobalScale;
+	const float uiScale = getUIScale();
 
 	CodeExec& codeExec = Application::instance().getSimulation().getCodeExec();
 

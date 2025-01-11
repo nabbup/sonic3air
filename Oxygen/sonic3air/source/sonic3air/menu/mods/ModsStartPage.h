@@ -1,4 +1,4 @@
-﻿/*
+/*
 *	Part of the Oxygen Engine / Sonic 3 A.I.R. software distribution.
 *	Copyright (C) 2017-2025 by Eukaryot
 *
@@ -8,19 +8,16 @@
 
 #pragma once
 
-#include "oxygen/devmode/ImGuiDefinitions.h"
-
-#if defined(SUPPORT_IMGUI)
-
-#include "oxygen/devmode/DevModeWindowBase.h"
+#include "sonic3air/menu/GameMenuBase.h"
 
 
-class ScriptBuildWindow : public DevModeWindowBase
+class ModsStartPage
 {
 public:
-	ScriptBuildWindow();
+	void initialize();
+	bool update(float timeElapsed);
+	void render(Drawer& drawer, float visibility);
 
-	virtual void buildContent() override;
+private:
+	GameMenuEntries mMenuEntries;
 };
-
-#endif

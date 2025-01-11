@@ -58,6 +58,7 @@
     <ClCompile Include="..\..\source\oxygen\devmode\ImGuiIntegration.cpp" />
     <ClCompile Include="..\..\source\oxygen\devmode\windows\AudioBrowserWindow.cpp" />
     <ClCompile Include="..\..\source\oxygen\devmode\windows\CallFramesWindow.cpp" />
+    <ClCompile Include="..\..\source\oxygen\devmode\windows\DebugLogWindow.cpp" />
     <ClCompile Include="..\..\source\oxygen\devmode\windows\GameSimWindow.cpp" />
     <ClCompile Include="..\..\source\oxygen\devmode\windows\GameVisualizationsWindow.cpp" />
     <ClCompile Include="..\..\source\oxygen\devmode\windows\MemoryHexViewWindow.cpp" />
@@ -137,6 +138,7 @@
     <ClCompile Include="..\..\source\oxygen\rendering\parts\RenderParts.cpp" />
     <ClCompile Include="..\..\source\oxygen\rendering\parts\ScrollOffsetsManager.cpp" />
     <ClCompile Include="..\..\source\oxygen\rendering\parts\SpriteManager.cpp" />
+    <ClCompile Include="..\..\source\oxygen\rendering\Renderer.cpp" />
     <ClCompile Include="..\..\source\oxygen\rendering\RenderResources.cpp" />
     <ClCompile Include="..\..\source\oxygen\rendering\software\SoftwareRenderer.cpp" />
     <ClCompile Include="..\..\source\oxygen\rendering\sprite\ComponentSprite.cpp" />
@@ -213,6 +215,7 @@
     <ClInclude Include="..\..\source\oxygen\devmode\ImGuiIntegration.h" />
     <ClInclude Include="..\..\source\oxygen\devmode\windows\AudioBrowserWindow.h" />
     <ClInclude Include="..\..\source\oxygen\devmode\windows\CallFramesWindow.h" />
+    <ClInclude Include="..\..\source\oxygen\devmode\windows\DebugLogWindow.h" />
     <ClInclude Include="..\..\source\oxygen\devmode\windows\GameSimWindow.h" />
     <ClInclude Include="..\..\source\oxygen\devmode\windows\GameVisualizationsWindow.h" />
     <ClInclude Include="..\..\source\oxygen\devmode\windows\MemoryHexViewWindow.h" />

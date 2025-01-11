@@ -24,17 +24,16 @@
 
 
 VRAMWritesWindow::VRAMWritesWindow() :
-	DevModeWindowBase("VRAM Writes", Category::DEBUGGING, 0)
+	DevModeWindowBase("VRAM Writes", Category::GRAPHICS, 0)
 {
 }
 
 void VRAMWritesWindow::buildContent()
 {
-	ImGui::SetWindowPos(ImVec2(500.0f, 240.0f), ImGuiCond_FirstUseEver);
+	ImGui::SetWindowPos(ImVec2(840.0f, 180.0f), ImGuiCond_FirstUseEver);
 	ImGui::SetWindowSize(ImVec2(450.0f, 300.0f), ImGuiCond_FirstUseEver);
 
-	const float uiScale = ImGui::GetIO().FontGlobalScale;
-	const ImVec4 lightGrayColor(0.75f, 0.75f, 0.75f, 1.0f);
+	const float uiScale = getUIScale();
 
 	CodeExec& codeExec = Application::instance().getSimulation().getCodeExec();
 	EmulatorInterface& emulatorInterface = codeExec.getEmulatorInterface();
@@ -104,7 +103,7 @@ void VRAMWritesWindow::buildContent()
 
 			if (openTree)
 			{
-				ImGui::TextColored(lightGrayColor, "   Call Stack:");
+				ImGui::TextColored(ImGuiHelpers::COLOR_GRAY80, "   Call Stack:");
 				std::vector<DebugTracking::Location> callStack;
 				debugTracking.getCallStackFromCallFrameIndex(callStack, write->mCallFrameIndex, write->mLocation.mProgramCounter);
 
@@ -114,7 +113,7 @@ void VRAMWritesWindow::buildContent()
 					const std::string& functionName = loc.toString(debugTracking.getCodeExec());
 					if (loc.mLineNumber >= 0)
 					{
-						ImGui::TextColored(lightGrayColor, "        %s, line %d", functionName.c_str(), loc.mLineNumber);
+						ImGui::TextColored(ImGuiHelpers::COLOR_GRAY80, "        %s, line %d", functionName.c_str(), loc.mLineNumber);
 
 						if (loc.mProgramCounter.has_value())
 						{
@@ -133,7 +132,7 @@ void VRAMWritesWindow::buildContent()
 					}
 					else
 					{
-						ImGui::TextColored(lightGrayColor, "        %s", functionName.c_str());
+						ImGui::TextColored(ImGuiHelpers::COLOR_GRAY80, "        %s", functionName.c_str());
 					}
 				}
 
