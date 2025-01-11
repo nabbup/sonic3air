@@ -33,6 +33,7 @@ public:
 		TITLE_SCREEN,	// SEGA logo, intro, title screen
 		NORMAL_GAME,	// Normal game (started from the menu)
 		ACT_SELECT,		// Act Select mode
+		EXTRAS,			// Extras menu
 		TIME_ATTACK,	// Time Attack mode
 		COMPETITION,	// Competition mode
 		BLUE_SPHERE,	// Blue Sphere game mode
@@ -56,6 +57,7 @@ public:
 	void startIntoTitleScreen();
 	void startIntoDataSelect();
 	void startIntoActSelect();
+	void startIntoExtras();
 	void startIntoLevel(Mode mode, uint32 submode, uint16 zoneAndAct, uint8 characters);
 	void restartLevel();
 	void restartAtCheckpoint();

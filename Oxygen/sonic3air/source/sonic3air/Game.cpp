@@ -361,6 +361,16 @@ void Game::startIntoActSelect()
 	startIntoGameInternal();
 }
 
+void Game::startIntoExtras()
+{
+	mMode = Mode::EXTRAS;
+
+	Simulation& simulation = Application::instance().getSimulation();
+	simulation.resetIntoGame("EntryFunctions.extrasMenu");
+
+	startIntoGameInternal();
+}
+
 void Game::startIntoLevel(Mode mode, uint32 submode, uint16 zoneAndAct, uint8 characters)
 {
 	mMode = mode;
@@ -938,10 +948,6 @@ void Game::setAchievementComplete(uint32 achievementId)
 		{
 			GameApp::instance().showUnlockedWindow(SecretUnlockedWindow::EntryType::ACHIEVEMENT, "Achievement complete", achievement->mName);
 		}
-		else
-		{
-			RMX_ERROR("Achievement not found", );
-		}
 
 		checkForUnlockedSecrets();
 		mPlayerProgress.save();
@@ -956,7 +962,6 @@ bool Game::isSecretUnlocked(uint32 secretId)
 void Game::setSecretUnlocked(uint32 secretId)
 {
 	SharedDatabase::Secret* secret = SharedDatabase::getSecret(secretId);
-	RMX_CHECK(nullptr != secret, "Secret with ID " << secretId << " not found", return);
 
 	if (!mPlayerProgress.mUnlocks.isSecretUnlocked(secretId))
 	{

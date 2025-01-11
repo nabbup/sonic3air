@@ -123,10 +123,13 @@ function void BlueSphere.setGeneratedStage(u32 number)
 function void fn04c97e()
 {
 #if STANDALONE
-	// Assuming a white screen here
-	globalComponentAddedColorR = 0xff
-	globalComponentAddedColorG = 0xff
-	globalComponentAddedColorB = 0xff
+	if (globalComponentAddedColorR != 1)
+	{
+		// Assuming a white screen here
+		globalComponentAddedColorR = 0xff
+		globalComponentAddedColorG = 0xff
+		globalComponentAddedColorB = 0xff
+	}
 #endif
 
 	playMusic(MUSIC_CTRL_FADEOUT)

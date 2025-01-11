@@ -162,6 +162,8 @@ function void PostFrameUpdate()
 		Game.setDiscordDetailsPlus("")
 		Game.setDiscordState("")
 	}
+	
+	Game.renderUnlockedWindow()
 }
 
 

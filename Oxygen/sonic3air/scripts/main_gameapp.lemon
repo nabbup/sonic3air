@@ -16,6 +16,102 @@
 #endif
 
 
+global u16 unlockedWindowFrameCounter
+
+global bool unlockedWindow.isSecret
+global string unlockedWindow.title
+global string unlockedWindow.content
+
+global string unlockedWindow.queueNum
+
+global u16 unlockedWindow.px
+global u16 unlockedWindow.py
+
+function void Game.renderUnlockedWindow()
+{
+	constant string SMALL_TEXT  = "sonic3_fontB:gradient:outline(0x000000ff,1,false):shadow(1,1,0.5f,1.0f)"
+	constant string REGULAR_TEXT  = "oxyfont_regular:gradient:outline(0x000000ff,1,false):shadow(1,1,0.5f,1.0f)"
+	
+	if (unlockedWindowFrameCounter > 0)
+	{		
+		if (unlockedWindow.title == "")
+			unlockedWindow.title = unlockedWindow.isSecret ? "Found hidden secret!" : "Achievement complete"
+		
+		u32 tint = unlockedWindow.isSecret ? 0xffaa88ff : 0x99ccffff
+		
+		if (unlockedWindow.px < 240 - (unlockedWindow.isSecret * 36) && unlockedWindowFrameCounter > 150)
+			unlockedWindow.px += 10
+		if (unlockedWindowFrameCounter < 30 && unlockedWindow.px > 0)
+			unlockedWindow.px -= 10
+		if (unlockedWindowFrameCounter < 300 && unlockedWindow.py > 0)
+			--unlockedWindow.py
+		
+		Renderer.drawText(SMALL_TEXT , getScreenWidth() - unlockedWindow.px + 55, getScreenHeight() - 31 + unlockedWindow.py, unlockedWindow.title, tint, 1, 0, 0xfff2, false, true)
+		Renderer.drawText(REGULAR_TEXT ,getScreenWidth() - unlockedWindow.px + 56, getScreenHeight() - 17 + unlockedWindow.py, unlockedWindow.content, 0xffffffff, 1, 0, 0xfff2, false, true)
+		Renderer.drawSprite("unlock_window_bg", getScreenWidth() - unlockedWindow.px, getScreenHeight() - 37 + unlockedWindow.py, 0, SPRITE_FLAG_PRIO, 0xfff0)
+		--unlockedWindowFrameCounter
+		if (unlockedWindowFrameCounter == 0)
+		{
+			unlockedWindow.px = 0
+			unlockedWindow.py = 18
+			if (unlockedWindow.queueNum > 0)
+			{
+				unlockedWindow.isSecret = u8[0x870000]
+				unlockedWindow.title = stringformat("%s", u64[0x870010])
+				unlockedWindow.content = stringformat("%s", u64[0x870020])
+				
+				for (u16 i; i < unlockedWindow.queueNum; ++i)
+				{
+					u8[0x870000 + (i * 48)] = u8[0x870000 + (i * 48) + 48]
+					u64[0x870010 + (i * 48)] = u64[0x870010 + (i * 48) + 48]
+					u64[0x870020 + (i * 48)] = u64[0x870020 + (i * 48) + 48]
+				}
+				
+				--unlockedWindow.queueNum
+				
+				unlockedWindowFrameCounter = 360
+				
+				playSound(unlockedWindow.isSecret ? 0x68 : 0x63)
+			}
+		}
+	}
+}
+
+function void Game.showUnlockedWindow(bool isSecret, string title, string content)
+{
+	if (unlockedWindowFrameCounter > 0)
+	{
+		u8[0x870000 + (unlockedWindow.queueNum * 48)] = isSecret
+		u64[0x870010 + (unlockedWindow.queueNum * 48)] = title
+		u64[0x870020 + (unlockedWindow.queueNum * 48)] = content
+		++unlockedWindow.queueNum
+		return
+	}
+	
+	unlockedWindow.isSecret = isSecret
+	unlockedWindow.title = title
+	unlockedWindow.content = content
+	
+	unlockedWindowFrameCounter = 360
+	
+	unlockedWindow.px = 0
+	unlockedWindow.py = 18
+	
+	playSound(isSecret ? 0x68 : 0x63)
+}
+
+function void Game.setAchievementCompleteWithWindow(u32 achievementId, string title, string content)
+{
+	Game.showUnlockedWindow(false, title, content)
+	Game.setAchievementComplete(achievementId)
+}
+
+function void Game.setSecretUnlockedWithWindow(u32 secretId, string title, string content)
+{
+	Game.showUnlockedWindow(true, title, content)
+	Game.setSecretUnlocked(secretId)
+}
+
 //-------------------------------------------------------//
 // Deprecated functions formerly implemented natively    //
 //-------------------------------------------------------//

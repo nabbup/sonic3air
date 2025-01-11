@@ -168,7 +168,7 @@ void MainMenu::update(float timeElapsed)
 						break;
 
 					case mainmenu::EXTRAS:
-						openExtras();
+						triggerStartExtras();
 						break;
 
 					case mainmenu::MODS:
@@ -224,6 +224,10 @@ void MainMenu::update(float timeElapsed)
 
 				case State::FADE_TO_ACTSELECT:
 					openActSelectMenu();
+					break;
+
+				case State::FADE_TO_EXTRAS:
+					openExtras();
 					break;
 
 				case State::FADE_TO_EXIT:
@@ -319,6 +323,13 @@ void MainMenu::triggerStartActSelect()
 	GameApp::instance().getGameView().startFadingOut();
 }
 
+void MainMenu::triggerStartExtras()
+{
+	playMenuSound(0x63);
+	mState = State::FADE_TO_EXTRAS;
+	GameApp::instance().getGameView().startFadingOut();
+}
+
 void MainMenu::startNormalGame()
 {
 	// Init simulation
@@ -351,9 +362,13 @@ void MainMenu::openOptions()
 
 void MainMenu::openExtras()
 {
-	playMenuSound(0x63);
-	mMenuBackground->openExtras();
-	mState = State::FADE_TO_SUBMENU;
+	// Init simulation
+	Game::instance().startIntoExtras();
+	GameApp::instance().onStartGame();
+	mMenuBackground->setGameStartedMenu();
+	//playMenuSound(0x63);
+	//mMenuBackground->openExtras();
+	//mState = State::FADE_TO_SUBMENU;
 }
 
 void MainMenu::openMods()
