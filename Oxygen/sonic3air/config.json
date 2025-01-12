@@ -8,7 +8,7 @@
 	"PlatformFlags": "-1",
 
 	// Game
-	"StartPhase": "2",				// 0: Disclaimer, 1: Title Screen, 2: Main Menu, 3: In-game (loading a save state)
+	"StartPhase": "1",				// 0: Disclaimer, 1: Title Screen, 2: Main Menu, 3: In-game (loading a save state)
 
 	// Video
 	"WindowSize": "1600 x 960",
@@ -23,7 +23,7 @@
 	{
 		// For infos on dev mode (developer mode) see Oxygen Handbook in "bonus/oxygenengine" folder
 		"Enabled": "1",					// Set to "1" to enable dev mode
-		"EnforceDebugMode": "1",		// Set to "1" to enable in-game debug mode whenever dev mode is active, independently from what's set in the Options menu
+		"EnforceDebugMode": "0",		// Set to "1" to enable in-game debug mode whenever dev mode is active, independently from what's set in the Options menu
 		"SkipExitConfirmation": "1",	// Set to "1" to skip the confirmation when exiting the game from pause menu
 
 		"LoadSaveState": "state_01",	// Load save state (requires "StartPhase": "3")
