@@ -677,6 +677,10 @@ void OptionsConfig::buildOther()
 			.addOption("Sonic 3 & Knuckles", 3)
 			.addOption("Sonic 3 A.I.R.", 0)
 			.addOption("Pick by Zone", 4);
+		
+		configBuilder.addSetting("Hyper Sonic Screen Flash:", option::HYPER_FLASH)
+			.addOption("Enabled", 1)
+			.addOption("Disabled", 0);
 	}
 
 	CATEGORY("Audio")

@@ -332,6 +332,7 @@ void SharedDatabase::setupSettings()
 
 	addSetting(IDPARAMS(Setting::SETTING_CLASSIC_TRANSPARENCY), Setting::SerializationType::ALWAYS);
 	addSetting(IDPARAMS(Setting::SETTING_GAME_BRANDING), Setting::SerializationType::ALWAYS);
+	addSetting(IDPARAMS(Setting::SETTING_HYPER_FLASH), Setting::SerializationType::ALWAYS);
 	addSetting(IDPARAMS(Setting::SETTING_NEW_SOUND_CUES), Setting::SerializationType::ALWAYS);
 	addSetting(IDPARAMS(Setting::SETTING_INSTA_SHIELD_STYLE), Setting::SerializationType::ALWAYS);
 	addSetting(IDPARAMS(Setting::SETTING_TITLE_SCREEN_MENU_OPTIONS), Setting::SerializationType::ALWAYS);

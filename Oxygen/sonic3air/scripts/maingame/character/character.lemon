@@ -2947,12 +2947,16 @@ function void SonicPressedJumpInMidAir()
 			ClearPositionBackup()
 
 			char.double_jump_state = 1
-		#if STANDALONE
-			if (!isHyperSonic)
-				u8[0xffffcbc0 + 0x20] = 1
-			else
-		#endif
-				u8[0xffffcd7c + 0x20] = 1
+			// Only do the screen flash if the option is set
+			if (Game.getSetting(SETTING_HYPER_FLASH))
+			{
+			#if STANDALONE
+				if (!isHyperSonic)
+					u8[0xffffcbc0 + 0x20] = 1
+				else
+			#endif
+					u8[0xffffcd7c + 0x20] = 1
+			}
 
 			playSound(SFX_SPINDASH_RELEASE)
 

@@ -191,6 +191,7 @@ OptionsMenu::OptionsMenu(MenuBackground& menuBackground) :
 
 		setupOptionEntry(option::CLASSIC_TRANSPARENCY,		SharedDatabase::Setting::SETTING_CLASSIC_TRANSPARENCY);
 		setupOptionEntry(option::GAME_BRANDING,				SharedDatabase::Setting::SETTING_GAME_BRANDING);
+		setupOptionEntry(option::HYPER_FLASH,				SharedDatabase::Setting::SETTING_HYPER_FLASH);
 		setupOptionEntry(option::NEW_SOUND_CUES,			SharedDatabase::Setting::SETTING_NEW_SOUND_CUES);
 		setupOptionEntry(option::INSTA_SHIELD_STYLE,		SharedDatabase::Setting::SETTING_INSTA_SHIELD_STYLE);
 		setupOptionEntry(option::TITLE_SCREEN_MENU_OPTIONS,	SharedDatabase::Setting::SETTING_TITLE_SCREEN_MENU_OPTIONS);
