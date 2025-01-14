@@ -84,10 +84,6 @@ function bool Standalone.drawCharacterSprite(u8 character, u8 variant, s16 px, s
 	// Check only needed for Tails' tails
 	if (variant == 2)
 	{
-		// No smooth rotation in Slot Machine
-		if (global.zone == 0x15)
-			return false
-
 		characterAddress = 0xffff0000 + u16[A0 + 0x30]
 
 		// Do not render when blinking after hit
@@ -332,6 +328,27 @@ function bool Standalone.drawCharacterSprite(u8 character, u8 variant, s16 px, s
 		// Correction for inverse gravity
 		angle = 128 - angle
 		flags ^= SPRITE_FLAG_FLIP_X
+	}
+
+	if (variant == 2 && global.zone == 0x15) // allow custom Tail sprites in Slot Machine as Tails.
+	{
+		if (Game.getSetting(SETTING_SMOOTH_ROTATION))
+		{
+			angle = lookupAngleByVector(s16[0xffffb000 + 0x18], s16[0xffffb000 + 0x1a]) + slotmachine.rotation.u8
+			if (animationSprite >= 0x05 && animationSprite <= 0x14)
+			{
+				animationSprite = 0x05 + (animationSprite - 0x05) % 4
+				
+				if (char.flags & char.flag.FACING_LEFT)
+				{
+					flags |= SPRITE_FLAG_FLIP_X
+					angle += 0x80
+				}
+			}
+		}
+		key = stringformat(stringformat("%s_tails_0x%02x", getCharacterSpriteKey(CHARACTER_TAILS)), animationSprite)
+		if (!Renderer.hasCustomSprite(key))
+			key = Renderer.setupCustomCharacterSprite(0x336620, 0x344d74, 0x344bb8, animationSprite, 0x00)
 	}
 
 	if (ROMDataAnalyser.isEnabled())

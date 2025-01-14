@@ -42,6 +42,13 @@ public:
 
 	const AudioCollection::AudioDefinition* getSoundTestAudioDefinition(uint32 index) const;
 
+	static void OptionsMenu::setOptionsMusic(std::string_view sfxId);
+
+	struct musicId
+	{
+		std::string mOptionsMusic;
+	};
+
 private:
 	enum class State
 	{

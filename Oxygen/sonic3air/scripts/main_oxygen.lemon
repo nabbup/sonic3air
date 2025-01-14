@@ -185,3 +185,18 @@ function void Game.setDiscordSmallImage(string imageName)
 {
 	// Feature not supported in Oxygen project
 }
+
+function void Game.setMainMenuMusic(u64 sfxId)
+{
+	// Feature not supported in Oxygen project
+}
+
+function void Game.setOptionsMusic(u64 sfxId)
+{
+	// Feature not supported in Oxygen project
+}
+
+function void Game.setModMenuMusic(u64 sfxId)
+{
+	// Feature not supported in Oxygen project
+}

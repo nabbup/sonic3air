@@ -35,6 +35,10 @@
 #include <lemon/program/FunctionWrapper.h>
 #include <lemon/program/Module.h>
 
+#include "menu/MainMenu.h"
+#include "menu/options/OptionsMenu.h"
+#include "menu/mods/ModsMenu.h"
+
 
 namespace
 {
@@ -73,6 +77,24 @@ namespace
 	void setUnderwaterAudioEffect(uint8 value)
 	{
 		AudioOut::instance().enableUnderwaterEffect((float)value / 255.0f);
+	}
+
+	void setMainMenuMusic(lemon::StringRef sfxId)
+	{
+		if (sfxId.isValid())
+			MainMenu::setMainMenuMusic(sfxId.getString());
+	}
+
+	void setOptionsMusic(lemon::StringRef sfxId)
+	{
+		if (sfxId.isValid())
+			OptionsMenu::setOptionsMusic(sfxId.getString());
+	}
+
+	void setModMenuMusic(lemon::StringRef sfxId)
+	{
+		if (sfxId.isValid())
+			ModsMenu::setModMenuMusic(sfxId.getString());
 	}
 }
 
@@ -250,6 +272,15 @@ void Game::registerScriptBindings(lemon::Module& module)
 	{
 		module.addNativeFunction("Game.setUnderwaterAudioEffect", lemon::wrap(&setUnderwaterAudioEffect), defaultFlags)
 			.setParameterInfo(0, "value");
+
+		module.addNativeFunction("Game.setMainMenuMusic", lemon::wrap(&setMainMenuMusic), defaultFlags)
+			.setParameterInfo(0, "sfxId");
+
+		module.addNativeFunction("Game.setOptionsMusic", lemon::wrap(&setOptionsMusic), defaultFlags)
+			.setParameterInfo(0, "sfxId");
+
+		module.addNativeFunction("Game.setModMenuMusic", lemon::wrap(&setModMenuMusic), defaultFlags)
+			.setParameterInfo(0, "sfxId");
 	}
 
 	ScriptImplementations::registerScriptBindings(module);

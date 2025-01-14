@@ -39,7 +39,9 @@ namespace mainmenu
 		MODS		= 0x12,
 		EXIT		= 0xff
 	};
+	MainMenu::musicId mainMenu;
 }
+using namespace mainmenu;
 
 
 MainMenu::MainMenu(MenuBackground& menuBackground) :
@@ -101,8 +103,12 @@ void MainMenu::onFadeIn()
 
 	AudioOut::instance().stopSoundContext(AudioOut::CONTEXT_INGAME + AudioOut::CONTEXT_MUSIC);
 
-	// Play "Data Select" music inside this menu
-	AudioOut::instance().setMenuMusic(0x2f);
+	uint64 keyString = 0x2F;
+	if (!mainMenu.mMainMenuMusic.empty())
+	{
+		keyString = rmx::getMurmur2_64(mainMenu.mMainMenuMusic);
+	}
+	AudioOut::instance().setMenuMusic(keyString);
 
 	for (size_t i = 0; i < mMenuEntries.size(); ++i)
 	{
@@ -132,6 +138,16 @@ void MainMenu::keyboard(const rmx::KeyboardEvent& ev)
 
 void MainMenu::update(float timeElapsed)
 {
+	if (mState == State::APPEAR && timeElapsed > 0.0f)
+	{
+		uint64 keyString = 0x2F;
+		if (!mainMenu.mMainMenuMusic.empty())
+		{
+			keyString = rmx::getMurmur2_64(mainMenu.mMainMenuMusic);
+		}
+		AudioOut::instance().setMenuMusic(keyString);
+	}
+
 	GameMenuBase::update(timeElapsed);
 
 	// Don't react to input during transitions
@@ -391,4 +407,9 @@ void MainMenu::exitGame()
 	GameApp::instance().getGameView().startFadingOut(0.25f);
 	mMenuBackground->fadeToExit();
 	mState = State::FADE_TO_EXIT;
+}
+
+void MainMenu::setMainMenuMusic(std::string_view sfxId)
+{
+	mainMenu.mMainMenuMusic = sfxId;
 }

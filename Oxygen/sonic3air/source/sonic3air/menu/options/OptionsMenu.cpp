@@ -29,7 +29,7 @@
 #include "oxygen/simulation/Simulation.h"
 
 
-namespace
+namespace optionsmenu
 {
 	struct ConditionalOption
 	{
@@ -50,6 +50,8 @@ namespace
 			return true;
 		}
 	};
+
+	OptionsMenu::musicId optionsMenu;
 
 	// Hide certain options depending on:
 	//  - whether the options menu is opened from the pause menu (second parameter)
@@ -89,6 +91,7 @@ namespace
 		ConditionalOption(option::GAME_SPEED,				 false, SharedDatabase::Secret::SECRET_GAME_SPEED)
 	};
 }
+using namespace optionsmenu;
 
 
 OptionsMenu::OptionsMenu(MenuBackground& menuBackground) :
@@ -311,7 +314,13 @@ void OptionsMenu::onFadeIn()
 		optionEntry.loadValue();
 	}
 
-	AudioOut::instance().setMenuMusic(0x2f);
+	uint64 keyString = 0x2F;
+	if (!optionsMenu.mOptionsMusic.empty())
+	{
+		keyString = rmx::getMurmur2_64(optionsMenu.mOptionsMusic);
+	}
+	AudioOut::instance().setMenuMusic(keyString);
+
 	mPlayingSoundTest = nullptr;
 }
 
@@ -1471,4 +1480,9 @@ void OptionsMenu::goBack()
 
 	GameApp::instance().onExitOptions();
 	mState = mEnteredFromIngame ? State::FADE_TO_GAME : State::FADE_TO_MENU;
+}
+
+void OptionsMenu::setOptionsMusic(std::string_view sfxId)
+{
+	optionsMenu.mOptionsMusic = sfxId;
 }

@@ -30,6 +30,13 @@ public:
 	virtual void update(float timeElapsed) override;
 	virtual void render() override;
 
+	static void MainMenu::setMainMenuMusic(std::string_view sfxId);
+
+	struct musicId
+	{
+		std::string mMainMenuMusic;
+	};
+
 private:
 	enum class State
 	{
