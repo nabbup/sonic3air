@@ -123,8 +123,8 @@ void TimeAttackMenu::onFadeIn()
 
 	AudioOut::instance().stopSoundContext(AudioOut::CONTEXT_INGAME + AudioOut::CONTEXT_MUSIC);
 
-	// Play "Data Select" music inside this menu
-	AudioOut::instance().setMenuMusic(0x2f);
+	//Let the main menu theme continue playing.
+	//AudioOut::instance().setMenuMusic(0x2f);
 }
 
 bool TimeAttackMenu::canBeRemoved()

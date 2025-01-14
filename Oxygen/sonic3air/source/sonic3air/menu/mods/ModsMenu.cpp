@@ -27,7 +27,7 @@
 #include "oxygen/application/video/VideoOut.h"
 
 
-namespace
+namespace modsmenu
 {
 	static constexpr int BACK = 0xffff;
 
@@ -41,7 +41,10 @@ namespace
 				value = std::max(value - maxStep, target);
 		}
 	}
+
+	ModsMenu::musicId modsMenu;
 }
+using namespace modsmenu;
 
 
 ModsMenu::ModsMenu(MenuBackground& menuBackground) :
@@ -84,7 +87,12 @@ void ModsMenu::onFadeIn()
 	mMenuBackground->showPreview(false);
 	mMenuBackground->startTransition(MenuBackground::Target::ALTER);
 
-	AudioOut::instance().setMenuMusic(0x2f);
+	uint64 keyString = 0x2F;
+	if (!modsMenu.mModMenuMusic.empty())
+	{
+		keyString = rmx::getMurmur2_64(modsMenu.mModMenuMusic);
+	}
+	AudioOut::instance().setMenuMusic(keyString);
 
 	refreshControlsDisplay();
 }
@@ -1010,4 +1018,9 @@ GameMenuEntry* ModsMenu::getSelectedGameMenuEntry()
 		}
 	}
 	return nullptr;
+}
+
+void ModsMenu::setModMenuMusic(std::string_view sfxId)
+{
+	modsMenu.mModMenuMusic = sfxId;
 }

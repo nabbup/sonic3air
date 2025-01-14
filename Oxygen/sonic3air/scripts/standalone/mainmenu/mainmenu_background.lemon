@@ -93,6 +93,10 @@ function void MainMenuBG.Run()
 
 	while (true)
 	{
+		Standalone.setMainMenuAudio()
+		Standalone.setOptionsMenuAudio()
+		Standalone.setModsMenuAudio()
+		
 		MainMenuBG.drawMenuBackground()
 		MainMenuBG.Update(cameraForegroundX, cameraBackgroundX)
 

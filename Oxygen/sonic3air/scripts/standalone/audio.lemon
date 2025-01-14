@@ -40,6 +40,26 @@ function u8 Standalone.getModdedSoundRegType(u64 soundKey, u8 sfxId, u8 soundReg
 	return soundRegType
 }
 
+// This function is here only for script mods that want to change the main menu track
+function u64 Standalone.getModdedMainMenuSoundKey(u64 soundKey)
+{
+	// Default implementation: No change
+	return soundKey
+}
+
+// This function is here only for script mods that want to change the options menu track
+function u64 Standalone.getModdedOptionsMenuSoundKey(u64 soundKey)
+{
+	// Default implementation: No change
+	return soundKey
+}
+
+// This function is here only for script mods that want to change the mods menu track
+function u64 Standalone.getModdedModsMenuSoundKey(u64 soundKey)
+{
+	// Default implementation: No change
+	return soundKey
+}
 
 function void Standalone.playRumbleEffectForAudio(u8 sfxId)
 {
@@ -492,6 +512,49 @@ function void Standalone.setFastMusicFlagWithSpeedup(u8 flag, float relativeSpee
 		fastMusicFlags |= flag
 		Audio.enableAudioModifier(0, 0, "_fast", relativeSpeed)
 	}
+}
+
+function void Standalone.setMainMenuAudio()
+{
+	string soundKey
+	soundKey = ""
+	
+	// Check if a script mod wants to change the sound key
+	u64 moddedSoundKey = Standalone.getModdedMainMenuSoundKey("2F")
+	if (stringformat("%s",moddedSoundKey) != "2F")
+	{
+		soundKey = stringformat("%s",moddedSoundKey)
+	}
+	
+	Game.setMainMenuMusic(soundKey)
+}
+
+function void Standalone.setOptionsMenuAudio()
+{
+	string soundKey
+	soundKey = ""
+	
+	// Check if a script mod wants to change the sound key
+	u64 moddedSoundKey = Standalone.getModdedOptionsMenuSoundKey("2F")
+	if (stringformat("%s",moddedSoundKey) != "2F")
+	{
+		soundKey = stringformat("%s",moddedSoundKey)
+	}
+	Game.setOptionsMusic(soundKey)
+}
+
+function void Standalone.setModsMenuAudio()
+{
+	string soundKey
+	soundKey = ""
+	
+	// Check if a script mod wants to change the sound key
+	u64 moddedSoundKey = Standalone.getModdedModsMenuSoundKey("2F")
+	if (stringformat("%s",moddedSoundKey) != "2F")
+	{
+		soundKey = stringformat("%s",moddedSoundKey)
+	}
+	Game.setModMenuMusic(soundKey)
 }
 
 #endif
