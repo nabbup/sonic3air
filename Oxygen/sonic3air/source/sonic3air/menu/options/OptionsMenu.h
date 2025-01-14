@@ -42,7 +42,7 @@ public:
 
 	const AudioCollection::AudioDefinition* getSoundTestAudioDefinition(uint32 index) const;
 
-	static void OptionsMenu::setOptionsMusic(std::string_view sfxId);
+	static void setOptionsMusic(std::string_view sfxId);
 
 	struct musicId
 	{

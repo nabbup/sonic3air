@@ -80,7 +80,8 @@ function void HyperSonicStars.CreateSparks()
 		Effects.CreateSparks()
 
 		// Create a short flash
-		global.whiteflash_timeout = 4
+		if (Game.getSetting(SETTING_HYPER_FLASH))
+			global.whiteflash_timeout = 4
 	}
 	fn0193ec()
 }
