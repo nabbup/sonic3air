@@ -35,7 +35,7 @@ public:
 	virtual void update(float timeElapsed) override;
 	virtual void render() override;
 
-	static void ModsMenu::setModMenuMusic(std::string_view sfxId);
+	static void setModMenuMusic(std::string_view sfxId);
 
 	struct musicId
 	{
