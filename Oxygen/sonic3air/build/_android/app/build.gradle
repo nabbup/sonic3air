@@ -34,6 +34,7 @@ android {
         release {
             debuggable false     // Set to true to allow for "Attach debugger" even for signed APKs
             minifyEnabled false
+            signingConfig signingConfigs.debug
         }
     }
     namespace 'org.eukaryot.sonic3air'

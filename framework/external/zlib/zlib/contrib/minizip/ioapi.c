@@ -9,12 +9,12 @@
          For more info read MiniZip_info.txt
 
 */
-
+#include <stdio.h>
 #if defined(_WIN32) && (!(defined(_CRT_SECURE_NO_WARNINGS)))
         #define _CRT_SECURE_NO_WARNINGS
 #endif
 
-#if defined(__APPLE__) || defined(IOAPI_NO_64) || defined(__HAIKU__) || defined(MINIZIP_FOPEN_NO_64)
+#if defined(__APPLE__) || defined(IOAPI_NO_64) || defined(__HAIKU__) || defined(MINIZIP_FOPEN_NO_64) || defined(__linux__) || defined(ANDROID) || defined(__EMSCRIPTEN__)
 // In darwin and perhaps other BSD variants off_t is a 64 bit value, hence no need for specific 64 bit functions
 #define FOPEN_FUNC(filename, mode) fopen(filename, mode)
 #define FTELLO_FUNC(stream) ftello(stream)
