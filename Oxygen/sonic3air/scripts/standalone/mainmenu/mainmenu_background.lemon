@@ -145,7 +145,7 @@ function void MainMenuBG.drawMenuBackground()
 		MainMenuBG.separatorPosition += 1
 	if (MainMenuBG.separatorPosition) > 16
 		MainMenuBG.separatorPosition = 0
-	if (MainMenuBG.scrollOffset < 66)
+	if (MainMenuBG.scrollOffset < 64)
 	{
 		for (u16 i2; i2 < getScreenHeight(); i2 += 6)
 		{
