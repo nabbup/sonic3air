@@ -1987,6 +1987,9 @@ function void fn056a34()
 #if STANDALONE
 function void SOZ.drawDarkSandPit(u16 px, u16 py, u16 width)
 {
+	if (Game.getSetting(SETTING_CLASSIC_TRANSPARENCY) == 2)
+		return
+	
 	for (u16 i = 0; i < width; i += 0x80)
 	{
 		Renderer.drawCustomSprite("obj_dark_sand_pit_overlay", px + i - camera.foreground.x.u16, py + 0x38 - camera.foreground.y.u16, 0, SPRITE_FLAG_PRIO, 0x8000)

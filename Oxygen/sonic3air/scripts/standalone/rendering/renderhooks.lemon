@@ -892,7 +892,7 @@ function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
 function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16 renderQueue)
 {
 	// Explosion of bosses
-	if (objA0.mapping_offset == 0x083ffc)
+	if (objA0.mapping_offset == 0x083ffc && Game.getSetting(SETTING_CLASSIC_TRANSPARENCY) < 2)
 	{
 		if (objA0.animation.frame == 0)		// Actually the last frame before removal
 		{
@@ -938,7 +938,7 @@ function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16
 	}
 
 	// FBZ electricity effects
-	if (objA0.update_address == 0x03b1fc || objA0.update_address == 0x03b238)
+	if ((objA0.update_address == 0x03b1fc || objA0.update_address == 0x03b238) && Game.getSetting(SETTING_CLASSIC_TRANSPARENCY) < 2)
 	{
 		u8 alpha = u8[0xfffff7c1]
 		if (Game.getSetting(SETTING_GFX_ANTIFLICKER) == 2)
@@ -1046,13 +1046,33 @@ function bool Standalone.onDrawVdpSpriteCompound(s16 px, s16 py, u8 size, u16 in
 	// HCZ water waves effect
 	if (objA0.update_address == 0x01f244)
 	{
+		u8 alpha = 160
+		if (Game.getSetting(SETTING_CLASSIC_TRANSPARENCY) == 2)
+		{
+			if (global.framecounter % 2 == 0)
+				alpha = 255
+			else
+				alpha = 0
+		}
+		
 		if (A0 == 0xffffcf82 && D4.u16 == 0)		// Only for one sprite of the main object
 		{
 			Renderer.clearSpriteTag()
 			px = (camera.position.x.u16 & 0xffe0) - camera.position.x.u16 - 0x10	// Extend a bit more to the left just for sprite interpolation
-			for (; px < s16(getScreenWidth()); px += 0x20)
+			if (Game.getSetting(SETTING_CLASSIC_TRANSPARENCY) == 2)
 			{
-				Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 160)
+				for (; px < s16(getScreenWidth()); px += 0x40)
+				{
+					Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, alpha)
+					Renderer.drawVdpSpriteWithAlpha(px + 0x20, py, size, index, renderQueue, 255 - alpha)
+				}
+			}
+			else
+			{
+				for (; px < s16(getScreenWidth()); px += 0x20)
+				{
+					Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, alpha)
+				}
 			}
 		}
 		return true
@@ -1108,14 +1128,18 @@ function bool Standalone.onDrawVdpSpriteCompound(s16 px, s16 py, u8 size, u16 in
 	// SSZ clouds effect
 	if (objA0.update_address == 0x057bf6)
 	{
-		Renderer.drawVdpSpriteWithAlpha(px,   py, size, index, 0xd000, 140)
-		Renderer.drawVdpSpriteWithAlpha(px+1, py, size, index, 0xd000, 144)
+		u8 alpha = Game.getSetting(SETTING_CLASSIC_TRANSPARENCY) == 2 ? 255 : 140
+		
+		Renderer.drawVdpSpriteWithAlpha(px,   py, size, index, 0xd000, alpha)
+		if (Game.getSetting(SETTING_CLASSIC_TRANSPARENCY) < 2)
+			Renderer.drawVdpSpriteWithAlpha(px+1, py, size, index, 0xd000, 144)
 
 		if (getScreenWidth() > 400)
 		{
 			// Draw an additional copy of the cloud one loop further to the right
-			Renderer.drawVdpSpriteWithAlpha(px+512, py, size, index, 0xd000, 140)
-			Renderer.drawVdpSpriteWithAlpha(px+513, py, size, index, 0xd000, 144)
+			Renderer.drawVdpSpriteWithAlpha(px+512, py, size, index, 0xd000, alpha)
+			if (Game.getSetting(SETTING_CLASSIC_TRANSPARENCY) < 2)
+				Renderer.drawVdpSpriteWithAlpha(px+513, py, size, index, 0xd000, 144)
 		}
 		return true
 	}

@@ -307,6 +307,11 @@ function void Character.UpdateNormalState.Sonic()
 		else
 			sonic.fastrunanim.timer = 0
 	}
+	
+	if (sonic.instashield_countdown > 0)
+	{
+		--sonic.instashield_countdown
+	}
 #endif
 
 	if (level.vertical_wrap == 0xff00)
@@ -3077,6 +3082,8 @@ function void SonicPressedJumpInMidAir()
 			u8[0xffffcce8 + 0x20] = 1
 			char.double_jump_state = 1
 			playSound(SFX_INSTASHIELD)
+			if (Game.getSetting(SETTING_INSTA_SHIELD_STYLE) == 2)
+				sonic.instashield_countdown = 12
 		}
 	}
 }
@@ -5013,8 +5020,11 @@ function void Character.CheckCollisionsWithDynamicObjects()
 		u8 oldBonusEffect = char.bonus_effect
 		char.bonus_effect |= char.bonus.INVINCIBLE
 	#if STANDALONE
-		// Also make insta-shield bounce off projectiles
-		char.bonus_effect |= char.bonus.ANY_SHIELD
+		if (Game.getSetting(SETTING_INSTA_SHIELD_STYLE))
+		{
+			// Also make insta-shield bounce off projectiles
+			char.bonus_effect |= char.bonus.ANY_SHIELD
+		}
 	#endif
 
 		// Larger hitbox

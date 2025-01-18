@@ -398,6 +398,7 @@ function void Extras.Menu(u8 fadeInMethod)
 
 	if (result == RESULT_START_GAME)
 	{
+		playSound(0xAF)
 		globalComponentAddedColorR = 1
 		System.callFunctionByName(stringformat("%s", u64[0x870020 + ((selectedEntry - 1) * 48)]))
 	}
