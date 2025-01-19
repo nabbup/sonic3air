@@ -166,6 +166,7 @@ define char.animation.timer		=  u8[A0 + 0x24]			// Timer between frames (countin
 
 // Character specific
 define sonic.dropdash_counter	=  u8[A0 + 0x25]			// Used for Drop Dash; 0x00 = off, 0x01..0x14 = charging, 0x15 = fully charged
+define sonic.instashield_countdown=u8[A0 + 0x28]			// Timeout until insta-shield stops protecting from spikes
 define tails.flight_countdown	=  u8[A0 + 0x25]			// Timeout until Tails gets tired
 define knuckles.glide_direction	=  u8[A0 + 0x25]			// See "UpdateKnucklesGlide()"
 

@@ -215,10 +215,6 @@ void MenuBackground::render()
 		{
 			if (mAnimatedBackgroundActive)
 			{
-				if (Game::instance().isInMainMenuMode())
-				{
-					Application::instance().getSimulation().setRunning(false);
-				}
 				mAnimatedBackgroundActive = false;
 			}
 		}
