@@ -36,6 +36,7 @@
 #include <lemon/program/Module.h>
 
 #include "menu/MainMenu.h"
+#include "menu/TimeAttackMenu.h"
 #include "menu/options/OptionsMenu.h"
 #include "menu/mods/ModsMenu.h"
 
@@ -82,7 +83,10 @@ namespace
 	void setMainMenuMusic(lemon::StringRef sfxId)
 	{
 		if (sfxId.isValid())
+		{
 			MainMenu::setMainMenuMusic(sfxId.getString());
+			TimeAttackMenu::setTimeAttackMenuMusic(sfxId.getString());
+		}
 	}
 
 	void setOptionsMusic(lemon::StringRef sfxId)

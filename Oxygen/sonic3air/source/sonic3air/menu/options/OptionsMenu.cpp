@@ -31,6 +31,11 @@
 
 namespace optionsmenu
 {
+	bool isHexDigit(char ch)
+	{
+		return (ch >= '0' && ch <= '9') || (ch >= 'a' && ch <= 'f') || (ch >= 'A' && ch <= 'F');
+	}
+
 	struct ConditionalOption
 	{
 		int mOptionId = 0;
@@ -317,7 +322,14 @@ void OptionsMenu::onFadeIn()
 	uint64 keyString = 0x2F;
 	if (!optionsMenu.mOptionsMusic.empty())
 	{
-		keyString = rmx::getMurmur2_64(optionsMenu.mOptionsMusic);
+		if (optionsMenu.mOptionsMusic.length() == 2 && isHexDigit(optionsMenu.mOptionsMusic[0]) && isHexDigit(optionsMenu.mOptionsMusic[1]))
+		{
+			keyString = rmx::parseInteger(String("0x") + optionsMenu.mOptionsMusic);
+		}
+		else
+		{
+			keyString = rmx::getMurmur2_64(optionsMenu.mOptionsMusic);
+		}
 	}
 	AudioOut::instance().setMenuMusic(keyString);
 

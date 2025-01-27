@@ -29,6 +29,11 @@
 
 namespace mainmenu
 {
+	bool isHexDigit(char ch)
+	{
+		return (ch >= '0' && ch <= '9') || (ch >= 'a' && ch <= 'f') || (ch >= 'A' && ch <= 'F');
+	}
+
 	enum Entry
 	{
 		NORMAL_GAME	= 0x01,
@@ -106,7 +111,14 @@ void MainMenu::onFadeIn()
 	uint64 keyString = 0x2F;
 	if (!mainMenu.mMainMenuMusic.empty())
 	{
-		keyString = rmx::getMurmur2_64(mainMenu.mMainMenuMusic);
+		if (mainMenu.mMainMenuMusic.length() == 2 && isHexDigit(mainMenu.mMainMenuMusic[0]) && isHexDigit(mainMenu.mMainMenuMusic[1]))
+		{
+			keyString = rmx::parseInteger(String("0x") + mainMenu.mMainMenuMusic);
+		}
+		else
+		{
+			keyString = rmx::getMurmur2_64(mainMenu.mMainMenuMusic);
+		}
 	}
 	AudioOut::instance().setMenuMusic(keyString);
 
@@ -143,7 +155,14 @@ void MainMenu::update(float timeElapsed)
 		uint64 keyString = 0x2F;
 		if (!mainMenu.mMainMenuMusic.empty())
 		{
-			keyString = rmx::getMurmur2_64(mainMenu.mMainMenuMusic);
+			if (mainMenu.mMainMenuMusic.length() == 2 && isHexDigit(mainMenu.mMainMenuMusic[0]) && isHexDigit(mainMenu.mMainMenuMusic[1]))
+			{
+				keyString = rmx::parseInteger(String("0x") + mainMenu.mMainMenuMusic);
+			}
+			else
+			{
+				keyString = rmx::getMurmur2_64(mainMenu.mMainMenuMusic);
+			}
 		}
 		AudioOut::instance().setMenuMusic(keyString);
 	}

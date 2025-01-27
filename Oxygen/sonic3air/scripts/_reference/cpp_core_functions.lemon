@@ -383,6 +383,9 @@ declare function void Game.setDiscordDetailsPlus(string text)
 declare function void Game.setDiscordLargeImage(string imageName)
 declare function void Game.setDiscordSmallImage(string imageName)
 declare function void Game.setUnderwaterAudioEffect(u8 value)
+declare function void Game.setMainMenuMusic(string sfxId)
+declare function void Game.setOptionsMusic(string sfxId)
+declare function void Game.setModMenuMusic(string sfxId)
 
 declare function void Kosinski.Decompress()
 

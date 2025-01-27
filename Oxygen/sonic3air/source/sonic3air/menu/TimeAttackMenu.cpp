@@ -25,8 +25,13 @@
 #include "oxygen/application/video/VideoOut.h"
 
 
-namespace
+namespace timeattackmenu
 {
+	bool isHexDigit(char ch)
+	{
+		return (ch >= '0' && ch <= '9') || (ch >= 'a' && ch <= 'f') || (ch >= 'A' && ch <= 'F');
+	}
+
 	enum class CharacterOption
 	{
 		// Do not make changes here
@@ -35,7 +40,9 @@ namespace
 		TAILS			 = 0x20,
 		KNUCKLES		 = 0x30
 	};
+	TimeAttackMenu::musicId timeAttackMenu;
 }
+using namespace timeattackmenu;
 
 
 TimeAttackMenu::TimeAttackMenu(MenuBackground& menuBackground) :
@@ -125,6 +132,19 @@ void TimeAttackMenu::onFadeIn()
 
 	//Let the main menu theme continue playing.
 	//AudioOut::instance().setMenuMusic(0x2f);
+	uint64 keyString = 0x2F;
+	if (!timeAttackMenu.mTimeAttackMenuMusic.empty())
+	{
+		if (timeAttackMenu.mTimeAttackMenuMusic.length() == 2 && isHexDigit(timeAttackMenu.mTimeAttackMenuMusic[0]) && isHexDigit(timeAttackMenu.mTimeAttackMenuMusic[1]))
+		{
+			keyString = rmx::parseInteger(String("0x") + timeAttackMenu.mTimeAttackMenuMusic);
+		}
+		else
+		{
+			keyString = rmx::getMurmur2_64(timeAttackMenu.mTimeAttackMenuMusic);
+		}
+	}
+	AudioOut::instance().setMenuMusic(keyString);
 }
 
 bool TimeAttackMenu::canBeRemoved()
@@ -345,4 +365,9 @@ void TimeAttackMenu::backToMainMenu()
 	playMenuSound(0xad);
 	mMenuBackground->openMainMenu();
 	mState = State::FADE_TO_MENU;
+}
+
+void TimeAttackMenu::setTimeAttackMenuMusic(std::string_view sfxId)
+{
+	timeAttackMenu.mTimeAttackMenuMusic = sfxId;
 }
