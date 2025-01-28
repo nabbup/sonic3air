@@ -33,6 +33,7 @@
 
 		DiscordIntegration::Info currentInfo;
 		DiscordIntegration::Info newInfo;
+		DiscordIntegration ModdedApplicationID;
 	}
 	using namespace discordintegration;
 
@@ -42,6 +43,7 @@
 void DiscordIntegration::startup()
 {
 #ifdef SUPPORT_DISCORD
+	ModdedApplicationID.mModdedApplicationId = "";
 	const discord::Result result = discord::Core::Create(648262663750549506, DiscordCreateFlags_NoRequireDiscord, &core);
 	if (result == discord::Result::Ok)
 	{
@@ -56,7 +58,19 @@ void DiscordIntegration::shutdown()
 #ifdef SUPPORT_DISCORD
 	if (active)
 	{
+		ModdedApplicationID.mModdedApplicationId = "";
 		SAFE_DELETE(core);
+	}
+#endif
+}
+
+void DiscordIntegration::resetModdedApplicationId()
+{
+#ifdef SUPPORT_DISCORD
+	if (!ModdedApplicationID.mModdedApplicationId.empty())
+	{
+		DiscordIntegration::shutdown();
+		DiscordIntegration::startup();
 	}
 #endif
 }
@@ -398,5 +412,23 @@ void DiscordIntegration::setModdedSmallImage(std::string_view imageName)
 {
 #ifdef SUPPORT_DISCORD
 	newInfo.mModdedSmallImage = imageName;
+#endif
+}
+
+void DiscordIntegration::setModdedApplicationID(std::string_view applicationId)
+{
+#ifdef SUPPORT_DISCORD
+	if (ModdedApplicationID.mModdedApplicationId != applicationId)
+	{
+		DiscordIntegration::shutdown();
+		ModdedApplicationID.mModdedApplicationId = applicationId;
+		discord::ClientId Id = rmx::parseInteger(applicationId);
+		const discord::Result result = discord::Core::Create(Id, DiscordCreateFlags_NoRequireDiscord, &core);
+		if (result == discord::Result::Ok)
+		{
+			active = true;
+			core->ActivityManager().UpdateActivity(activity, [](discord::Result result) {});
+		}
+	}
 #endif
 }

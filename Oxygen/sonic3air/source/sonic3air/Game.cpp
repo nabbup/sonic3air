@@ -75,6 +75,12 @@ namespace
 			DiscordIntegration::setModdedSmallImage(imageName.getString());
 	}
 
+	void setDiscordApplicationID(lemon::StringRef applicationId)
+	{
+		if (applicationId.isValid())
+			DiscordIntegration::setModdedApplicationID(applicationId.getString());
+	}
+
 	void setUnderwaterAudioEffect(uint8 value)
 	{
 		AudioOut::instance().enableUnderwaterEffect((float)value / 255.0f);
@@ -270,6 +276,9 @@ void Game::registerScriptBindings(lemon::Module& module)
 
 		module.addNativeFunction("Game.setDiscordSmallImage", lemon::wrap(&setDiscordSmallImage), defaultFlags)
 			.setParameterInfo(0, "imageName");
+
+		module.addNativeFunction("Game.setDiscordApplicationID", lemon::wrap(&setDiscordApplicationID), defaultFlags)
+			.setParameterInfo(0, "applicationId");
 	}
 
 	// Audio

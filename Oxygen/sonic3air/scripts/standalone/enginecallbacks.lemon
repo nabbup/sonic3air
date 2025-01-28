@@ -91,6 +91,16 @@ function void PreFrameUpdate()
 		// This has to get set explicitly once in each frame if used
 		enableCustomPlaneReset = true
 	}
+	
+	if (Game.getSetting(SETTING_DISCORD_RPC_DETAILS) && global.game_mode == 0x0c)
+	{
+		Game.setDiscordDetailsPlus(stringformat("Score: %d | Time: %d:%02d | Rings: %d", player.score * 10, timer.minutes, timer.seconds, ring_counter))
+		Game.setDiscordState(stringformat("In %s | Char. %s", getZoneActInitials2(global.zone_act.apparent), getCharacterStateName()))
+	}
+	else
+	{
+		Game.setDiscordDetailsPlus("")
+	}
 }
 
 
@@ -151,17 +161,6 @@ function void PostFrameUpdate()
 	// Debug output
 	Debugging.debugDraw()
 	setWorldSpaceOffset(s32(s16(camera.position.x.u16)), s32(s16(camera.position.y.u16)))
-	
-	if (Game.getSetting(SETTING_DISCORD_RPC_DETAILS) && global.game_mode == 0x0c)
-	{
-		Game.setDiscordDetailsPlus(stringformat("Score: %d | Time: %d:%02d | Rings: %d", player.score * 10, timer.minutes, timer.seconds, ring_counter))
-		Game.setDiscordState(stringformat("In %s | Char. %s", getZoneActInitials2(global.zone_act.apparent), getCharacterStateName()))
-	}
-	else
-	{
-		Game.setDiscordDetailsPlus("")
-		Game.setDiscordState("")
-	}
 	
 	Game.renderUnlockedWindow()
 }

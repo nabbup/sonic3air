@@ -25,6 +25,7 @@
 #include "oxygen/helper/Utils.h"
 
 #include "oxygen/application/video/VideoOut.h"
+#include "sonic3air/helper/DiscordIntegration.h"
 
 
 namespace mainmenu
@@ -101,6 +102,8 @@ void MainMenu::setBaseState(BaseState baseState)
 
 void MainMenu::onFadeIn()
 {
+	DiscordIntegration::resetModdedApplicationId();
+
 	mState = State::APPEAR;
 
 	mMenuBackground->showPreview(false);
