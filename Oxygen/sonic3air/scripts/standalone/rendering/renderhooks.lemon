@@ -502,7 +502,11 @@ function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
 			// AIZ Rhinobot
 			if (objA0.update_address == 0x086e5c)
 			{
+				if (objA0.animation.sprite == 3)
+					objA0.render_flags ^= render_flag.FLIP_X
 				Standalone.renderWithStandardPacking(px, py, 0x087132, 0xff, renderQueue)
+				if (objA0.animation.sprite == 3)
+					objA0.render_flags ^= render_flag.FLIP_X
 				return true
 			}
 
