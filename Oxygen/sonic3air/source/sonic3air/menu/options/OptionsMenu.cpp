@@ -20,6 +20,7 @@
 
 #include "oxygen/application/Application.h"
 #include "oxygen/application/EngineMain.h"
+#include "oxygen/application/gameview/GameView.h"
 #include "oxygen/application/modding/ModManager.h"
 #include "oxygen/application/input/InputManager.h"
 #include "oxygen/application/overlays/TouchControlsOverlay.h"
@@ -306,7 +307,7 @@ void OptionsMenu::onFadeIn()
 {
 	mState = State::APPEAR;
 
-	mMenuBackground->showPreview(false);
+	mMenuBackground->showPreview(false, false);
 	mMenuBackground->startTransition(MenuBackground::Target::LIGHT);
 
 	const ConfigurationImpl& config = ConfigurationImpl::instance();
@@ -1490,8 +1491,18 @@ void OptionsMenu::goBack()
 		Application::instance().getSimulation().triggerFullScriptsReload();
 	}
 
-	GameApp::instance().onExitOptions();
-	mState = mEnteredFromIngame ? State::FADE_TO_GAME : State::FADE_TO_MENU;
+	if (mEnteredFromIngame)
+	{
+		// Only start fading to black - see "GameApp::onFadedOutOptions" for the actual change of state after complete fade-out
+		GameApp::instance().getGameView().startFadingOut(0.1666f);
+		mState = State::FADE_TO_GAME;
+	}
+	else
+	{
+		mMenuBackground->openMainMenu();
+		mState = State::FADE_TO_MENU;
+	}
+
 }
 
 void OptionsMenu::setOptionsMusic(std::string_view sfxId)

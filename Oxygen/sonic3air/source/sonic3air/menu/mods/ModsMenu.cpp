@@ -89,7 +89,7 @@ void ModsMenu::onFadeIn()
 	mState = State::APPEAR;
 	mFadeInDelay = 0.2f;
 
-	mMenuBackground->showPreview(false);
+	mMenuBackground->showPreview(false, false);
 	mMenuBackground->startTransition(MenuBackground::Target::ALTER);
 
 	uint64 keyString = 0x2F;
@@ -595,7 +595,7 @@ void ModsMenu::update(float timeElapsed)
 		else if (mApplyingChangesFrameCounter == 0)
 		{
 			playMenuSound(0xad);
-			GameApp::instance().onExitMods();
+			mMenuBackground->openMainMenu();
 			mState = State::FADE_TO_MENU;
 		}
 	}
@@ -1014,7 +1014,7 @@ void ModsMenu::goBack()
 	else
 	{
 		playMenuSound(0xad);
-		GameApp::instance().onExitMods();
+		mMenuBackground->openMainMenu();
 		mState = State::FADE_TO_MENU;
 	}
 }
