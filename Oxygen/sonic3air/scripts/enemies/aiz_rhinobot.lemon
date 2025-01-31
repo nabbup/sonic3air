@@ -15,6 +15,7 @@
 //# address-hook(0x086e56) end(0x086e56)
 function void Rhinobot.Init()
 {
+	objA0.value26 = objA0.render_flags
 	Object.InitWithUpdateAddress(addressof(Rhinobot.BaseUpdate))
 }
 
@@ -22,6 +23,7 @@ function void Rhinobot.Init()
 //# address-hook(0x086e5c) end(0x086e72)
 function void Rhinobot.BaseUpdate()
 {
+	objA0.render_flags = objA0.value26
 	// Targets:
 	//  - 0x086e7e	-> objA0.base_state = 0x00
 	//  - 0x086ec4	-> objA0.base_state = 0x02
@@ -37,9 +39,14 @@ function void Rhinobot.BaseUpdate()
 	{
 		call address
 	}
-
+	
 	Object.loadSpritePatternsForVDP(0x087132)
 	fn085208()
+	objA0.value26 = objA0.render_flags
+	if (objA0.animation.sprite == 0x03)
+	{
+		objA0.render_flags ^= render_flag.FLIP_X
+	}
 }
 
 
@@ -162,14 +169,6 @@ function void fn08701c()
 		spawnChildObject(addressof(Rhinobot.DustEffect), 0x00, 12, 8)
 		if (_equal())
 			u32[A1 + 0x30] = 0x08713a
-	}
-	else
-	{
-		bool visualFlip = D1.u8 == 0x03 ? !flipped : flipped
-		if (visualFlip)
-			objA0.render_flags |= render_flag.FLIP_X
-		else
-			objA0.render_flags &= ~render_flag.FLIP_X
 	}
 }
 
@@ -296,6 +295,12 @@ function void Rhinobot.DustEffect()
 	else
 	{
 		MoveAndFlipWithParent()
+		if (objA1.animation.sprite == 3) // fixes for Rhinobot being flipped for previously unused sprite
+		{
+			objA1.render_flags ^= render_flag.FLIP_X
+			MoveAndFlipWithParent()
+			objA1.render_flags ^= render_flag.FLIP_X
+		}
 
 		// Targets:
 		//  - 0x086f2c	-> objA0.base_state = 0x00
