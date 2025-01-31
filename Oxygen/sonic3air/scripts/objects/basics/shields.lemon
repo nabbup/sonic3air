@@ -381,6 +381,11 @@ function void BubbleShield.Update()
 	objA0.sprite_attributes = (objA0.sprite_attributes & ~sprite_attribute.PRIORITY) | (u16[A2 + 0x0a] & sprite_attribute.PRIORITY)
 
 	Object.animationUpdate(0x019a7a)
+	if (objA0.animation.sprite <= 10 && Game.getSetting(SETTING_CLASSIC_TRANSPARENCY) < 2)
+	{
+		Object.animationUpdate(0x019a7a)
+		Object.animationUpdate(0x019a7a)
+	}
 
 	Shield.SharedSpriteUpdate()
 	DrawObject()
