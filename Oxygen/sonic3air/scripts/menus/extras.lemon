@@ -256,7 +256,7 @@ function void Extras.Menu(u8 fadeInMethod)
 	Extras.opacitySecrets = 0xff
 	Extras.opacityAchievements = 0xff
 	
-	s8 verticalScrollOffset = 0
+	s16 verticalScrollOffset = 0
 	
 	Extras.extrasEntryList = 0
 	Extras.secretsEntryList = 0
@@ -307,38 +307,72 @@ function void Extras.Menu(u8 fadeInMethod)
 			}
 		}
 		
-		if (control.pad1.pressed & CONTROL_UP && selectedEntry > 0)
+		if (control.pad1.pressed & CONTROL_UP)
 		{
-			if (selectedEntry > 0 && selectedEntry <= entryList && camera.foreground.y.u16 > 0)
+			if (selectedEntry > 0)
 			{
-				if (entryList > 3)
-				{
-					if (selectedTab) == 1
-						verticalScrollOffset = -8
-					else verticalScrollOffset = -7
-				}
-				else if (selectedEntry < entryList)
-					verticalScrollOffset = -4
-			}
-			--selectedEntry
-			playSound(SFX_CLICK)
-		}
-		else if (control.pad1.pressed & CONTROL_DOWN && selectedEntry < u16(1 + entryList))
-		{
-			if (selectedEntry > 1 - (selectedTab == 2))
-			{
-				if ((camera.foreground.y.u16 < (entryList * 20) - 20 && entryList <= 3) || (entryList > 3 && camera.foreground.y.u16 < u16(entryList * 64) - 64 && selectedTab == 1) || (entryList > 3 && camera.foreground.y.u16 < u16(entryList * 56) - 56 && selectedTab != 1))
+				if (selectedEntry > 0 && selectedEntry <= entryList && camera.foreground.y.u16 > 0)
 				{
 					if (entryList > 3)
 					{
 						if (selectedTab) == 1
-							verticalScrollOffset = 8
-						else verticalScrollOffset = 7
+							verticalScrollOffset -= 8
+						else verticalScrollOffset -= 7
 					}
-					else verticalScrollOffset = 4
+					else if (selectedEntry < entryList)
+						verticalScrollOffset -= 4
+				}
+				--selectedEntry
+			}
+			else
+			{
+				for (u8 i = 0; i < entryList-1; i++)
+				{
+					if (entryList > 3)
+					{
+						if (selectedTab) == 1
+							verticalScrollOffset += 8
+						else verticalScrollOffset += 7
+					}
+					else verticalScrollOffset += 4
+				}
+				selectedEntry = u16(entryList+1)
+			}
+			playSound(SFX_CLICK)
+		}
+		else if (control.pad1.pressed & CONTROL_DOWN)
+		{
+			if (selectedEntry < u16(1 + entryList))
+			{
+				if (selectedEntry > 1 - (selectedTab == 2))
+				{
+					if ((camera.foreground.y.u16 < (entryList * 20) - 20 && entryList <= 3) || (entryList > 3 && camera.foreground.y.u16 < u16(entryList * 64) - 64 && selectedTab == 1) || (entryList > 3 && camera.foreground.y.u16 < u16(entryList * 56) - 56 && selectedTab != 1))
+					{
+						if (entryList > 3)
+						{
+							if (selectedTab) == 1
+								verticalScrollOffset += 8
+							else verticalScrollOffset += 7
+						}
+						else verticalScrollOffset += 4
+					}
+				}
+				++selectedEntry
+			}
+			else
+			{
+				selectedEntry = 0
+				for (u8 i = 0; i < entryList-1; i++)
+				{
+					if (entryList > 3)
+					{
+						if (selectedTab) == 1
+							verticalScrollOffset -= 8
+						else verticalScrollOffset -= 7
+					}
+					else verticalScrollOffset -= 4
 				}
 			}
-			++selectedEntry
 			playSound(SFX_CLICK)
 		}
 		
