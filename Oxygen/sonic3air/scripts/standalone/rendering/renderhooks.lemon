@@ -590,10 +590,11 @@ function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
 					objA0.flags2e = objA0.animation.sprite
 				u64 key
 				key = Renderer.setupCustomCharacterSprite(objA0.shield.art_offset, objA0.shield.pattern_offset, objA0.mapping_offset, objA0.value26, 0x00)
-				Renderer.drawSprite(key, px, py, 0x00, objA0.render_flags | (prioFlag ? SPRITE_FLAG_PRIO : 0), objA0.value26 < 0x0f ? 0x9f80 : 0x9e00, 0, 192)
+				Renderer.drawSprite(key, px, py, 0x00, objA0.render_flags | (prioFlag ? SPRITE_FLAG_PRIO : 0), objA0.value26 < 0x0f ? 0x9f80 : 0x9e00, 0, 0xff)
 				if (objA0.value26 >= 0x0f)
 				{
 					key = Renderer.setupCustomCharacterSprite(objA0.shield.art_offset, objA0.shield.pattern_offset, objA0.mapping_offset, objA0.flags2e, 0x00)
+					Renderer.drawSprite(key, px, py, 0x00, objA0.render_flags | (prioFlag ? SPRITE_FLAG_PRIO : 0), 0x9e01, 0, 0xff)
 					Renderer.drawSprite(key, px, py, 0x00, objA0.render_flags | (prioFlag ? SPRITE_FLAG_PRIO : 0), 0x9f80, 0, 192)
 				}
 				return true

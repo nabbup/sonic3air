@@ -401,7 +401,13 @@ function bool Standalone.drawCharacterSprite(u8 character, u8 variant, s16 px, s
 				py0 &= level.height.bitmask
 
 			Renderer.setSpriteTagWithPosition(characterAddress + 0x10 + i, px0, py0)
-			Renderer.drawCustomSprite(key, px0, py0, atex, flags, renderQueue - i, angle, 192 - i * 32)
+			u8 alpha = 192 - i * 32
+			if (Game.getSetting(SETTING_CLASSIC_TRANSPARENCY) == false || ((global.framecounter + i) % 2 == 0 && Game.getSetting(SETTING_CLASSIC_TRANSPARENCY)))
+			{
+				if (Game.getSetting(SETTING_CLASSIC_TRANSPARENCY))
+					alpha = 0xff
+				Renderer.drawCustomSprite(key, px0, py0, atex, flags, renderQueue - i, angle, alpha)
+			}
 		}
 	}
 
