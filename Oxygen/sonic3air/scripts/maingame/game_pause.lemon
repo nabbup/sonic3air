@@ -36,8 +36,7 @@ function void UpdateGamePause()
 			return
 
 		global.game.paused = true
-		bool canRestart = !global.pause_disabled && (global.game_mode == 0x0c && global.stage_type == 0 && u8[0xffffb000 + 0x05] <= base_state.HURT) && !competition_mode.active
-		Game.onGamePause(canRestart)
+		GamePause.Menu()
 
 		global.frame_state = 0x10
 		waitForNextFrame()
@@ -136,6 +135,126 @@ function bool BeginGamePause()
 
 	// Enter game pause
 	return true
+}
+
+function void GamePause.Menu()
+{
+	bool canRestart = !global.pause_disabled && (global.game_mode == 0x0c && global.stage_type == 0 && u8[0xffffb000 + 0x05] <= base_state.HURT) && !competition_mode.active
+
+#if 1
+
+	// Use the C++ game pause menu
+	Game.onGamePause(canRestart)
+
+#else
+
+	// Simple test for a script implementation of game pause
+
+	// Pause game music and sounds
+	Game.pauseGameAudio()
+
+	// Handle skippable cutscene
+	bool wasInSkippableCutscene = Game.isInSkippableCutscene()
+	Game.endSkippableCutscene()
+
+	// TODO: Restart and Options must be made optional
+	constant array<string> ENTRY_TEXTS = { "Continue", "Restart", "Options", "Exit Game" }
+	constant u16 LINE_HEIGHT = 26
+
+	u8 selected = 0
+	float visibility = 0.0f
+	while (true)
+	{
+		// Inner loop will be exited once the player selected an entry in the menu
+		while (true)
+		{
+			// Fade-in
+			if (visibility < 1.0f)
+				visibility = min(visibility + 0.2f, 1.0f)
+
+			// Use lifetime context 1 for everything rendered by the pause menu
+			//  -> This allows for selectively clearing these sprites, texts, etc. in each frame without touching the game's rendered content
+			Renderer.resetLifetimeContext(1)
+			Renderer.setLifetimeContext(1)
+
+			u16 rightAnchor = getScreenWidth() + Math.roundToInt((1.0f - visibility) * 160)
+			u16 py = getScreenHeight() - ENTRY_TEXTS.length() * LINE_HEIGHT
+
+			Renderer.drawSprite("pause_screen_upper", rightAnchor - 210, 0, 0, 0x40, 0xff00)
+			Renderer.drawSprite("pause_screen_lower", rightAnchor - 190, py - 8, 0, 0x40, 0xff00)
+
+			for (u8 k = 0; k < ENTRY_TEXTS.length(); ++k)
+			{
+				// TODO: Add color animation
+				u32 color = (selected == k) ? 0xffff00ff : 0xb0b0b0e0
+				Renderer.drawText(ActSelect.TITLE_FONT, rightAnchor - 16, py + 11, ENTRY_TEXTS[k], color, 6, 0, 0xff01, false)
+				py += LINE_HEIGHT
+			}
+
+			waitForNextFrame()
+
+			if (Input.buttonPressed(0, BUTTON_START) || Input.buttonPressed(0, BUTTON_A) || Input.buttonPressed(0, BUTTON_X))
+				break
+
+			// TODO: Support key repeat
+			// TODO: Add button sounds
+			if (Input.buttonPressed(0, BUTTON_UP))
+			{
+				playSound(0x5b)
+				selected = (selected + ENTRY_TEXTS.length() - 1) % ENTRY_TEXTS.length()
+			}
+			else if (Input.buttonPressed(0, BUTTON_DOWN))
+			{
+				playSound(0x5b)
+				selected = (selected + 1) % ENTRY_TEXTS.length()
+			}
+
+			// TODO: Add screenshot mode
+		}
+
+		if (selected == 0)
+		{
+			// Leave this menu again and continue gameplay
+			// TODO: Handle fade-out - this requires rendering the pause menu while the game is running again
+			break
+		}
+		else if (selected == 1)
+		{
+			// TODO: First open the dialog menu for Restart
+
+			if (false)
+			{
+				restartLevel()
+			}
+			else
+			{
+				restartAtCheckpoint()
+			}
+			break
+		}
+		else if (selected == 2)
+		{
+			// Open in-game options
+			// TODO: How about a quick fade-out here as well?
+			Game.openOptionsMenu()
+		}
+		else if (selected == 3)
+		{
+			// TODO: First open the dialog menu for Exit Game
+
+			// TODO: Properly fade-out the game
+			Game.returnToMainMenu()
+			yieldExecution()
+		}
+	}
+
+	// Resume game audio
+	Game.resumeGameAudio()
+
+	if (wasInSkippableCutscene)
+		Game.startSkippableCutscene()
+
+#endif
 }
 
 #endif
