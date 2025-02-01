@@ -68,5 +68,4 @@ private:
 	GameMenuEntries mMenuEntries;
 
 	State mState = State::INACTIVE;
-	float mVisibility = 0.0f;
 };
