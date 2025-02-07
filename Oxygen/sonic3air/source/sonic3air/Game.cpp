@@ -1095,7 +1095,6 @@ void Game::returnToMainMenu()
 
 void Game::openOptionsMenu()
 {
-	//mRestoreGameResolution = VideoOut::instance().getScreenRect().getSize();
 	GameApp::instance().openOptionsMenuInGame();
 }
 
