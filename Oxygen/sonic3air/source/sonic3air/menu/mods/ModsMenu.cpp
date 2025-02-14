@@ -25,7 +25,7 @@
 #include "oxygen/helper/FileHelper.h"
 
 
-namespace
+namespace modsmenu
 {
 	bool isHexDigit(char ch)
 	{
