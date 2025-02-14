@@ -27,6 +27,11 @@
 
 namespace
 {
+	bool isHexDigit(char ch)
+	{
+		return (ch >= '0' && ch <= '9') || (ch >= 'a' && ch <= 'f') || (ch >= 'A' && ch <= 'F');
+	}
+
 	static constexpr int BACK = 0xffff;
 
 	void moveFloatTowards(float& value, float target, float maxStep)
@@ -39,7 +44,10 @@ namespace
 				value = std::max(value - maxStep, target);
 		}
 	}
+
+	ModsMenu::musicId modsMenu;
 }
+using namespace modsmenu;
 
 
 ModsMenu::ModsMenu(MenuBackground& menuBackground) :
@@ -82,7 +90,19 @@ void ModsMenu::onFadeIn()
 	mMenuBackground->showPreview(false, false);
 	mMenuBackground->startTransition(MenuBackground::Target::ALTER);
 
-	AudioOut::instance().setMenuMusic(0x2f);
+	uint64 keyString = 0x2F;
+	if (!modsMenu.mModMenuMusic.empty())
+	{
+		if (modsMenu.mModMenuMusic.length() == 2 && isHexDigit(modsMenu.mModMenuMusic[0]) && isHexDigit(modsMenu.mModMenuMusic[1]))
+		{
+			keyString = rmx::parseInteger(String("0x") + modsMenu.mModMenuMusic);
+		}
+		else
+		{
+			keyString = rmx::getMurmur2_64(modsMenu.mModMenuMusic);
+		}
+	}
+	AudioOut::instance().setMenuMusic(keyString);
 
 	refreshControlsDisplay();
 }
@@ -1003,4 +1023,9 @@ GameMenuEntry* ModsMenu::getSelectedGameMenuEntry()
 		return &menuEntries[menuEntries.mSelectedEntryIndex];
 	}
 	return nullptr;
+}
+
+void ModsMenu::setModMenuMusic(std::string_view sfxId)
+{
+	modsMenu.mModMenuMusic = sfxId;
 }
