@@ -95,7 +95,7 @@ bool Simulation::startup()
 		mInputRecorder.initFromConfig();
 	}
 
-	if (config.mGameRecorder.mIsPlayback)
+	if (mGameRecorder.isPlaying())
 	{
 		// Try the long and short name
 		if (mGameRecorder.loadRecording(L"gamerecording.bin"))
@@ -173,6 +173,7 @@ void Simulation::resetIntoGame(const std::vector<std::pair<std::string, std::str
 
 	mFrameNumber = 0;
 	mCurrentTargetFrame = 0.0;
+	mLastCorrectionFrame = 0;
 	mStepsLimit = -1;
 	mBreakConditions.clearAll();
 	mGameRecorder.clear();
@@ -218,6 +219,7 @@ bool Simulation::loadState(const std::wstring& filename, bool showError)
 
 	mFrameNumber = 0;
 	mCurrentTargetFrame = 0.0;
+	mLastCorrectionFrame = 0;
 	mStepsLimit = -1;
 	mBreakConditions.clearAll();
 
@@ -318,7 +320,7 @@ void Simulation::update(float timeElapsed)
 		}
 
 		// Each second, a small correction to the accumulated time gets applied
-		if ((int)(mFrameNumber - mLastCorrectionFrame) >= (int)getSimulationFrequency())
+		if ((int)(mFrameNumber - mLastCorrectionFrame) >= (int)getSimulationFrequency() || mFrameNumber < mLastCorrectionFrame)
 		{
 			// The idea here is to bring the accumulated time towards the midpoint, where it's most stable against unintentional double frames or frame skips (which might happen otherwise)
 			//  -> This is most useful for 60 Hz displays with V-sync on, but should have a similar effect on e.g. 75 Hz, 90 Hz, 120 Hz
@@ -352,9 +354,6 @@ bool Simulation::generateFrame()
 {
 	ControlsIn& controlsIn = ControlsIn::instance();
 
-	const bool isGameRecorderPlayback = Configuration::instance().mGameRecorder.mIsPlayback;
-	const bool isGameRecorderRecording = Configuration::instance().mGameRecorder.mIsRecording;
-
 	const bool beginningNewFrame = mCodeExec.willBeginNewFrame();
 	const float tickLength = 1.0f / getSimulationFrequency();
 
@@ -374,7 +373,7 @@ bool Simulation::generateFrame()
 		VideoOut::instance().preFrameUpdate();
 
 		// Game recorder: Save initial frame
-		if (isGameRecorderRecording && mGameRecorder.getRangeEnd() == 0)
+		if (mGameRecorder.isRecording() && mGameRecorder.getRangeEnd() == 0)
 		{
 			recordKeyFrame(0, *this, mGameRecorder, GameRecorder::InputData());
 		}
@@ -389,7 +388,7 @@ bool Simulation::generateFrame()
 		GameRecorder::PlaybackResult result;
 		if (mGameRecorder.getFrameData(mFrameNumber + 1, result))
 		{
-			if (isGameRecorderPlayback)
+			if (mGameRecorder.isPlaying())
 				LogDisplay::instance().setModeDisplay("Game recorder playback at frame: " + std::to_string(mFrameNumber + 1));
 
 			if (nullptr != result.mData && !Configuration::instance().mGameRecorder.mPlaybackIgnoreKeys)
@@ -461,7 +460,7 @@ bool Simulation::generateFrame()
 		}
 
 		// Update game recording
-		if (isGameRecorderRecording)
+		if (mGameRecorder.isRecording())
 		{
 			if (!mGameRecorder.hasFrameNumber(mFrameNumber + 1))
 			{
@@ -482,7 +481,7 @@ bool Simulation::generateFrame()
 				}
 			}
 		}
-		else if (isGameRecorderPlayback && EngineMain::getDelegate().useDeveloperFeatures())
+		else if (mGameRecorder.isPlaying() && EngineMain::getDelegate().useDeveloperFeatures())
 		{
 			// Generate a keyframe every 10 frames, to allow for quick rewinds during game recording playback as well
 			const int keyframeFrequency = 10;
@@ -509,12 +508,9 @@ bool Simulation::generateFrame()
 
 bool Simulation::jumpToFrame(uint32 frameNumber, bool clearRecordingAfterwards)
 {
-	const bool isGameRecorderPlayback = Configuration::instance().mGameRecorder.mIsPlayback;
-	const bool isGameRecorderRecording = Configuration::instance().mGameRecorder.mIsRecording;
-
-	if (isGameRecorderRecording || isGameRecorderPlayback)
+	if (mGameRecorder.isRecording() || mGameRecorder.isPlaying())
 	{
-		if (isGameRecorderPlayback)
+		if (mGameRecorder.isPlaying())
 			clearRecordingAfterwards = false;
 
 		// Go back until the most recent keyframe, in case the selected frame is not a keyframe itself
@@ -555,6 +551,14 @@ bool Simulation::jumpToFrame(uint32 frameNumber, bool clearRecordingAfterwards)
 	}
 
 	return false;
+}
+
+int Simulation::setRewind(int rewindSteps)
+{
+	mRewindSteps = rewindSteps;
+	if (mGameRecorder.isRecording())
+		mRewindSteps = std::min<int>(mFrameNumber - mGameRecorder.getRangeStart(), mRewindSteps);
+	return mRewindSteps;
 }
 
 float Simulation::getSimulationFrequency() const
