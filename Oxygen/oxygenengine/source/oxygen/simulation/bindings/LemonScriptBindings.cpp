@@ -222,7 +222,7 @@ namespace
 	}
 
 
-	uint32 System_loadPersistentData(uint32 targetAddress, uint32 bytes, lemon::StringRef file, lemon::StringRef key, bool localFile)
+	uint32 System_loadPersistentData_withOffset(uint32 targetAddress, uint32 offset, uint32 bytes, lemon::StringRef file, lemon::StringRef key, bool localFile)
 	{
 		if (!key.isValid() || key.isEmpty() || !file.isValid())
 			return 0;
@@ -237,10 +237,15 @@ namespace
 			fileHash = file.getHash();
 
 		const std::vector<uint8>& data = PersistentData::instance().getData(fileHash, key.getHash());
-		return detail::loadData(getEmulatorInterface(), targetAddress, data, 0, bytes);
+		return detail::loadData(getEmulatorInterface(), targetAddress, data, offset, bytes);
 	}
 
-	void System_savePersistentData(uint32 sourceAddress, uint32 bytes, lemon::StringRef file, lemon::StringRef key, bool localFile)
+	uint32 System_loadPersistentData_noOffset(uint32 targetAddress, uint32 bytes, lemon::StringRef file, lemon::StringRef key, bool localFile)
+	{
+		return System_loadPersistentData_withOffset(targetAddress, 0, bytes, file, key, localFile);
+	}
+
+	void System_savePersistentData_shared(uint32 sourceAddress, uint32 bytes, lemon::StringRef file, lemon::StringRef key, bool localFile, std::optional<uint32> offset)
 	{
 		if (!key.isValid() || key.isEmpty() || !file.isValid())
 			return;
@@ -259,12 +264,37 @@ namespace
 		const Mod* mod = localFile ? detail::getModForCurrentFunction() : nullptr;
 		if (nullptr != mod)
 		{
-			PersistentData::instance().setData(mod->mUniqueID + "/" + std::string(file.getString()), key.getString(), data);
+			const std::string filePath = mod->mUniqueID + "/" + std::string(file.getString());
+			if (offset.has_value())
+			{
+				PersistentData::instance().setDataPartial(filePath, key.getString(), data, *offset);
+			}
+			else
+			{
+				PersistentData::instance().setData(filePath, key.getString(), data);
+			}
 		}
 		else
 		{
-			PersistentData::instance().setData(file.getString(), key.getString(), data);
+			if (offset.has_value())
+			{
+				PersistentData::instance().setDataPartial(file.getString(), key.getString(), data, *offset);
+			}
+			else
+			{
+				PersistentData::instance().setData(file.getString(), key.getString(), data);
+			}
 		}
+	}
+
+	void System_savePersistentData_noOffset(uint32 sourceAddress, uint32 bytes, lemon::StringRef file, lemon::StringRef key, bool localFile)
+	{
+		System_savePersistentData_shared(sourceAddress, bytes, file, key, localFile, std::optional<uint32>());
+	}
+
+	void System_savePersistentData_withOffset(uint32 sourceAddress, uint32 offset, uint32 bytes, lemon::StringRef file, lemon::StringRef key, bool localFile)
+	{
+		System_savePersistentData_shared(sourceAddress, bytes, file, key, localFile, offset);
 	}
 
 	void System_removePersistentData(lemon::StringRef file, lemon::StringRef key, bool localFile)
@@ -309,18 +339,63 @@ namespace
 		System_setupCallFrame2(functionName, lemon::StringRef());
 	}
 
-	int64 System_getGlobalVariableValueByName(lemon::StringRef variableName)
+	int64 System_getGlobalVariableValueByNameInt(lemon::StringRef variableName)
 	{
 		CodeExec* codeExec = CodeExec::getActiveInstance();
 		RMX_CHECK(nullptr != codeExec, "No running CodeExec instance", return 0);
-		return codeExec->getLemonScriptRuntime().getGlobalVariableValue_int64(variableName);
+		return codeExec->getLemonScriptRuntime().getGlobalVariableValue<int64>(variableName);
 	}
 
-	void System_setGlobalVariableValueByName(lemon::StringRef variableName, int64 value)
+	float System_getGlobalVariableValueByNameFloat(lemon::StringRef variableName)
+	{
+		CodeExec* codeExec = CodeExec::getActiveInstance();
+		RMX_CHECK(nullptr != codeExec, "No running CodeExec instance", return 0.0f);
+		return codeExec->getLemonScriptRuntime().getGlobalVariableValue<float>(variableName);
+	}
+
+	double System_getGlobalVariableValueByNameDouble(lemon::StringRef variableName)
+	{
+		CodeExec* codeExec = CodeExec::getActiveInstance();
+		RMX_CHECK(nullptr != codeExec, "No running CodeExec instance", return 0.0);
+		return codeExec->getLemonScriptRuntime().getGlobalVariableValue<double>(variableName);
+	}
+
+	lemon::StringRef System_getGlobalVariableValueByNameString(lemon::StringRef variableName)
+	{
+		CodeExec* codeExec = CodeExec::getActiveInstance();
+		RMX_CHECK(nullptr != codeExec, "No running CodeExec instance", return lemon::StringRef());
+		const lemon::AnyBaseValue value = codeExec->getLemonScriptRuntime().getGlobalVariableValue(variableName, &lemon::PredefinedDataTypes::STRING);
+		return lemon::StringRef(value.get<uint64>());
+	}
+
+	void System_setGlobalVariableValueByNameInt(lemon::StringRef variableName, int64 value)
 	{
 		CodeExec* codeExec = CodeExec::getActiveInstance();
 		RMX_CHECK(nullptr != codeExec, "No running CodeExec instance", return);
-		codeExec->getLemonScriptRuntime().setGlobalVariableValue_int64(variableName, value);
+		codeExec->getLemonScriptRuntime().setGlobalVariableValue<int64>(variableName, value);
+	}
+
+	void System_setGlobalVariableValueByNameFloat(lemon::StringRef variableName, float value)
+	{
+		CodeExec* codeExec = CodeExec::getActiveInstance();
+		RMX_CHECK(nullptr != codeExec, "No running CodeExec instance", return);
+		codeExec->getLemonScriptRuntime().setGlobalVariableValue<float>(variableName, value);
+	}
+
+	void System_setGlobalVariableValueByNameDouble(lemon::StringRef variableName, double value)
+	{
+		CodeExec* codeExec = CodeExec::getActiveInstance();
+		RMX_CHECK(nullptr != codeExec, "No running CodeExec instance", return);
+		codeExec->getLemonScriptRuntime().setGlobalVariableValue<double>(variableName, value);
+	}
+
+	void System_setGlobalVariableValueByNameString(lemon::StringRef variableName, lemon::StringRef value)
+	{
+		CodeExec* codeExec = CodeExec::getActiveInstance();
+		RMX_CHECK(nullptr != codeExec, "No running CodeExec instance", return);
+		lemon::AnyBaseValue valueToSet;
+		valueToSet.set<uint64>(value.getHash());
+		codeExec->getLemonScriptRuntime().setGlobalVariableValue(variableName, valueToSet, &lemon::PredefinedDataTypes::STRING);
 	}
 
 	uint32 System_rand()
@@ -1089,11 +1164,17 @@ void LemonScriptBindings::registerBindings(lemon::Module& module)
 
 
 		// Persistent data
-		builder.addNativeFunction("System.loadPersistentData", lemon::wrap(&System_loadPersistentData), defaultFlags)
+		builder.addNativeFunction("System.loadPersistentData", lemon::wrap(&System_loadPersistentData_noOffset), defaultFlags)
 			.setParameters("targetAddress", "bytes", "file", "key", "localFile");
 
-		builder.addNativeFunction("System.savePersistentData", lemon::wrap(&System_savePersistentData), defaultFlags)
+		builder.addNativeFunction("System.loadPersistentData", lemon::wrap(&System_loadPersistentData_withOffset), defaultFlags)
+			.setParameters("targetAddress", "offset", "bytes", "file", "key", "localFile");
+
+		builder.addNativeFunction("System.savePersistentData", lemon::wrap(&System_savePersistentData_noOffset), defaultFlags)
 			.setParameters("sourceAddress", "bytes", "file", "key", "localFile");
+
+		builder.addNativeFunction("System.savePersistentData", lemon::wrap(&System_savePersistentData_withOffset), defaultFlags)
+			.setParameters("sourceAddress", "offset", "bytes", "file", "key", "localFile");
 
 		builder.addNativeFunction("System.removePersistentData", lemon::wrap(&System_removePersistentData), defaultFlags)
 			.setParameters("file", "key", "localFile");
@@ -1109,10 +1190,28 @@ void LemonScriptBindings::registerBindings(lemon::Module& module)
 		builder.addNativeFunction("System.setupCallFrame", lemon::wrap(&System_setupCallFrame2))		// Should not get inline executed
 			.setParameters("functionName", "labelName");
 
-		builder.addNativeFunction("System.getGlobalVariableValueByName", lemon::wrap(&System_getGlobalVariableValueByName), defaultFlags)
+		builder.addNativeFunction("System.getGlobalVariableValueByName", lemon::wrap(&System_getGlobalVariableValueByNameInt), defaultFlags)
 			.setParameters("variableName");
 
-		builder.addNativeFunction("System.setGlobalVariableValueByName", lemon::wrap(&System_setGlobalVariableValueByName), defaultFlags)
+		builder.addNativeFunction("System.getGlobalVariableValueByNameFloat", lemon::wrap(&System_getGlobalVariableValueByNameFloat), defaultFlags)
+			.setParameters("variableName");
+
+		builder.addNativeFunction("System.getGlobalVariableValueByNameDouble", lemon::wrap(&System_getGlobalVariableValueByNameDouble), defaultFlags)
+			.setParameters("variableName");
+
+		builder.addNativeFunction("System.getGlobalVariableValueByNameString", lemon::wrap(&System_getGlobalVariableValueByNameString), defaultFlags)
+			.setParameters("variableName");
+
+		builder.addNativeFunction("System.setGlobalVariableValueByName", lemon::wrap(&System_setGlobalVariableValueByNameInt), defaultFlags)
+			.setParameters("variableName", "value");
+
+		builder.addNativeFunction("System.setGlobalVariableValueByName", lemon::wrap(&System_setGlobalVariableValueByNameFloat), defaultFlags)
+			.setParameters("variableName", "value");
+
+		builder.addNativeFunction("System.setGlobalVariableValueByName", lemon::wrap(&System_setGlobalVariableValueByNameDouble), defaultFlags)
+			.setParameters("variableName", "value");
+
+		builder.addNativeFunction("System.setGlobalVariableValueByName", lemon::wrap(&System_setGlobalVariableValueByNameString), defaultFlags)
 			.setParameters("variableName", "value");
 
 		builder.addNativeFunction("System.rand", lemon::wrap(&System_rand), defaultFlags);

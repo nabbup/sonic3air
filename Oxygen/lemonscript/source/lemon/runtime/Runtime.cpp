@@ -246,18 +246,21 @@ namespace lemon
 		return hash;
 	}
 
-	int64 Runtime::getGlobalVariableValue_int64(const Variable& variable)
+	AnyBaseValue Runtime::getGlobalVariableValue(const Variable& variable)
 	{
+		AnyBaseValue result;
 		const int64* valuePtr = accessGlobalVariableValue(variable);
-		return (nullptr == valuePtr) ? 0 : *valuePtr;
+		if (nullptr != valuePtr)
+			result.set<int64>(*valuePtr);
+		return result;
 	}
 
-	void Runtime::setGlobalVariableValue_int64(const Variable& variable, int64 value)
+	void Runtime::setGlobalVariableValue(const Variable& variable, AnyBaseValue value)
 	{
 		int64* valuePtr = accessGlobalVariableValue(variable);
 		if (nullptr != valuePtr)
 		{
-			*valuePtr = value;
+			*valuePtr = value.get<int64>();
 		}
 	}
 
@@ -283,6 +286,7 @@ namespace lemon
 		state.mBaseCallIndex = baseCallIndex;
 		state.mProgramCounter = runtimeFunction.getFirstRuntimeOpcode();
 		state.mLocalVariablesStart = mSelectedControlFlow->mLocalVariablesSize;
+		RMX_ASSERT(nullptr != state.mProgramCounter, "Invalid program counter in function " << runtimeFunction.mFunction->getName());
 	}
 
 	void Runtime::callFunction(const Function& function, size_t baseCallIndex)
