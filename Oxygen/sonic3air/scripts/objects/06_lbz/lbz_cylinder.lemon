@@ -87,6 +87,7 @@ function void fn02c3e8()
 					s16[A1 + 0x1a] = 0
 				#endif
 					u8[A1 + 0x2d] = 0x80		// Set cylinder walking animation
+					u8[A1 + 0x25] = 0 // cancel Sonic's Drop Dash on the cylinder
 					objA1.state.both = char.state.RUNNING2
 					if (u16[A1 + 0x1c] == 0)
 					{

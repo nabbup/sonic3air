@@ -103,6 +103,8 @@ function void fn03e172()
 		u16[A0 + D5.s16] = objA1.velocity.y
 		return
 	}
+	
+	u8[A1 + 0x25] = 0
 
 	objA0.state = 0x01
 	if (objA0.animation.sprite == 0x03)

@@ -614,6 +614,7 @@ function void fn026eda()
 		objA1.groundspeed = 0
 		u8[A1 + 0x20] = 0
 		u8[A1 + 0x2e] = 3
+		u8[A1 + 0x25] = 0 // cancel Sonic's Drop Dash in the cup elevator
 	}
 	else
 	{
