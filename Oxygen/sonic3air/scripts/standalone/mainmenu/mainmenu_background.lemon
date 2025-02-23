@@ -94,11 +94,10 @@ function void MainMenuBG.Run()
 		Standalone.setModsMenuAudio()
 		
 		MainMenuBG.Update(cameraForegroundX, cameraBackgroundX)
+		MainMenu.Update()
 
 		yieldExecution()
 		++level.framecounter
-		
-		MainMenu.Update()
 	}
 }
 

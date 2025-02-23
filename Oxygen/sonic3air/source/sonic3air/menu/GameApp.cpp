@@ -245,12 +245,30 @@ void GameApp::openOptionsMenu()
 	mRestoreGameResolution = VideoOut::instance().getScreenRect().getSize();
 	Application::instance().getSimulation().setSpeed(0.0f);
 
-	mCurrentState = State::INGAME_OPTIONS;
+	mCurrentState = State::MENUS;
 
 	mPauseMenu->setEnabled(false);
 	mGameView->addChild(*mMenuBackground);
 	mGameView->startFadingIn();
 	mMenuBackground->openOptions(false);
+}
+
+void GameApp::openTimeAttackMenu()
+{
+	mRestoreGameResolution = VideoOut::instance().getScreenRect().getSize();
+	Application::instance().getSimulation().setSpeed(0.0f);
+
+	mCurrentState = State::MENUS;
+
+	mPauseMenu->setEnabled(false);
+	mGameView->addChild(*mMenuBackground);
+	mGameView->startFadingIn();
+	mMenuBackground->openTimeAttackMenu();
+}
+
+void GameApp::openModsMenu()
+{
+
 }
 
 void GameApp::onFadedOutOptions()
@@ -276,6 +294,29 @@ void GameApp::onFadedOutOptions()
 		Application::instance().getSimulation().setSpeed(1.0f);
 
 		mCurrentState = State::INGAME;
+	}
+	else if (mCurrentState == State::MENUS)
+	{
+		// Coming from Time Attack, options, or the mod menu, then go back into the main menu
+		if (mMenuBackground->getParent() == mGameView)
+			mGameView->removeChild(*mMenuBackground);
+
+		mPauseMenu->onReturnFromOptions();
+
+		ControlsIn::instance().setAllIgnores();
+
+		VideoOut::instance().setScreenSize(mRestoreGameResolution);
+
+		GameApp::instance().getGameView().startFadingIn(0.1f);
+
+		Application::instance().getSimulation().setSpeed(1.0f);
+
+		mCurrentState = State::MAIN_MENU;
+		mGameView->addChild(*mMenuBackground);
+		mGameView->startFadingIn();
+
+		mGameMenuManager->forceRemoveAll();
+		mMenuBackground->openGameStartedMenu();
 	}
 }
 

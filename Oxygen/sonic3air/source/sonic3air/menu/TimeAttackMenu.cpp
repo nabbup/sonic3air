@@ -268,6 +268,10 @@ void TimeAttackMenu::update(float timeElapsed)
 			{
 				startGame();
 			}
+			if (mState == State::FADE_TO_MENU)
+			{
+				GameApp::instance().onFadedOutOptions();
+			}
 			mState = State::INACTIVE;
 		}
 	}
@@ -360,8 +364,8 @@ void TimeAttackMenu::startGame()
 
 void TimeAttackMenu::backToMainMenu()
 {
-	playMenuSound(0xad);
-	mMenuBackground->openMainMenu();
+	// Only start fading to black - see "GameApp::onFadedOutOptions" for the actual change of state after complete fade-out
+	GameApp::instance().getGameView().startFadingOut(0.1666f);
 	mState = State::FADE_TO_MENU;
 }
 

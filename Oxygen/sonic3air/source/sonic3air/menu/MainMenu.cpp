@@ -125,11 +125,6 @@ void MainMenu::onFadeIn()
 	}
 	AudioOut::instance().setMenuMusic(keyString);
 
-	for (size_t i = 0; i < mMenuEntries.size(); ++i)
-	{
-		mMenuEntries[i].mAnimation.mVisibility = ((int)i == mMenuEntries.mSelectedEntryIndex) ? 1.0f : 0.0f;
-	}
-
 	// Check for unlocked secrets (needed when new game versions added secrets or reduced requirements)
 	Game::instance().checkForUnlockedSecrets();
 }
@@ -171,113 +166,6 @@ void MainMenu::update(float timeElapsed)
 	}
 
 	GameMenuBase::update(timeElapsed);
-
-	// Don't react to input during transitions
-	if (mState == State::SHOW)
-	{
-		// Update menu entries
-		const GameMenuEntries::UpdateResult result = mMenuEntries.update();
-		if (result != GameMenuEntries::UpdateResult::NONE)
-		{
-			playMenuSound(0x5b);
-		}
-
-		if (!FTX::keyState(SDLK_LALT) && !FTX::keyState(SDLK_RALT))
-		{
-			const InputManager::ControllerScheme& keys = InputManager::instance().getController(0);
-			const uint32 selectedData = mMenuEntries.selected().mData;
-
-			if (keys.Start.justPressed() || keys.A.justPressed() || keys.X.justPressed())
-			{
-				switch (selectedData)
-				{
-					case mainmenu::NORMAL_GAME:
-						triggerStartNormalGame();
-						break;
-
-					case mainmenu::ACT_SELECT:
-						triggerStartActSelect();
-						break;
-
-					case mainmenu::TIME_ATTACK:
-						openTimeAttack();
-						break;
-
-					case mainmenu::OPTIONS:
-						openOptions();
-						break;
-
-					case mainmenu::EXTRAS:
-						triggerStartExtras();
-						break;
-
-					case mainmenu::MODS:
-						openMods();
-						break;
-
-					case mainmenu::EXIT:
-						exitGame();
-						break;
-				}
-			}
-			else if (keys.B.justPressed() || keys.Back.justPressed())
-			{
-				mState = State::FADE_TO_TITLESCREEN;
-				GameApp::instance().getGameView().startFadingOut();
-			}
-		}
-	}
-
-	// Update animation
-	{
-		const float maxStep = timeElapsed * 10.0f;
-		for (size_t i = 0; i < mMenuEntries.size(); ++i)
-		{
-			const float target = ((int)i == mMenuEntries.mSelectedEntryIndex) ? 1.0f : 0.0f;
-			mMenuEntries[i].mAnimation.mVisibility += clamp(target - mMenuEntries[i].mAnimation.mVisibility, -maxStep, maxStep);
-		}
-	}
-
-	if (mState == State::APPEAR)
-	{
-		if (updateFadeIn(timeElapsed * 4.0f))
-		{
-			mState = State::SHOW;
-		}
-	}
-	else if (mState > State::SHOW)
-	{
-		if (updateFadeOut(timeElapsed * 4.0f))
-		{
-			switch (mState)
-			{
-				case State::FADE_TO_TITLESCREEN:
-					mMenuBackground->setGameStartedMenu();
-					GameApp::instance().openTitleScreen();
-					break;
-
-				case State::FADE_TO_DATASELECT:
-					startNormalGame();
-					break;
-
-				case State::FADE_TO_ACTSELECT:
-					openActSelectMenu();
-					break;
-
-				case State::FADE_TO_EXTRAS:
-					openExtras();
-					break;
-
-				case State::FADE_TO_EXIT:
-					FTX::System->quit();
-					break;
-
-				default:
-					break;
-			}
-			mState = State::INACTIVE;
-		}
-	}
 }
 
 void MainMenu::render()

@@ -1,33 +1,66 @@
 global s16 MainMenuBG.separatorPosition		// Scrolling separator y-position
 global u8 MainMenu.inMenu
+global u8 MainMenu.selectedEntry
 
 function void MainMenu.Update()
 {
 	Renderer.resetSprites()
+	MainMenu.drawMenuBackground()
+	
+	if (Input.buttonPressed(BUTTON_DOWN))
+	{
+		MainMenu.selectedEntry += 1
+		if (MainMenu.selectedEntry > 5)
+			MainMenu.selectedEntry = 0
+	}
+	else if (Input.buttonPressed(BUTTON_UP))
+	{
+		MainMenu.selectedEntry -= 1
+		if (MainMenu.selectedEntry > 5)
+			MainMenu.selectedEntry = 5
+	}
+	
+	Log = MainMenu.selectedEntry
 	
 	if (Input.buttonPressed(BUTTON_A) || Input.buttonPressed(BUTTON_X))
 	{
 		FadeOutScreenBlocking()
-		MainMenu.inMenu = 2
+		MainMenu.inMenu = MainMenu.selectedEntry + 1
 	}
-	
-	MainMenu.drawMenuBackground()
 	
 	if (MainMenu.inMenu)
 	{
-		copyPaletteDataFromTable(0x03, 0xfc00)
-		copyMemory(0xfffffc20, 0x05b16e, 0x20)
-		copyMemory(0xfffffc40, 0x0a97bc, 0x20)
-		copyMemory(0xfffffc60, 0x0a983c, 0x20)
-		copyMemory(0xfffffc00, 0x39d262, 0x20)
-		for (u32 i = 0; i < 0x20; ++i)
+		if (MainMenu.inMenu == 3 || MainMenu.inMenu == 4 || MainMenu.inMenu == 6)
 		{
-			u16[0xfffffc00 + i * 2] = blendColorsPacked(u16[0xfffffc00 + i * 2], 0x0eee, 0x80)
-			u16[0xfffffc00] = 0x0000
+			copyPaletteDataFromTable(0x03, 0xfc00)
+			copyMemory(0xfffffc20, 0x05b16e, 0x20)
+			copyMemory(0xfffffc40, 0x0a97bc, 0x20)
+			copyMemory(0xfffffc60, 0x0a983c, 0x20)
+			copyMemory(0xfffffc00, 0x39d262, 0x20)
+			for (u32 i = 0; i < 0x20; ++i)
+			{
+				u16[0xfffffc00 + i * 2] = blendColorsPacked(u16[0xfffffc00 + i * 2], 0x0eee, 0x80)
+				u16[0xfffffc00] = 0x0000
+			}
+			SpriteHandle spr = Renderer.addSpriteHandle("bg_dataselect", s16(getScreenWidth() - 512) / 2, 0,0xf002)
+			spr.setBlendMode(BlendMode.OPAQUE)
+			spr.setPriorityFlag(true)
 		}
-		if (MainMenu.inMenu == 2)
+		
+		if (MainMenu.inMenu == 1)
+			EntryFunctions.dataSelect()
+		else if (MainMenu.inMenu == 2)
+			EntryFunctions.actSelect()
+		else if (MainMenu.inMenu == 3)
+			Game.openTimeAttackMenu()
+		else if (MainMenu.inMenu == 4)
 			Game.openOptionsMenuInMainMenu()
-		MainMenu.inMenu = false
+		else if (MainMenu.inMenu == 5)
+			EntryFunctions.extrasMenu()
+		
+		MainMenu.inMenu = 0
+		if (MainMenu.inMenu == 3 || MainMenu.inMenu == 4 || MainMenu.inMenu == 6)
+			EntryFunctions.mainMenuBG()
 	}
 }
 
@@ -37,29 +70,21 @@ function void MainMenu.drawMenuBackground()
 		MainMenuBG.separatorPosition += 1
 	if (MainMenuBG.separatorPosition) > 16
 		MainMenuBG.separatorPosition = 0
-	if (MainMenu.inMenu)
+
+	for (u16 i2; i2 < getScreenHeight(); i2 += 18)
 	{
-		SpriteHandle spr = Renderer.addSpriteHandle("bg_dataselect", s16(getScreenWidth() - 512) / 2, 0,0xf002)
+		Renderer.setViewport((getScreenWidth() / 2) - (i2 / 6), i2, getScreenWidth() * 2, 18, 0xf000 + i2)
+		SpriteHandle spr = Renderer.addSpriteHandle("bg_dataselect", s16(getScreenWidth() - 512) / 2, 0,0xf002 + i2)
 		spr.setBlendMode(BlendMode.OPAQUE)
 		spr.setPriorityFlag(true)
+		Renderer.resetViewport(0xf002 + i2)
 	}
-	else
+
+	for (u16 i3; i3 < getScreenHeight(); i3 += 3)
 	{
-		for (u16 i2; i2 < getScreenHeight(); i2 += 18)
-		{
-			Renderer.setViewport((getScreenWidth() / 2) - (i2 / 6), i2, getScreenWidth() * 2, 18, 0xf000 + i2)
-			SpriteHandle spr = Renderer.addSpriteHandle("bg_dataselect", s16(getScreenWidth() - 512) / 2, 0,0xf002 + i2)
-			spr.setBlendMode(BlendMode.OPAQUE)
-			spr.setPriorityFlag(true)
-			Renderer.resetViewport(0xf002 + i2)
-		}
-	
-		for (u16 i3; i3 < getScreenHeight(); i3 += 3)
-		{
-			Renderer.setViewport((getScreenWidth() / 2) - (i3 / 3) - 8, i3, getScreenWidth(), 3, 0xff00 + i3)
-			SpriteHandle separator = Renderer.addSpriteHandle("mainmenu_bg_separator", (getScreenWidth() / 2) - (i3 / 6), MainMenuBG.separatorPosition, 0xff02 + i3)
-			separator.setPriorityFlag(true)
-			Renderer.resetViewport(0xff02 + i3)
-		}
+		Renderer.setViewport((getScreenWidth() / 2) - (i3 / 3) - 8, i3, getScreenWidth(), 3, 0xff00 + i3)
+		SpriteHandle separator = Renderer.addSpriteHandle("mainmenu_bg_separator", (getScreenWidth() / 2) - (i3 / 6), MainMenuBG.separatorPosition, 0xff02 + i3)
+		separator.setPriorityFlag(true)
+		Renderer.resetViewport(0xff02 + i3)
 	}
 }

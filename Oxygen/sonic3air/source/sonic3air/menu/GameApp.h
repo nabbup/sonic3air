@@ -38,6 +38,8 @@ public:
 	void openMainMenu();
 	void openOptionsMenuInGame();
 	void openOptionsMenu();
+	void openTimeAttackMenu();
+	void openModsMenu();
 	void onFadedOutOptions();
 	void onGamePaused(bool canRestart);
 	void restartTimeAttack();
@@ -63,6 +65,7 @@ private:
 		DISCLAIMER,
 		TITLE_SCREEN,
 		MAIN_MENU,
+		MENUS,
 		INGAME_OPTIONS,
 		INGAME,
 		TIME_ATTACK_RESULTS
