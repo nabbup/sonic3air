@@ -734,7 +734,12 @@ function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
 	// Title card red bar
 	if (objA0.update_address == addressof(TitleCard.RedBarElement.Update))
 	{
-		Renderer.drawCustomSprite("titlecard_redbar", px - 0x20, py - 0x40, 0x00, SPRITE_FLAG_PRIO | SPRITE_FLAG_NO_GLOBAL_TINT, renderQueue)
+		u64 key = Game.getSetting(SETTING_GAME_BRANDING) == 0 ? "titlecard_redbar" : Game.getSetting(SETTING_GAME_BRANDING) == 1 ? "titlecard_redbar_s3" : Game.getSetting(SETTING_GAME_BRANDING) == 2 ? "titlecard_redbar_sk" : "titlecard_redbar_s3k"
+		if (Game.getSetting(SETTING_GAME_BRANDING) == 4)
+		{
+			key = isSonicAndKnucklesZone() ? "titlecard_redbar_sk" : "titlecard_redbar_s3"
+		}
+		Renderer.drawCustomSprite(key, px - 0x20, py - 0x40, 0x00, SPRITE_FLAG_PRIO | SPRITE_FLAG_NO_GLOBAL_TINT, renderQueue)
 		return true
 	}
 

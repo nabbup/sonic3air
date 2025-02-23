@@ -83,6 +83,9 @@
 	"hud_smalldigit_9": { "File": "hud_life_sprites.png", "Rect": "32,8,8,8" },
 
 	// Title card
-	"titlecard_redbar": { "File": "titlecard_redbar.png", "Rect": "0,0,66,178" }
+	"titlecard_redbar_s3": { "File": "titlecard_redbar.png", "Rect": "0,0,66,178" },
+	"titlecard_redbar_sk": { "File": "titlecard_redbar.png", "Rect": "66,0,66,178" },
+	"titlecard_redbar_s3k": { "File": "titlecard_redbar.png", "Rect": "132,0,66,178" },
+	"titlecard_redbar": { "File": "titlecard_redbar.png", "Rect": "198,0,66,178" }
 
 }
