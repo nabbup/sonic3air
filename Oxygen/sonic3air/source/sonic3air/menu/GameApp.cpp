@@ -240,6 +240,19 @@ void GameApp::openOptionsMenuInGame()
 	mMenuBackground->openOptions(true);
 }
 
+void GameApp::openOptionsMenu()
+{
+	mRestoreGameResolution = VideoOut::instance().getScreenRect().getSize();
+	Application::instance().getSimulation().setSpeed(0.0f);
+
+	mCurrentState = State::INGAME_OPTIONS;
+
+	mPauseMenu->setEnabled(false);
+	mGameView->addChild(*mMenuBackground);
+	mGameView->startFadingIn();
+	mMenuBackground->openOptions(false);
+}
+
 void GameApp::onFadedOutOptions()
 {
 	if (mCurrentState == State::INGAME_OPTIONS)

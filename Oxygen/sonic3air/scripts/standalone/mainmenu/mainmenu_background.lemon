@@ -12,10 +12,6 @@
 // Main menu background                                 //
 //-------------------------------------------------------//
 
-global s16 MainMenuBG.scrollOffset		// Scrolling x-position; usually 0, except during certain transitions
-global s16 MainMenuBG.logoPosition		// "Sonic 3 A.I.R." logo x-position
-global s16 MainMenuBG.separatorPosition		// Scrolling separater y-position
-
 function void MainMenuBG.Run()
 {
 	global.game_mode = 0x0c			// Main Game
@@ -97,11 +93,12 @@ function void MainMenuBG.Run()
 		Standalone.setOptionsMenuAudio()
 		Standalone.setModsMenuAudio()
 		
-		MainMenuBG.drawMenuBackground()
 		MainMenuBG.Update(cameraForegroundX, cameraBackgroundX)
 
 		yieldExecution()
 		++level.framecounter
+		
+		MainMenu.Update()
 	}
 }
 
@@ -116,8 +113,8 @@ function void MainMenuBG.Update(u16 cameraForegroundX, u16 cameraBackgroundX)
 
 	// Scrolling for water and clouds
 	{
-		camera.foreground.x.u16 = cameraForegroundX + MainMenuBG.scrollOffset
-		u16[0xffffee98] = cameraBackgroundX + MainMenuBG.scrollOffset
+		camera.foreground.x.u16 = cameraForegroundX
+		u16[0xffffee98] = cameraBackgroundX
 
 		fn05b0a8()
 		u32[0xffffa800] -= 0x0200	// Partially undo the scrolling progress, to make it slightly slower
@@ -132,39 +129,5 @@ function void MainMenuBG.Update(u16 cameraForegroundX, u16 cameraBackgroundX)
 
 		VDP.copyToVRAMbyDMA(0xffffe000, 0xf000, getScreenHeight() * 4)
 	}
-
-	Renderer.drawCustomSprite("sonic3air_logo", MainMenuBG.logoPosition, 11, 0, 0, 0xa000)
-}
-
-function void MainMenuBG.drawMenuBackground()
-{
-	if (Math.roundToInt(level.framecounter / 1.25)) % 2 == 0
-		MainMenuBG.separatorPosition += 1
-	if (MainMenuBG.separatorPosition) > 16
-		MainMenuBG.separatorPosition = 0
-	if ((getScreenWidth() / 2) - (MainMenuBG.scrollOffset * 4) > 0)
-	{
-		for (u16 i2; i2 < getScreenHeight(); i2 += 6)
-		{
-			Renderer.setViewport((getScreenWidth() / 2) - (i2 / 6) - (MainMenuBG.scrollOffset * 4), i2, getScreenWidth() * 2, 6, 0xf000 + i2)
-			SpriteHandle spr = Renderer.addSpriteHandle("bg_dataselect", s16(getScreenWidth() - 512) / 2, 0,0xf002 + i2)
-			spr.setBlendMode(BlendMode.OPAQUE)
-			spr.setPriorityFlag(true)
-			Renderer.resetViewport(0xf002 + i2)
-		}
-	
-		for (u16 i3; i3 < getScreenHeight(); i3 += 3)
-		{
-			Renderer.setViewport((getScreenWidth() / 2) - (i3 / 6) - 8 - (MainMenuBG.scrollOffset * 4), i3, getScreenWidth(), 6, 0xff00 + i3)
-			SpriteHandle separator = Renderer.addSpriteHandle("mainmenu_bg_separator", (getScreenWidth() / 2) - (i3 / 6) - (MainMenuBG.scrollOffset * 4), MainMenuBG.separatorPosition, 0xff02 + i3)
-			separator.setPriorityFlag(true)
-			Renderer.resetViewport(0xff02 + i3)
-		}
-	}
-	else
-	{
-		SpriteHandle spr = Renderer.addSpriteHandle("bg_dataselect", s16(getScreenWidth() - 512) / 2, 0,0xf002)
-		spr.setBlendMode(BlendMode.OPAQUE)
-		spr.setPriorityFlag(true)
-	}
+	Renderer.drawCustomSprite("sonic3air_logo", 96, 11, 0, 0, 0xa000)
 }

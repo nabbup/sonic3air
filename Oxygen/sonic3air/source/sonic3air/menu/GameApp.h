@@ -37,6 +37,7 @@ public:
 	void openTitleScreen();
 	void openMainMenu();
 	void openOptionsMenuInGame();
+	void openOptionsMenu();
 	void onFadedOutOptions();
 	void onGamePaused(bool canRestart);
 	void restartTimeAttack();
