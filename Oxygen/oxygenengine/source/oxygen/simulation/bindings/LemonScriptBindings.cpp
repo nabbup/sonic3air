@@ -440,6 +440,60 @@ namespace
 		return EngineMain::getDelegate().useDeveloperFeatures();
 	}
 
+	uint8 System_getSystemClockHour()
+	{
+		const std::time_t current_time = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+		char time_text[64];
+		strftime(time_text, sizeof time_text, "%H", std::localtime(&current_time));
+
+		return rmx::parseInteger(time_text);
+	}
+
+	uint8 System_getSystemClockMinutes()
+	{
+		const std::time_t current_time = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+		char time_text[64];
+		strftime(time_text, sizeof time_text, "%M", std::localtime(&current_time));
+
+		return rmx::parseInteger(time_text);
+	}
+
+	uint8 System_getSystemClockSeconds()
+	{
+		const std::time_t current_time = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+		char time_text[64];
+		strftime(time_text, sizeof time_text, "%S", std::localtime(&current_time));
+
+		return rmx::parseInteger(time_text);
+	}
+
+	uint8 System_getSystemClockDay()
+	{
+		const std::time_t current_time = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+		char time_text[64];
+		strftime(time_text, sizeof time_text, "%d", std::localtime(&current_time));
+
+		return rmx::parseInteger(time_text);
+	}
+
+	uint8 System_getSystemClockMonth()
+	{
+		const std::time_t current_time = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+		char time_text[64];
+		strftime(time_text, sizeof time_text, "%m", std::localtime(&current_time));
+
+		return rmx::parseInteger(time_text);
+	}
+
+	uint16 System_getSystemClockYear()
+	{
+		const std::time_t current_time = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+		char time_text[64];
+		strftime(time_text, sizeof time_text, "%Y", std::localtime(&current_time));
+
+		return rmx::parseInteger(time_text);
+	}
+
 	bool System_hasExternalRawData(lemon::StringRef key)
 	{
 		const std::vector<const RawDataCollection::RawData*>& rawDataVector = RawDataCollection::instance().getRawData(key.getHash());
@@ -1230,6 +1284,14 @@ void LemonScriptBindings::registerBindings(lemon::Module& module)
 			.setParameters("flag");
 
 		builder.addNativeFunction("System.isDevModeActive", lemon::wrap(&System_isDevModeActive), defaultFlags);
+
+		builder.addNativeFunction("System.getSystemClockHour", lemon::wrap(&System_getSystemClockHour), defaultFlags);
+		builder.addNativeFunction("System.getSystemClockMinutes", lemon::wrap(&System_getSystemClockMinutes), defaultFlags);
+		builder.addNativeFunction("System.getSystemClockSeconds", lemon::wrap(&System_getSystemClockSeconds), defaultFlags);
+
+		builder.addNativeFunction("System.getSystemClockDay", lemon::wrap(&System_getSystemClockDay), defaultFlags);
+		builder.addNativeFunction("System.getSystemClockMonth", lemon::wrap(&System_getSystemClockMonth), defaultFlags);
+		builder.addNativeFunction("System.getSystemClockYear", lemon::wrap(&System_getSystemClockYear), defaultFlags);
 
 
 		// Access external data
