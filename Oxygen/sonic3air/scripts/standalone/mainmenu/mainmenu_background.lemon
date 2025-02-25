@@ -133,7 +133,7 @@ function void MainMenuBG.Update(u16 cameraForegroundX, u16 cameraBackgroundX)
 		VDP.copyToVRAMbyDMA(0xffffe000, 0xf000, getScreenHeight() * 4)
 	}
 
-	Renderer.drawCustomSprite("sonic3air_logo", MainMenuBG.logoPosition, 11, 0, 0, 0xa000)
+	Renderer.drawCustomSprite("sonic3air_logo", MainMenuBG.logoPosition - 32, 11, 0, 0, 0xa000)
 }
 
 function void MainMenuBG.drawMenuBackground()
