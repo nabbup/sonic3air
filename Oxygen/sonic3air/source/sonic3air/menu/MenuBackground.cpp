@@ -25,6 +25,7 @@
 #include "oxygen/simulation/CodeExec.h"
 #include "oxygen/simulation/Simulation.h"
 
+
 namespace detail
 {
 	template<typename T>
@@ -42,11 +43,9 @@ namespace detail
 		quad[2].mPosition.set(splitX1 - 15.0f, 224.0f);
 		quad[3].mPosition.set(splitX2 - 15.0f, 224.0f);
 
-		int extend = abs(int(VideoOut::instance().getScreenWidth() - 496)) / 2;
-
 		for (int i = 0; i < 4; ++i)
 		{
-			quad[i].mTexcoords.x = (quad[i].mPosition.x + 8.0f + extend) / 512.0f;
+			quad[i].mTexcoords.x = (quad[i].mPosition.x + 8.0f) / 416.0f;
 			quad[i].mTexcoords.y = (quad[i].mPosition.y) / 224.0f;
 		}
 		drawer.drawQuad(quad, texture);
@@ -58,9 +57,9 @@ namespace detail
 		if (mirrored)
 		{
 			quad[0].mPosition.set(splitX + 10.0f, -3.0f);
-			quad[1].mPosition.set(splitX + 25.0f,  0.0f);
+			quad[1].mPosition.set(splitX + 25.0f, 0.0f);
 			quad[2].mPosition.set(splitX - 20.0f, 224.0f);
-			quad[3].mPosition.set(splitX -  5.0f, 227.0f);
+			quad[3].mPosition.set(splitX - 5.0f, 227.0f);
 
 			quad[0].mTexcoords.set(1.0f, animationOffset);
 			quad[1].mTexcoords.set(0.0f, animationOffset);
@@ -69,8 +68,8 @@ namespace detail
 		}
 		else
 		{
-			quad[0].mPosition.set(splitX +  5.0f, -3.0f);
-			quad[1].mPosition.set(splitX + 20.0f,  0.0f);
+			quad[0].mPosition.set(splitX + 5.0f, -3.0f);
+			quad[1].mPosition.set(splitX + 20.0f, 0.0f);
 			quad[2].mPosition.set(splitX - 25.0f, 224.0f);
 			quad[3].mPosition.set(splitX - 10.0f, 227.0f);
 
@@ -86,11 +85,11 @@ namespace detail
 
 MenuBackground::MenuBackground()
 {
-	detail::createGameMenuInstance(mMainMenu,		mAllChildren, *this);
-	detail::createGameMenuInstance(mTimeAttackMenu,	mAllChildren, *this);
-	detail::createGameMenuInstance(mOptionsMenu,	mAllChildren, *this);
-	detail::createGameMenuInstance(mExtrasMenu,		mAllChildren, *this);
-	detail::createGameMenuInstance(mModsMenu,		mAllChildren, *this);
+	detail::createGameMenuInstance(mMainMenu, mAllChildren, *this);
+	detail::createGameMenuInstance(mTimeAttackMenu, mAllChildren, *this);
+	detail::createGameMenuInstance(mOptionsMenu, mAllChildren, *this);
+	detail::createGameMenuInstance(mExtrasMenu, mAllChildren, *this);
+	detail::createGameMenuInstance(mModsMenu, mAllChildren, *this);
 }
 
 MenuBackground::~MenuBackground()
@@ -176,17 +175,17 @@ void MenuBackground::render()
 
 	// Calculate split positions between visible parts of layers
 	const float normalizedSplitLight = std::max(mLightLayer.mCurrentPosition, mAlterLayer.mCurrentPosition);
-	const float normalizedSplitBlue  = std::max(mBlueLayer.mCurrentPosition, mAlterLayer.mCurrentPosition);
+	const float normalizedSplitBlue = std::max(mBlueLayer.mCurrentPosition, mAlterLayer.mCurrentPosition);
 	const float normalizedSplitAlter = mAlterLayer.mCurrentPosition;
-	const float normalizedTitleLeft  = normalizedSplitAlter;
+	const float normalizedTitleLeft = normalizedSplitAlter;
 	const float normalizedTitleRight = std::min(normalizedSplitLight, normalizedSplitBlue);
 
 	const float splitMin = -30.0f;
-	const float splitMax = 512.0f;
+	const float splitMax = 430.0f;
 	const float splitLight = interpolate(splitMin, splitMax, saturate(normalizedSplitLight));
-	const float splitBlue  = interpolate(splitMin, splitMax, saturate(normalizedSplitBlue));
+	const float splitBlue = interpolate(splitMin, splitMax, saturate(normalizedSplitBlue));
 	const float splitAlter = interpolate(splitMin, splitMax, saturate(normalizedSplitAlter));
-	const float titleLeft  = interpolate(splitMin, splitMax, saturate(normalizedTitleLeft));
+	const float titleLeft = interpolate(splitMin, splitMax, saturate(normalizedTitleLeft));
 	const float titleRight = interpolate(splitMin, splitMax, saturate(normalizedTitleRight));
 
 	// Layers
@@ -209,20 +208,10 @@ void MenuBackground::render()
 			runtime.setGlobalVariableValue<int64>(LOGO_POSITION_NAME, roundToInt(interpolate(splitMin, splitMax, normalizedTitleRight) - 91.0f));
 			mAnimatedBackgroundActive = true;
 		}
-		else
-		{
-			if (mAnimatedBackgroundActive)
-			{
-				mAnimatedBackgroundActive = false;
-			}
-		}
 
 		if (splitLight < splitBlue)
 		{
-			if (!Game::instance().isInMainMenuMode())
-			{
-				detail::drawQuad(drawer, splitLight, splitBlue, global::mDataSelectBackground);
-			}
+			//detail::drawQuad(drawer, splitLight, splitBlue, global::mDataSelectBackground);
 		}
 
 		if (splitBlue < splitMax)
@@ -304,46 +293,46 @@ void MenuBackground::startTransition(Target target)
 
 	switch (target)
 	{
-		case Target::TITLE:
-		{
-			// Only used when exiting the application
-			mLightLayer.mDelay = 0.1f;
-			break;
-		}
+	case Target::TITLE:
+	{
+		// Only used when exiting the application
+		mLightLayer.mDelay = 0.1f;
+		break;
+	}
 
-		case Target::SPLIT:
-		{
-			mLightLayer.mTargetPosition = 0.465f;
-			break;
-		}
+	case Target::SPLIT:
+	{
+		mLightLayer.mTargetPosition = 0.465f;
+		break;
+	}
 
-		case Target::LIGHT:
-		{
-			mLightLayer.mTargetPosition = 0.0f;
-			mBackgroundLayer.mTargetPosition = -0.5f;
-			break;
-		}
+	case Target::LIGHT:
+	{
+		mLightLayer.mTargetPosition = 0.0f;
+		mBackgroundLayer.mTargetPosition = -0.5f;
+		break;
+	}
 
-		case Target::BLUE:
-		{
-			mBlueLayer.mTargetPosition = 0.0f;
-			mLightLayer.mTargetPosition = -0.5f;	// Far to the left
-			mBackgroundLayer.mTargetPosition = -0.5f;
-			break;
-		}
+	case Target::BLUE:
+	{
+		mBlueLayer.mTargetPosition = 0.0f;
+		mLightLayer.mTargetPosition = -0.5f;	// Far to the left
+		mBackgroundLayer.mTargetPosition = -0.5f;
+		break;
+	}
 
-		case Target::ALTER:
-		{
-			mLightLayer.mTargetPosition = 1.5f;
-			mLightLayer.mDelay = 0.1f;
-			mAlterLayer.mTargetPosition = 1.0f;
-			mBackgroundLayer.mTargetPosition = 1.5f;
-			mBackgroundLayer.mDelay = 0.1f;
-			break;
-		}
+	case Target::ALTER:
+	{
+		mLightLayer.mTargetPosition = 1.5f;
+		mLightLayer.mDelay = 0.1f;
+		mAlterLayer.mTargetPosition = 1.0f;
+		mBackgroundLayer.mTargetPosition = 1.5f;
+		mBackgroundLayer.mDelay = 0.1f;
+		break;
+	}
 
-		default:
-			break;
+	default:
+		break;
 	}
 
 	mTarget = target;
