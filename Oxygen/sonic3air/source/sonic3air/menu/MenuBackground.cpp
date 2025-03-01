@@ -43,9 +43,11 @@ namespace detail
 		quad[2].mPosition.set(splitX1 - 15.0f, 224.0f);
 		quad[3].mPosition.set(splitX2 - 15.0f, 224.0f);
 
+		int extend = abs(int(VideoOut::instance().getScreenWidth() - 496)) / 2;
+
 		for (int i = 0; i < 4; ++i)
 		{
-			quad[i].mTexcoords.x = (quad[i].mPosition.x + 8.0f) / 416.0f;
+			quad[i].mTexcoords.x = (quad[i].mPosition.x + 8.0f + extend) / 512.0f;
 			quad[i].mTexcoords.y = (quad[i].mPosition.y) / 224.0f;
 		}
 		drawer.drawQuad(quad, texture);
@@ -211,7 +213,10 @@ void MenuBackground::render()
 
 		if (splitLight < splitBlue)
 		{
-			//detail::drawQuad(drawer, splitLight, splitBlue, global::mDataSelectBackground);
+			if (!Game::instance().isInMainMenuMode())
+			{
+				detail::drawQuad(drawer, splitLight, splitBlue, global::mDataSelectBackground);
+			}
 		}
 
 		if (splitBlue < splitMax)
@@ -230,11 +235,6 @@ void MenuBackground::render()
 	drawer.setWrapMode(TextureWrapMode::REPEAT);
 	{
 		const float separatorAnimationOffset = -mAnimationTimer * 3.0f;
-
-		if (splitLight > splitMin && splitLight < splitMax)
-		{
-			//detail::drawSeparator(drawer, splitLight, separatorAnimationOffset, false);
-		}
 
 		if (splitBlue > splitMin && splitBlue < splitMax)
 		{
