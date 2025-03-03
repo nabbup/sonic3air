@@ -758,13 +758,6 @@ void OptionsMenu::update(float timeElapsed)
 							break;
 						}
 
-						case option::_RESTART_DISCORD_RPC:
-						{
-							Simulation& simulation = Application::instance().getSimulation();
-							simulation.resetState();
-							break;
-						}
-
 						case option::_BACK:
 						{
 							goBack();

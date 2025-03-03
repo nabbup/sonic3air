@@ -659,11 +659,6 @@ void OptionsConfig::buildOther()
 {
 	ConfigBuilder configBuilder(mOtherOptions);
 
-	//CATEGORY("Debugging")
-	//{
-	//	configBuilder.addSetting("Restart Discord RPC manually", option::_RESTART_DISCORD_RPC);
-	//}
-
 	CATEGORY("Visual")
 	{
 		configBuilder.addSetting("Classic Transparency:", option::CLASSIC_TRANSPARENCY)
