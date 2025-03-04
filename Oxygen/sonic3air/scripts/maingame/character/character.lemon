@@ -312,6 +312,14 @@ function void Character.UpdateNormalState.Sonic()
 	{
 		--sonic.instashield_countdown
 	}
+	
+	if (char.bubble_shield_bounce > 0)
+	{
+		if ((char.flags & char.flag.IN_AIR) == 0 || (char.bonus_effect & char.bonus.SHIELD_BUBBLE) == 0 || char.state != char.state.ROLLING)
+			char.bubble_shield_bounce = 0
+		else if (!level.water_present || (s16(char.position.y.u16) <= s16(water.height.current)))
+			objA0.velocity.y += 0x10
+	}
 #endif
 
 	if (level.vertical_wrap == 0xff00)
@@ -405,6 +413,16 @@ function void Character.UpdateNormalState.Tails()
 		call tableLookupAddress(0x0138f6, char.flags & (char.flag.IN_AIR | char.flag.ROLLING))
 		popA456()
 	}
+	
+#if STANDALONE
+	if (char.bubble_shield_bounce > 0)
+	{
+		if ((char.flags & char.flag.IN_AIR) == 0 || (char.bonus_effect & char.bonus.SHIELD_BUBBLE) == 0 || char.state != char.state.ROLLING)
+			char.bubble_shield_bounce = 0
+		else if (!level.water_present || (s16(char.position.y.u16) <= s16(water.height.current)))
+			objA0.velocity.y += 0x10
+	}
+#endif
 
 	if (level.vertical_wrap == 0xff00)
 	{
@@ -471,6 +489,16 @@ function void Character.UpdateNormalState.Knuckles()
 		call tableLookupAddress(0x016642, char.flags & (char.flag.IN_AIR | char.flag.ROLLING))
 		popA456()
 	}
+	
+#if STANDALONE
+	if (char.bubble_shield_bounce > 0)
+	{
+		if ((char.flags & char.flag.IN_AIR) == 0 || (char.bonus_effect & char.bonus.SHIELD_BUBBLE) == 0 || char.state != char.state.ROLLING)
+			char.bubble_shield_bounce = 0
+		else if (!level.water_present || (s16(char.position.y.u16) <= s16(water.height.current)))
+			objA0.velocity.y += 0x10
+	}
+#endif
 
 	if (level.vertical_wrap == 0xff00)
 	{
@@ -597,6 +625,8 @@ function void updateCharacterRollingOnGround()
 function void Character.sharedUpdateOnGround()
 {
 	Character.CheckAgainstMoveBorders()
+	
+	char.bubble_shield_bounce = 0
 
 #if STANDALONE
 	// Experimental high-precision collision check with multiple samples per frame
@@ -2748,7 +2778,7 @@ function void Character.updateJumpMoves()
 		{
 			// Limit vertical velocity while not pressing any jump button
 			//  -> This is important to support low jumps by just tapping the button briefly
-			if ((input_state & CONTROL_ABC) == 0)
+			if ((input_state & CONTROL_ABC) == 0 && char.bubble_shield_bounce == 0)
 			{
 				char.velocity.y = max_vy
 			}
@@ -2831,6 +2861,7 @@ function void Character.updateJumpMoves()
 	}
 	else
 	{
+		char.bubble_shield_bounce = 0
 		if (char.spindash == 0)
 		{
 			char.velocity.y = max(char.velocity.y, -0x0fc0)
@@ -3876,7 +3907,7 @@ function void Character.checkForWaterSurface()
 		}
 	#endif
 	}
-	else
+	else if (char.bubble_shield_bounce == 0)
 	{
 		char.flags &= ~char.flag.UNDERWATER
 
@@ -6337,9 +6368,11 @@ function void Character.LandingOnGroundResetState()
 function void SonicLandingBubbleBounce()
 {
 	s16 force = (char.flags & char.flag.UNDERWATER) ? 0x400 : 0x780
+	if (Game.getSetting(SETTING_BUBBLE_SHIELD_BOUNCE) == 2)
+		force = (char.flags & char.flag.UNDERWATER) ? 0x450 : 0x680
 
 #if STANDALONE
-	if (Game.getSetting(SETTING_BUBBLE_SHIELD_BOUNCE))
+	if (Game.getSetting(SETTING_BUBBLE_SHIELD_BOUNCE) == 1)
 	{
 		s16 vx = mainchar.groundhit.velocity.x
 		s16 vy = mainchar.groundhit.velocity.y
@@ -6355,6 +6388,12 @@ function void SonicLandingBubbleBounce()
 		u8 angle = char.rotation - 0x40
 		char.velocity.x += (s32(lookupCos(angle)) * force) >> 8
 		char.velocity.y += (s32(lookupSin(angle)) * force) >> 8
+	}
+	
+	if (Game.getSetting(SETTING_BUBBLE_SHIELD_BOUNCE) == 2)
+	{
+		char.bubble_shield_bounce = 1
+		char.flags |= char.flag.UNDERWATER
 	}
 
 	char.state = char.state.ROLLING
@@ -6516,6 +6555,15 @@ function void Character.UpdateGotHurtState.Sonic()
 	if (debugModeRescue())
 		return
 
+#if STANDALONE
+	if (char.bubble_shield_bounce == 1 && (char.bonus_effect & char.bonus.SHIELD_BUBBLE) == 0)
+	{
+		char.bubble_shield_bounce = 0
+		char.flags &= ~char.flag.UNDERWATER
+		setSpeedCapProperties(A4)
+	}
+#endif
+
 	UpdateMovementStraight()
 	char.velocity.y += (char.flags & char.flag.UNDERWATER) ? 0x10 : 0x30
 
@@ -6569,6 +6617,15 @@ function void Character.UpdateGotHurtState.Tails()
 
 	Tails.CheckDropSonic()
 
+#if STANDALONE
+	if (char.bubble_shield_bounce == 1 && (char.bonus_effect & char.bonus.SHIELD_BUBBLE) == 0)
+	{
+		char.bubble_shield_bounce = 0
+		char.flags &= ~char.flag.UNDERWATER
+		setSpeedCapProperties(A4)
+	}
+#endif
+
 	UpdateMovementStraight()
 	char.velocity.y += (char.flags & char.flag.UNDERWATER) ? 0x10 : 0x30
 
@@ -6615,6 +6672,15 @@ function void Character.UpdateGotHurtState.Knuckles()
 {
 	if (debugModeRescue())
 		return
+
+#if STANDALONE
+	if (char.bubble_shield_bounce == 1 && (char.bonus_effect & char.bonus.SHIELD_BUBBLE) == 0)
+	{
+		char.bubble_shield_bounce = 0
+		char.flags &= ~char.flag.UNDERWATER
+		setSpeedCapProperties(A4)
+	}
+#endif
 
 	UpdateMovementStraight()
 	char.velocity.y += (char.flags & char.flag.UNDERWATER) ? 0x10 : 0x30

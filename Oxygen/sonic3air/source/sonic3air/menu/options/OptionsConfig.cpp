@@ -552,6 +552,7 @@ void OptionsConfig::buildControls()
 
 		configBuilder.addSetting("Bubble Shield Bounce:", option::BUBBLE_SHIELD_BOUNCE)
 			.addOption("Sonic 3 Style", 0)
+			.addOption("Sonic Generations Style", 2)
 			.addOption("Sonic Mania Style", 1);
 	}
 

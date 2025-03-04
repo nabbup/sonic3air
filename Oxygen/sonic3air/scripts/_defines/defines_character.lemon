@@ -250,3 +250,5 @@ define char.hitbox.default.x	=  u8[A0 + 0x45]			// See char.hitbox.x.* constants
 define char.layer_flags			= u16[A0 + 0x46]
 define char.layer_flags1		=  u8[A0 + 0x46]			// Bit 0x02 = current layer (for loopings etc.)
 define char.layer_flags2		=  u8[A0 + 0x47]			// Bit 0x02 = current layer (once more)
+
+define char.bubble_shield_bounce = u8[A0 + 0x48]			// Set to 0x01 after bouncing with the Bubble Shield
