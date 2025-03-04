@@ -155,8 +155,8 @@ void OptionsConfig::buildDisplay()
 	#if !defined(PLATFORM_VITA)
 		configBuilder.addSetting("Screen Filter:", option::FILTERING)
 			.addOption("Sharp", 0)
-			.addOption("Soft 1", 1)
-			.addOption("Soft 2", 2)
+			.addOption("Soft", 1)
+			.addOption("CRT-esque", 2)
 			.addOption("xBRZ", 3)
 			.addOption("HQ2x", 4)
 			.addOption("HQ3x", 5)
@@ -165,8 +165,8 @@ void OptionsConfig::buildDisplay()
 		// High quality filters on the PSVITA is playing in slowmotion...
 		configBuilder.addSetting("Screen Filter:", option::FILTERING)
 			.addOption("Sharp", 0)
-			.addOption("Soft 1", 1)
-			.addOption("Soft 2", 2);
+			.addOption("Soft", 1)
+			.addOption("CRT-esque", 2);
 	#endif
 
 		configBuilder.addSetting("Scanlines:", option::SCANLINES)

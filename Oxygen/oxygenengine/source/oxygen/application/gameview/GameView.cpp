@@ -255,7 +255,7 @@ void GameView::keyboard(const rmx::KeyboardEvent& ev)
 						else
 							effect = (effect + 1) % 7;
 
-						static const std::string FILTER_METHOD_NAME[] = { "Sharp", "Soft 1", "Soft 2", "xBRZ", "HQ2x", "HQ3x", "HQ4x" };
+						static const std::string FILTER_METHOD_NAME[] = { "Sharp", "Soft", "CRT-esque", "xBRZ", "HQ2x", "HQ3x", "HQ4x" };
 						setLogDisplay("Filtering method: " + FILTER_METHOD_NAME[effect]);
 						break;
 					}
