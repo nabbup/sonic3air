@@ -32,7 +32,7 @@ out vec4 FragColor;
 uniform sampler2D MainTexture;
 uniform vec2 GameResolution;
 uniform float PixelFactor;
-uniform float CRTeseque;
+uniform float CRTesque;
 #ifdef USE_SCANLINES
 	uniform float ScanlinesIntensity;
 #endif
@@ -58,7 +58,7 @@ void main()
 	uv.y = (iy + fy) / GameResolution.y;
 
 	vec4 color = texture(MainTexture, uv);
-	if (CRTeseque >= 1.0)
+	if (CRTesque >= 1.0)
 	{
 		color = texture(MainTexture, uv + vec2(-0.00125, -0.00125));
 	}

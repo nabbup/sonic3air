@@ -139,6 +139,9 @@ void Upscaler::renderImage(const Recti& rect, GLuint textureHandle, Vec2i textur
 			// PixelFactor is at least 1.0f, which is basically bilinear sampling, infinity would be point sampling
 			float pixelFactor = rect.height / (float)textureResolution.y;
 			pixelFactor *= (filtering == 1) ? 2.0f : 1.0f;
+			if (filtering == 2) // Useott's note: We basically turned Soft 2 into the CRT-esque effect.
+				firstShader->setParam("CRTesque", 1.0f);
+			else firstShader->setParam("CRTesque", 0.0f);
 			firstShader->setParam("PixelFactor", clamp(pixelFactor, 1.0f, 1000.0f));
 
 			if (firstShader == &mUpscalerSoftShaderScanlines)
