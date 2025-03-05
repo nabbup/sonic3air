@@ -160,7 +160,7 @@ void OptionsMenuEntry::renderInternal(RenderContext& renderContext_, const Color
 	Drawer& drawer = *renderContext.mDrawer;
 	const int baseX = renderContext.mCurrentPosition.x;
 	int& py = renderContext.mCurrentPosition.y;
-	Font& font = (mUseSmallFont || renderContext.mIsModsTab) ? global::mOxyfontSmall : global::mOxyfontRegular;
+	Font& font = (mUseSmallFont || renderContext.mIsModsTab || mData == option::SOUND_TEST || mData == option::SOUND_TEST_SFX) ? global::mOxyfontSmall : global::mOxyfontRegular;
 
 	const bool isSelected = renderContext.mIsSelected;
 	const bool isDisabled = !isInteractable();
@@ -215,11 +215,25 @@ void OptionsMenuEntry::renderInternal(RenderContext& renderContext_, const Color
 		// Description
 		if (!mText.empty())
 		{
+			if (mData == option::SOUND_TEST)
+			{
+				drawer.printText(global::mOxyfontRegular, Recti(baseX - 40, py, 0, 10), "Sound Test:", 6, color);
+				if (isSelected) // at least have it be consistent if i can't fix it --useott
+					drawer.printText(global::mOxyfontRegular, Recti(baseX - 40, py, 0, 10), "Sound Test:", 6, color);
+				py += 16;
+			}
+			else if (mData == option::SOUND_TEST_SFX)
+			{
+				py += 12;
+				if (isSelected)
+					drawer.printText(global::mOxyfontRegular, Recti(baseX - 40, py - 28, 0, 10), "Sound Test:", 6, color);
+			}
 			drawer.printText(font, Recti(baseX - 40, py, 0, 10), mText, 6, color);
 		}
 
 		// Value text
 		const AudioCollection::AudioDefinition* audioDefinition = nullptr;
+		const AudioCollection::AudioDefinition* audioDefinitionSFX = nullptr;
 		{
 			static const std::string TEXT_NOT_AVAILABLE = "not available";
 			const std::string* text = (isDisabled && mData != option::RENDERER) ? &TEXT_NOT_AVAILABLE : &mOptions[mSelectedIndex].mText;
@@ -227,6 +241,16 @@ void OptionsMenuEntry::renderInternal(RenderContext& renderContext_, const Color
 			{
 				audioDefinition = renderContext.mOptionsMenu->getSoundTestAudioDefinition(selected().mValue);
 				if (nullptr != audioDefinition && AudioOut::instance().getAudioKeyType(audioDefinition->mKeyId) == AudioOutBase::AudioKeyType::MODDED)
+				{
+					static std::string combinedText;
+					combinedText = *text + " (modded)";
+					text = &combinedText;
+				}
+			}
+			if (mData == option::SOUND_TEST_SFX)
+			{
+				audioDefinitionSFX = renderContext.mOptionsMenu->getSoundTestAudioDefinitionSFX(selected().mValue);
+				if (nullptr != audioDefinitionSFX && AudioOut::instance().getAudioKeyType(audioDefinitionSFX->mKeyId) == AudioOutBase::AudioKeyType::MODDED)
 				{
 					static std::string combinedText;
 					combinedText = *text + " (modded)";
@@ -242,10 +266,20 @@ void OptionsMenuEntry::renderInternal(RenderContext& renderContext_, const Color
 			drawer.printText(font, Recti(center + arrowDistance, py, 0, 10), ">", 5, color);
 
 		// Additional text for sound test
-		if (mData == option::SOUND_TEST && nullptr != audioDefinition)
+		if ((mData == option::SOUND_TEST || mData == option::SOUND_TEST_SFX) && (nullptr == audioDefinition && nullptr == audioDefinitionSFX) == 0)
 		{
-			py += 13;
-			drawer.printText(global::mOxyfontTiny, Recti(center - 80, py, 160, 10), audioDefinition->mDisplayName, 5, color);
+			if (mData == option::SOUND_TEST_SFX)
+			{
+				py -= 12;
+				if (isSelected)
+					drawer.printText(global::mOxyfontTiny, Recti(center - 80, py - 16, 160, 10), audioDefinitionSFX->mDisplayName, 5, color);
+			}
+			else
+			{
+				py -= 16;
+				if (isSelected)
+					drawer.printText(global::mOxyfontTiny, Recti(center - 80, py, 160, 10), audioDefinition->mDisplayName, 5, color);
+			}
 		}
 	}
 }

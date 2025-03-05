@@ -236,7 +236,8 @@ void OptionsConfig::buildAudio()
 			.addOption("Emulated", 0)
 			.addOption("Remastered", 1);
 
-		configBuilder.addSetting("Sound Test:", option::SOUND_TEST);		// Will be filled with content in "OptionsMenu::initialize()"
+		configBuilder.addSetting("Music and Jingles:", option::SOUND_TEST);		// Will be filled with content in "OptionsMenu::initialize()"
+		configBuilder.addSetting("Sound Effects:", option::SOUND_TEST_SFX);
 	}
 
 	CATEGORY("Theme Selection")

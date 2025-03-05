@@ -68,6 +68,7 @@ namespace optionsmenu
 		ConditionalOption(option::SOUNDTRACK,				 true),
 		ConditionalOption(option::SOUNDTRACK_DOWNLOAD,		 true),
 		ConditionalOption(option::SOUND_TEST,				 true),
+		ConditionalOption(option::SOUND_TEST_SFX,			 true),
 		ConditionalOption(option::TITLE_THEME,				 true),
 		ConditionalOption(option::OUTRO_MUSIC,				 true),
 		ConditionalOption(option::COMPETITION_MENU_MUSIC,	 true),
@@ -401,6 +402,48 @@ void OptionsMenu::initialize()
 		entry.sanitizeSelectedIndex();
 	}
 
+	// Fill sound test
+	{
+		mSoundTestAudioDefinitionsSFX.clear();
+		const bool devModeEnabled = Configuration::instance().mDevMode.mEnabled;
+		const auto& audioDefinitions = AudioOut::instance().getAudioCollection().getAudioDefinitions();
+		for (const auto& [key, audioDefinition] : audioDefinitions)
+		{
+			bool visible = false;
+			const AudioCollection::AudioDefinition::Visibility visibility = audioDefinition.mSoundTestVisibility;
+			switch (visibility)
+			{
+				case AudioCollection::AudioDefinition::Visibility::ALWAYS_HIDDEN:	visible = false;  break;
+				case AudioCollection::AudioDefinition::Visibility::ALWAYS_VISIBLE:	visible = true;   break;
+				case AudioCollection::AudioDefinition::Visibility::DEV_MODE_ONLY:	visible = devModeEnabled;  break;
+
+				default:
+				{
+					// By default, show sound effects only
+					if (audioDefinition.mType == AudioCollection::AudioDefinition::Type::SOUND)
+						visible = true;
+					break;
+				}
+			}
+
+			if (visible)
+			{
+				mSoundTestAudioDefinitionsSFX.emplace_back(&audioDefinition);
+			}
+		}
+
+		std::sort(mSoundTestAudioDefinitionsSFX.begin(), mSoundTestAudioDefinitionsSFX.end(),
+			[](const AudioCollection::AudioDefinition* a, const AudioCollection::AudioDefinition* b) { return a->mKeyString < b->mKeyString; });
+
+		GameMenuEntry& entry = *mOptionEntries[option::SOUND_TEST_SFX].mGameMenuEntry;
+		entry.mOptions.clear();
+		for (size_t index = 0; index < mSoundTestAudioDefinitionsSFX.size(); ++index)
+		{
+			entry.addOption(mSoundTestAudioDefinitionsSFX[index]->mKeyString, (uint32)index);
+		}
+		entry.sanitizeSelectedIndex();
+	}
+
 	// Show or hide 3 and 4 player input settings
 	static_assert(InputManager::NUM_PLAYERS == 4);
 	for (int playerIndex = 1; playerIndex < InputManager::NUM_PLAYERS; ++playerIndex)
@@ -685,6 +728,12 @@ void OptionsMenu::update(float timeElapsed)
 						case option::SOUND_TEST:
 						{
 							playSoundtest(*mSoundTestAudioDefinitions[selectedEntry.selected().mValue]);
+							break;
+						}
+
+						case option::SOUND_TEST_SFX:
+						{
+							playSoundtest(*mSoundTestAudioDefinitionsSFX[selectedEntry.selected().mValue]);
 							break;
 						}
 
@@ -1097,6 +1146,11 @@ const AudioCollection::AudioDefinition* OptionsMenu::getSoundTestAudioDefinition
 	return ((size_t)index < mSoundTestAudioDefinitions.size()) ? mSoundTestAudioDefinitions[index] : nullptr;
 }
 
+const AudioCollection::AudioDefinition* OptionsMenu::getSoundTestAudioDefinitionSFX(uint32 index) const
+{
+	return ((size_t)index < mSoundTestAudioDefinitionsSFX.size()) ? mSoundTestAudioDefinitionsSFX[index] : nullptr;
+}
+
 void OptionsMenu::setupOptionEntry(option::Option optionId, SharedDatabase::Setting::Type setting)
 {
 	OptionEntry& optionEntry = mOptionEntries[optionId];
@@ -1427,7 +1481,7 @@ void OptionsMenu::refreshControlsDisplay()
 		else if (selectedEntry.mOptions.size() >= 2)
 		{
 			mGameMenuControlsDisplay.addControl("Change", false, "@input_icon_button_left", "@input_icon_button_right");
-			if (selectedEntry.mData == option::SOUND_TEST)
+			if (selectedEntry.mData == option::SOUND_TEST || selectedEntry.mData == option::SOUND_TEST_SFX)
 				mGameMenuControlsDisplay.addControl("Play", false, "@input_icon_button_A");
 		}
 		else

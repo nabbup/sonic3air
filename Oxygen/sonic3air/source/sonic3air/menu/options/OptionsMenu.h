@@ -41,6 +41,7 @@ public:
 	void removeControllerSetupMenu();
 
 	const AudioCollection::AudioDefinition* getSoundTestAudioDefinition(uint32 index) const;
+	const AudioCollection::AudioDefinition* getSoundTestAudioDefinitionSFX(uint32 index) const;
 
 	static void setOptionsMusic(std::string_view sfxId);
 
@@ -116,6 +117,7 @@ private:
 
 	uint32 mLastGamepadsChangeCounter = 0;
 	std::vector<const AudioCollection::AudioDefinition*> mSoundTestAudioDefinitions;
+	std::vector<const AudioCollection::AudioDefinition*> mSoundTestAudioDefinitionsSFX;
 	const AudioCollection::AudioDefinition* mPlayingSoundTest = nullptr;
 
 	State mState = State::INACTIVE;

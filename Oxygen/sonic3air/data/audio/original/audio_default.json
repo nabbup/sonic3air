@@ -162,104 +162,104 @@
 	// Sound effects                                //
 	//----------------------------------------------//
 
-	"33": { "Source": "Emulation", "Type": "Sound", "Volume": "0.8" },	// Alternating ring sound (emulation plays left)
-	"34": { "Source": "Emulation", "Type": "Sound", "Volume": "0.8" },	// Ring sound always playing right
-	"35": { "Source": "Emulation", "Type": "Sound" },
-	"36": { "Source": "Emulation", "Type": "Sound" },		// Brake
-	"37": { "Source": "Emulation", "Type": "Sound" },
-	"38": { "Source": "Emulation", "Type": "Sound" },
-	"39": { "Source": "Emulation", "Type": "Sound" },
-	"3A": { "Source": "Emulation", "Type": "Sound" },
-	"3B": { "Source": "Emulation", "Type": "Sound" },
-	"3C": { "Source": "Emulation", "Type": "Sound", "Volume": "0.7" },		// Roll
-	"3D": { "Source": "Emulation", "Type": "Sound" },
-	"3E": { "Source": "Emulation", "Type": "Sound" },
-	"3F": { "Source": "Emulation", "Type": "Sound" },
+	"33": { "Name": "Ring 1", "Source": "Emulation", "Type": "Sound", "Volume": "0.8" },	// Alternating ring sound (emulation plays left)
+	"34": { "Name": "Ring 2", "Source": "Emulation", "Type": "Sound", "Volume": "0.8" },	// Ring sound always playing right
+	"35": { "Name": "Damage/Death", "Source": "Emulation", "Type": "Sound" },
+	"36": { "Name": "Brake", "Source": "Emulation", "Type": "Sound" },		// Brake
+	"37": { "Name": "Spike damage", "Source": "Emulation", "Type": "Sound" },
+	"38": { "Name": "Gasp", "Source": "Emulation", "Type": "Sound" },
+	"39": { "Name": "Splash", "Source": "Emulation", "Type": "Sound" },
+	"3A": { "Name": "Classic Shield", "Source": "Emulation", "Type": "Sound" },
+	"3B": { "Name": "Drowning", "Source": "Emulation", "Type": "Sound" },
+	"3C": { "Name": "Roll", "Source": "Emulation", "Type": "Sound", "Volume": "0.7" },		// Roll
+	"3D": { "Name": "Small explosion", "Source": "Emulation", "Type": "Sound" },
+	"3E": { "Name": "Fire Shield", "Source": "Emulation", "Type": "Sound" },
+	"3F": { "Name": "Bubble Shield", "Source": "Emulation", "Type": "Sound" },
 
-	"40": { "Source": "Emulation", "Type": "Sound" },
-	"41": { "Source": "Emulation", "Type": "Sound" },
-	"42": { "Source": "Emulation", "Type": "Sound" },
-	"43": { "Source": "Emulation", "Type": "Sound" },
-	"44": { "Source": "Emulation", "Type": "Sound" },
-	"45": { "Source": "Emulation", "Type": "Sound" },
-	"46": { "Source": "Emulation", "Type": "Sound" },
+	"40": { "Name": "Electric zap", "Source": "Emulation", "Type": "Sound" },
+	"41": { "Name": "Electric Shield", "Source": "Emulation", "Type": "Sound" },
+	"42": { "Name": "Insta-Shield", "Source": "Emulation", "Type": "Sound" },
+	"43": { "Name": "Fire Dash", "Source": "Emulation", "Type": "Sound" },
+	"44": { "Name": "Bubble Bounce", "Source": "Emulation", "Type": "Sound" },
+	"45": { "Name": "Electric Jump", "Source": "Emulation", "Type": "Sound" },
+	"46": { "Name": "Whistle", "Source": "Emulation", "Type": "Sound" },
 	"47": { "Source": "Emulation", "Type": "Sound" },
-	"48": { "Source": "Emulation", "Type": "Sound" },
-	"49": { "Source": "Emulation", "Type": "Sound" },
-	"4A": { "Source": "Emulation", "Type": "Sound" },
-	"4B": { "Source": "Emulation", "Type": "Sound" },
-	"4C": { "Source": "Emulation", "Type": "Sound" },
-	"4D": { "Source": "Emulation", "Type": "Sound" },
-	"4E": { "Source": "Emulation", "Type": "Sound" },
-	"4F": { "Source": "Emulation", "Type": "Sound" },
+	"48": { "Name": "Fire", "Source": "Emulation", "Type": "Sound" },
+	"49": { "Name": "Something got hit", "Source": "Emulation", "Type": "Sound" },
+	"4A": { "Name": "Grab", "Source": "Emulation", "Type": "Sound" },
+	"4B": { "Name": "Waterfall splash", "Source": "Emulation", "Type": "Sound" },
+	"4C": { "Name": "Landing", "Source": "Emulation", "Type": "Sound" },
+	"4D": { "Name": "Shot", "Source": "Emulation", "Type": "Sound" },
+	"4E": { "Name": "Big explosion", "Source": "Emulation", "Type": "Sound" },
+	"4F": { "Name": "Flamethrower", "Source": "Emulation", "Type": "Sound" },
 
-	"50": { "Source": "Emulation", "Type": "Sound" },
-	"51": { "Source": "Emulation", "Type": "Sound" },
-	"52": { "Source": "Emulation", "Type": "Sound" },
-	"53": { "Source": "Emulation", "Type": "Sound" },
-	"54": { "Source": "Emulation", "Type": "Sound" },
-	"55": { "Source": "Emulation", "Type": "Sound" },
-	"56": { "Source": "Emulation", "Type": "Sound" },
-	"57": { "Source": "Emulation", "Type": "Sound" },
-	"58": { "Source": "Emulation", "Type": "Sound" },
-	"59": { "Source": "Emulation", "Type": "Sound", "Volume": "0.7" },		// Collapse sound (which is a bit loud imho)
+	"50": { "Name": "Siren", "Source": "Emulation", "Type": "Sound" },
+	"51": { "Name": "Something fell", "Source": "Emulation", "Type": "Sound" },
+	"52": { "Name": "Spikes move", "Source": "Emulation", "Type": "Sound" },
+	"53": { "Name": "Powering up", "Source": "Emulation", "Type": "Sound" },
+	"54": { "Name": "Firing", "Source": "Emulation", "Type": "Sound" },
+	"55": { "Name": "Hill Top Zone SFX", "Source": "Emulation", "Type": "Sound" },
+	"56": { "Name": "Landing", "Source": "Emulation", "Type": "Sound" },
+	"57": { "Name": "Water bursts out", "Source": "Emulation", "Type": "Sound" },
+	"58": { "Name": "Something closes", "Source": "Emulation", "Type": "Sound" },
+	"59": { "Name": "Something collapses", "Source": "Emulation", "Type": "Sound", "Volume": "0.7" },		// Collapse sound (which is a bit loud imho)
 	"5A": { "Source": "Emulation", "Type": "Sound" },
-	"5B": { "File": "sfx5B.ogg", "Type": "Sound" },			// Still using the recorded version, as the emulated version somehow feels off (though I can't really say why)
-	"5C": { "Source": "Emulation", "Type": "Sound" },
-	"5D": { "Source": "Emulation", "Type": "Sound" },
-	"5E": { "Source": "Emulation", "Type": "Sound" },
-	"5F": { "Source": "Emulation", "Type": "Sound" },
+	"5B": { "Name": "Beep", "File": "sfx5B.ogg", "Type": "Sound" },			// Still using the recorded version, as the emulated version somehow feels off (though I can't really say why)
+	"5C": { "Name": "Spark", "Source": "Emulation", "Type": "Sound" },
+	"5D": { "Name": "Something got hit", "Source": "Emulation", "Type": "Sound" },
+	"5E": { "Name": "Laser fired", "Source": "Emulation", "Type": "Sound" },
+	"5F": { "Name": "Crusher crushes", "Source": "Emulation", "Type": "Sound" },
 
-	"60": { "Source": "Emulation", "Type": "Sound" },
-	"61": { "Source": "Emulation", "Type": "Sound" },
-	"62": { "Source": "Emulation", "Type": "Sound" },		// Jump
-	"63": { "Source": "Emulation", "Type": "Sound" },
+	"60": { "Name": "Flying away", "Source": "Emulation", "Type": "Sound" },
+	"61": { "Name": "Hits ground", "Source": "Emulation", "Type": "Sound" },
+	"62": { "Name": "Jump", "Source": "Emulation", "Type": "Sound" },		// Jump
+	"63": { "Name": "Checkpoint activated", "Source": "Emulation", "Type": "Sound" },
 	"64": { "Source": "Emulation", "Type": "Sound" },
-	"65": { "Source": "Emulation", "Type": "Sound" },
-	"66": { "Source": "Emulation", "Type": "Sound" },
-	"67": { "Source": "Emulation", "Type": "Sound" },
-	"68": { "Source": "Emulation", "Type": "Sound" },
-	"69": { "Source": "Emulation", "Type": "Sound" },
-	"6A": { "Source": "Emulation", "Type": "Sound" },
-	"6B": { "Source": "Emulation", "Type": "Sound" },
-	"6C": { "Source": "Emulation", "Type": "Sound" },
-	"6D": { "Source": "Emulation", "Type": "Sound" },
-	"6E": { "Source": "Emulation", "Type": "Sound" },
-	"6F": { "Source": "Emulation", "Type": "Sound" },
+	"65": { "Name": "Sphere collected", "Source": "Emulation", "Type": "Sound" },
+	"66": { "Name": "Spheres fly away", "Source": "Emulation", "Type": "Sound" },
+	"67": { "Name": "Missile launch", "Source": "Emulation", "Type": "Sound" },
+	"68": { "Name": "Master Emerald's gift", "Source": "Emulation", "Type": "Sound" },
+	"69": { "Name": "Something is pushed", "Source": "Emulation", "Type": "Sound" },
+	"6A": { "Name": "Warp", "Source": "Emulation", "Type": "Sound" },
+	"6B": { "Name": "Blip", "Source": "Emulation", "Type": "Sound" },
+	"6C": { "Name": "Splash", "Source": "Emulation", "Type": "Sound" },
+	"6D": { "Name": "Something closes", "Source": "Emulation", "Type": "Sound" },
+	"6E": { "Name": "Machine damage", "Source": "Emulation", "Type": "Sound" },
+	"6F": { "Name": "Something is collapsing", "Source": "Emulation", "Type": "Sound" },
 
-	"70": { "Source": "Emulation", "Type": "Sound" },
-	"71": { "Source": "Emulation", "Type": "Sound" },
-	"72": { "Source": "Emulation", "Type": "Sound" },
-	"73": { "Source": "Emulation", "Type": "Sound" },
-	"74": { "Source": "Emulation", "Type": "Sound" },
-	"75": { "Source": "Emulation", "Type": "Sound" },
-	"76": { "Source": "Emulation", "Type": "Sound" },
-	"77": { "Source": "Emulation", "Type": "Sound" },
-	"78": { "Source": "Emulation", "Type": "Sound" },
-	"79": { "Source": "Emulation", "Type": "Sound" },
+	"70": { "Name": "Flame released", "Source": "Emulation", "Type": "Sound" },
+	"71": { "Name": "Classic Shield", "Source": "Emulation", "Type": "Sound" },
+	"72": { "Name": "Carnival Night Zone fan", "Source": "Emulation", "Type": "Sound" },
+	"73": { "Name": "Teleport", "Source": "Emulation", "Type": "Sound" },
+	"74": { "Name": "Something activates", "Source": "Emulation", "Type": "Sound" },
+	"75": { "Name": "Balloon Platform rises", "Source": "Emulation", "Type": "Sound" },
+	"76": { "Name": "Click", "Source": "Emulation", "Type": "Sound" },
+	"77": { "Name": "Balloon pop", "Source": "Emulation", "Type": "Sound" },
+	"78": { "Name": "Electric barrier", "Source": "Emulation", "Type": "Sound" },
+	"79": { "Name": "Electric sparks", "Source": "Emulation", "Type": "Sound" },
 	"7A": { "Source": "Emulation", "Type": "Sound" },
-	"7B": { "Source": "Emulation", "Type": "Sound" },
-	"7C": { "Source": "Emulation", "Type": "Sound" },
+	"7B": { "Name": "Bounce", "Source": "Emulation", "Type": "Sound" },
+	"7C": { "Name": "Bullet is fired", "Source": "Emulation", "Type": "Sound" },
 	"7D": { "Source": "Emulation", "Type": "Sound" },
 	"7E": { "Source": "Emulation", "Type": "Sound" },
-	"7F": { "Source": "Emulation", "Type": "Sound" },
+	"7F": { "Name": "Freezer releases clouds", "Source": "Emulation", "Type": "Sound" },
 
-	"80": { "Source": "Emulation", "Type": "Sound" },
-	"81": { "Source": "Emulation", "Type": "Sound" },
-	"82": { "Source": "Emulation", "Type": "Sound" },
-	"83": { "Source": "Emulation", "Type": "Sound" },
-	"84": { "Source": "Emulation", "Type": "Sound" },		// I wonder where this is ever used?
-	"85": { "Source": "Emulation", "Type": "Sound" },		// I wonder where this is ever used?
-	"86": { "Source": "Emulation", "Type": "Sound" },
-	"87": { "Source": "Emulation", "Type": "Sound" },
-	"88": { "Source": "Emulation", "Type": "Sound" },
-	"89": { "Source": "Emulation", "Type": "Sound" },
-	"8A": { "Source": "Emulation", "Type": "Sound" },
-	"8B": { "Source": "Emulation", "Type": "Sound" },
+	"80": { "Name": "Something is frozen", "Source": "Emulation", "Type": "Sound" },
+	"81": { "Name": "Something was shot", "Source": "Emulation", "Type": "Sound" },
+	"82": { "Name": "Chained platform reaches limit", "Source": "Emulation", "Type": "Sound" },
+	"83": { "Name": "Bridge breaks", "Source": "Emulation", "Type": "Sound" },
+	"84": { "Name": "Powering up", "Source": "Emulation", "Type": "Sound" },		// I wonder where this is ever used?
+	"85": { "Name": "Powering down", "Source": "Emulation", "Type": "Sound" },		// I wonder where this is ever used?
+	"86": { "Name": "Alarm", "Source": "Emulation", "Type": "Sound" },
+	"87": { "Name": "Bouncing on mushroom", "Source": "Emulation", "Type": "Sound" },
+	"88": { "Name": "Pulley is used", "Source": "Emulation", "Type": "Sound" },
+	"89": { "Name": "Weather gets influenced", "Source": "Emulation", "Type": "Sound" },
+	"8A": { "Name": "Cloud bounce", "Source": "Emulation", "Type": "Sound" },
+	"8B": { "Name": "Something got hit", "Source": "Emulation", "Type": "Sound" },
 	"8C": { "Source": "Emulation", "Type": "Sound" },
 	"8D": { "Source": "Emulation", "Type": "Sound" },
 	"8E": { "Source": "Emulation", "Type": "Sound" },
-	"8F": { "Source": "Emulation", "Type": "Sound" },
+	"8F": { "Name": "Door opens", "Source": "Emulation", "Type": "Sound" },
 
 	"90": { "Source": "Emulation", "Type": "Sound" },
 	"91": { "Source": "Emulation", "Type": "Sound" },
@@ -289,7 +289,7 @@
 	"A8": { "Source": "Emulation", "Type": "Sound" },
 	"A9": { "Source": "Emulation", "Type": "Sound" },
 	"AA": { "Source": "Emulation", "Type": "Sound" },
-	"AB": { "Source": "EmulationContinuous", "Type": "Sound", "Volume": "0.8" },		// Spindash charge; needs to be emulated dynamically (i.e. "continuous") because of reverb effect
+	"AB": { "Name": "Spin dash is charged", "Source": "EmulationContinuous", "Type": "Sound", "Volume": "0.8" },		// Spindash charge; needs to be emulated dynamically (i.e. "continuous") because of reverb effect
 	"AC": { "Source": "Emulation", "Type": "Sound" },
 	"AD": { "Source": "Emulation", "Type": "Sound" },
 	"AE": { "Source": "Emulation", "Type": "Sound" },
@@ -301,7 +301,7 @@
 	"B3": { "Source": "Emulation", "Type": "Sound" },
 	"B4": { "Source": "Emulation", "Type": "Sound" },
 	"B5": { "Source": "Emulation", "Type": "Sound" },
-	"B6": { "Source": "Emulation", "Type": "Sound", "Channel": "AB" },	// Spindash release
+	"B6": { "Name": "Spin dash is released", "Source": "Emulation", "Type": "Sound", "Channel": "AB" },	// Spindash release
 	"B7": { "Source": "Emulation", "Type": "Sound" },
 	"B8": { "Source": "Emulation", "Type": "Sound" },
 	"B9": { "Source": "Emulation", "Type": "Sound" },
@@ -348,11 +348,11 @@
 
 	"FF": { "Name": "SEGA", "File": "sfxFF_sega.ogg", "Type": "Jingle" },
 
-	"dropdash_charge": { "File": "s3air_dropdash_charge.ogg", "Type": "Sound", "Channel": "AB" },	// Use spindash channel
-	"dropdash_release":{ "File": "s3air_dropdash_release.ogg", "Type": "Sound", "Channel": "AB" },	// Use spindash channel
-	"peelout_charge":  { "File": "scd_peelout_charge.ogg", "Type": "Sound", "Channel": "AB" },		// Use spindash channel
-	"peelout_release": { "File": "scd_peelout_release.ogg", "Type": "Sound", "Channel": "AB" },		// Use spindash channel
+	"dropdash_charge": { "Name": "Drop dash is charged", "File": "s3air_dropdash_charge.ogg", "Type": "Sound", "Channel": "AB" },	// Use spindash channel
+	"dropdash_release":{ "Name": "Drop dash is released", "File": "s3air_dropdash_release.ogg", "Type": "Sound", "Channel": "AB" },	// Use spindash channel
+	"peelout_charge":  { "Name": "Super Peel-out is charged", "File": "scd_peelout_charge.ogg", "Type": "Sound", "Channel": "AB" },		// Use spindash channel
+	"peelout_release": { "Name": "Super Peel-out is released", "File": "scd_peelout_release.ogg", "Type": "Sound", "Channel": "AB" },		// Use spindash channel
 
-	"shc_splash": { "File": "shc_splash.ogg", "Type": "Sound" }
+	"shc_splash": { "Name": "SHC Splash", "File": "shc_splash.ogg", "Type": "Sound" }
 
 }
