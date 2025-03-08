@@ -74,12 +74,12 @@ void OptionsConfig::buildSystem()
 {
 	ConfigBuilder configBuilder(mSystemOptions);
 
-#if !defined(PLATFORM_VITA)
 	CATEGORY("Update")
 	{
 		configBuilder.addSetting("Open A.I.R. Freshener Download Page", option::_OPEN_AIRFRESHENERPAGE);
 	}
 
+#if !defined(PLATFORM_VITA)
 	CATEGORY("Ghost Sync")
 	{
 		configBuilder.addSetting("Enable Ghost Sync", option::GHOST_SYNC)

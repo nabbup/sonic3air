@@ -399,7 +399,7 @@ void InputManager::updateInput(float timeElapsed)
 					{
 						control->mRepeat = true;
 						const InputManager::ControllerScheme& controller = InputManager::instance().getController(0);
-						if (controller.X.isPressed())
+						if (controller.X.isPressed() && (controller.Left.isPressed() || controller.Right.isPressed()))
 							control->mRepeatTimeout = 0.025f;
 						else control->mRepeatTimeout = std::max(control->mRepeatTimeout + 0.125f, 0.05f);
 					}
