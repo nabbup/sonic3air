@@ -11,8 +11,11 @@ global bool Extras.addedOpenAchievementsToEntryList
 global u8 Extras.opacityExtras
 global u8 Extras.opacitySecrets
 global u8 Extras.opacityAchievements
+global u8 Extras.opacityData
 
 global u32 Extras.tintG
+
+global bool Extras.deletionConfirmationPrompt
 
 #if STANDALONE
 
@@ -82,10 +85,12 @@ function void Extras.DrawBackground()
 	Renderer.enableDefaultPlane(3, false)
 }
 
-function void Extras.DrawMenu(u8 selectedTab, u8 selectedEntry)
+function void Extras.DrawMenu(u8 selectedTab, u8 selectedEntry, u8 lastTab)
 {
 	constant u32 SELECTED = 0xffffffff
+	constant u32 SELECTED_RED = 0xffccccff
 	constant u32 SELECTED_HIGHLIGHTED = 0xffff00ff
+	constant u32 SELECTED_HIGHLIGHTED_RED = 0xff4400ff
 	constant u32 NOT_SELECTED = 0xe0e0e0ff
 	
 	constant string TAB_TEXT = "sonic3_fontC:gradient:outline(0x000000ff,1,false):shadow(1,1,0.5f,1.0f)"
@@ -101,6 +106,7 @@ function void Extras.DrawMenu(u8 selectedTab, u8 selectedEntry)
 	Renderer.drawText(TAB_TEXT, s16(getScreenWidth() / 2 - camera.foreground.x.u16), 13, "EXTRAS", (selectedTab == 0 && !selectedEntry) ? SELECTED_HIGHLIGHTED : (selectedTab == 0) ? SELECTED : NOT_SELECTED, 5, 0, 0xf000, false, true)
 	Renderer.drawText(TAB_TEXT, s16(getScreenWidth() / 2 - camera.foreground.x.u16 + 219), 13, "SECRETS", (selectedTab == 1 && !selectedEntry) ? SELECTED_HIGHLIGHTED : (selectedTab == 1) ? SELECTED : NOT_SELECTED, 5, 0, 0xf000, false, true)
 	Renderer.drawText(TAB_TEXT, s16(getScreenWidth() / 2 - camera.foreground.x.u16 + 440), 13, "ACHIEVEMENTS", (selectedTab == 2 && !selectedEntry) ? SELECTED_HIGHLIGHTED : (selectedTab == 2) ? SELECTED : NOT_SELECTED, 5, 0, 0xf000, false, true)
+	Renderer.drawText(TAB_TEXT, s16(getScreenWidth() / 2 - camera.foreground.x.u16 + 661), 13, "DATA", (selectedTab == 3 && !selectedEntry) ? SELECTED_HIGHLIGHTED : (selectedTab == 2) ? SELECTED : NOT_SELECTED, 5, 0, 0xf000, false, true)
 	
 	u8 arrowOffset
 	if ((global.framecounter / 10) % 6) >= 3
@@ -110,7 +116,7 @@ function void Extras.DrawMenu(u8 selectedTab, u8 selectedEntry)
 	if (selectedEntry > 0)
 		arrowOffset = 0
 	
-	if (selectedTab < 2)
+	if (selectedTab < 3)
 		Renderer.drawText(REGULAR_TEXT, s16(getScreenWidth() / 2) + 100 + arrowOffset, 15, ">", (selectedEntry == 0) ? SELECTED_HIGHLIGHTED : SELECTED, 5, 0, 0xf000, false, true)
 	if (selectedTab > 0)
 		Renderer.drawText(REGULAR_TEXT, s16(getScreenWidth() / 2) - 100 - arrowOffset, 15, "<", (selectedEntry == 0) ? SELECTED_HIGHLIGHTED : SELECTED, 5, 0, 0xf000, false, true)
@@ -129,6 +135,11 @@ function void Extras.DrawMenu(u8 selectedTab, u8 selectedEntry)
 		Extras.opacityAchievements -= 0x0f
 	else if (Extras.opacityAchievements < 0xff && selectedTab != 2)
 		Extras.opacityAchievements += 0x0f
+	
+	if (Extras.opacityData < 0x4f && selectedTab == 3)
+		Extras.opacityData += 0x0f
+	else if (Extras.opacityData > 0 && selectedTab != 3)
+		Extras.opacityData -= 0x0f
 	
 	if (global.framecounter % 40 > 20 && Extras.tintG < 0x00ff0000)
 		Extras.tintG += 0x000f0000
@@ -272,6 +283,41 @@ function void Extras.DrawMenu(u8 selectedTab, u8 selectedEntry)
 	
 	if (openAchievements > 0)
 		Renderer.drawText(BLUE_TEXT, 200 - Math.roundToInt(camera.foreground.x.u16 * 1.5) + 660 + widescreenOffset, 61 - camera.foreground.y.u16, "* open achievements *", u32(0x99ccffff - Extras.opacityAchievements), 5, 0, 0x6010, false, true)
+	
+	// Data tab - used for deleting your data
+	{
+		Renderer.drawRect(0, 0, getScreenWidth(), getScreenHeight(), u32(Extras.opacityData), 0x7001, false)
+		
+		if (selectedEntry == 5)
+		{
+			if ((global.framecounter / 10) % 6) >= 3
+				arrowOffset = 3 - (global.framecounter / 10) % 3
+			else arrowOffset = (global.framecounter / 10) % 3
+			
+			Renderer.drawText(REGULAR_TEXT, 200 - Math.roundToInt(camera.foreground.x.u16 * 1.5) + 990 - 32 + arrowOffset + widescreenOffset, 202 - camera.foreground.y.u16, ">>", SELECTED_HIGHLIGHTED, 5, 0, 0xf000, false, true)
+			Renderer.drawText(REGULAR_TEXT, 200 - Math.roundToInt(camera.foreground.x.u16 * 1.5) + 990 + 32 - arrowOffset + widescreenOffset, 202 - camera.foreground.y.u16, "<<", SELECTED_HIGHLIGHTED, 5, 0, 0xf000, false, true)
+		}
+		
+		Renderer.drawText(BLUE_TEXT, 200 - Math.roundToInt(camera.foreground.x.u16 * 1.5) + 990 + widescreenOffset, 61 - camera.foreground.y.u16, "* data deletion *", u32(0xff999900 + Extras.opacityAchievements), 5, 0, 0x7002, false, true)
+		Renderer.drawText(SMALL_TEXT, 200 - Math.roundToInt(camera.foreground.x.u16 * 1.5) + 990 + widescreenOffset, 80 - camera.foreground.y.u16, "   Be careful with these options! Once you delete any data, it's gone forever!\nAfter deleting achievements or unlocks data, restart your game to apply changes.", u32(0xffcc9900 + Extras.opacityAchievements), 5, 0, 0x7002, false, true)
+		
+		Renderer.drawText(REGULAR_TEXT, 200 - Math.roundToInt(camera.foreground.x.u16 * 1.5) + 990 + widescreenOffset, (112 + 0 * 20), "Delete Competition Mode data", ((selectedEntry == 1) ? SELECTED_HIGHLIGHTED_RED : SELECTED_RED) - 0xff + Extras.opacityAchievements, 5, 0, 0x7002, false, true)
+		Renderer.drawText(REGULAR_TEXT, 200 - Math.roundToInt(camera.foreground.x.u16 * 1.5) + 990 + widescreenOffset, (112 + 1 * 20), "Delete Achievements data", ((selectedEntry == 2) ? SELECTED_HIGHLIGHTED_RED : SELECTED_RED) - 0xff + Extras.opacityAchievements, 5, 0, 0x7002, false, true)
+		Renderer.drawText(REGULAR_TEXT, 200 - Math.roundToInt(camera.foreground.x.u16 * 1.5) + 990 + widescreenOffset, (112 + 2 * 20), "Delete Unlocks data", ((selectedEntry == 3) ? SELECTED_HIGHLIGHTED_RED : SELECTED_RED) - 0xff + Extras.opacityAchievements, 5, 0, 0x7002, false, true)
+		Renderer.drawText(REGULAR_TEXT, 200 - Math.roundToInt(camera.foreground.x.u16 * 1.5) + 990 + widescreenOffset, (112 + 3 * 20), "Delete all data (not incl. mod data)", ((selectedEntry == 4) ? SELECTED_HIGHLIGHTED_RED : SELECTED_RED) - 0xff + Extras.opacityAchievements, 5, 0, 0x7002, false, true)
+		
+		Renderer.drawText(REGULAR_TEXT , 200 - Math.roundToInt(camera.foreground.x.u16 * 1.5) + 990 + widescreenOffset, 202, "Back", ((selectedEntry == 5) ? SELECTED_HIGHLIGHTED : SELECTED) - 0xff + Extras.opacityAchievements, 5, 0, 0x7002, false, true)
+		
+		if (Extras.deletionConfirmationPrompt)
+		{
+			Renderer.drawText(REGULAR_TEXT , 200 + widescreenOffset, 80, "Are you sure?", SELECTED, 5, 0, 0xff00, false, true)
+			
+			Renderer.drawText(REGULAR_TEXT , 200 + widescreenOffset, 128, "No", Extras.deletionConfirmationPrompt == 1 ? SELECTED_HIGHLIGHTED : SELECTED, 5, 0, 0xff00, false, true)
+			Renderer.drawText(REGULAR_TEXT , 200 + widescreenOffset, 144, "Yes", Extras.deletionConfirmationPrompt == 2 ? SELECTED_HIGHLIGHTED_RED : SELECTED_RED, 5, 0, 0xff00, false, true)
+			
+			Renderer.drawRect(0, 0, getScreenWidth(), getScreenHeight(), 0x00000088, 0xff00, false)
+		}
+	}
 }
 
 function void Extras.Menu(u8 fadeInMethod)
@@ -308,9 +354,10 @@ function void Extras.Menu(u8 fadeInMethod)
 	playMusic(MUSIC_DATASELECT)
 	u32 frameCounter = 0
 
-	constant u8 RESULT_NONE       = 0
-	constant u8 RESULT_START_GAME = 1
-	constant u8 RESULT_GO_BACK    = 2
+	constant u8 RESULT_NONE			= 0
+	constant u8 RESULT_START_GAME	= 1
+	constant u8 RESULT_GO_BACK		= 2
+	constant u8 RESULT_DELETE_DATA	= 3
 
 	u8 result = RESULT_NONE
 	while (result == RESULT_NONE)
@@ -321,92 +368,124 @@ function void Extras.Menu(u8 fadeInMethod)
 			entryList = Extras.extrasEntryList
 		else if (selectedTab == 1)
 			entryList = Extras.secretsEntryList
-		else entryList = Extras.achievementsEntryList
+		else if (selectedTab == 2)
+			entryList = Extras.achievementsEntryList
+		else entryList = 4
 		++frameCounter
 		
 		ActSelect.HandleFadeIn(fadeInMethod, frameCounter)
 		Extras.DrawBackground()
 		
-		Extras.DrawMenu(selectedTab, selectedEntry)
+		Extras.DrawMenu(selectedTab, selectedEntry, lastTab)
 		
 		if (selectedEntry == 0)
 		{
-			if (control.pad1.pressed & CONTROL_LEFT && selectedTab > 0)
+			if (control.pad1.pressed & CONTROL_LEFT && selectedTab > 0 && Extras.deletionConfirmationPrompt == 0)
 			{
+				if (selectedTab == 3)
+				{
+					playMusic(MUSIC_DATASELECT)
+				}
 				--selectedTab
 				playSound(0xb7)
 			}
-			else if (control.pad1.pressed & CONTROL_RIGHT && selectedTab < 2)
+			else if (control.pad1.pressed & CONTROL_RIGHT && selectedTab < 3 && Extras.deletionConfirmationPrompt == 0)
 			{
 				++selectedTab
 				playSound(0xb7)
+				if (selectedTab == 3)
+					Audio.fadeOutChannel(0, 0.25f)
 			}
 		}
 		
 		if (control.pad1.pressed & CONTROL_UP)
 		{
-			if (selectedEntry > 0)
+			if (Extras.deletionConfirmationPrompt)
 			{
-				if (selectedEntry > 0 && selectedEntry <= entryList && camera.foreground.y.u16 > 0)
-				{
-					if (entryList > 3)
-					{
-						if (selectedTab) == 1
-							verticalScrollOffset -= 8
-						else verticalScrollOffset -= 7
-					}
-					else if (selectedEntry < entryList)
-						verticalScrollOffset -= 4
-				}
-				--selectedEntry
+				if (Extras.deletionConfirmationPrompt == 2)
+					Extras.deletionConfirmationPrompt = 1
+				else Extras.deletionConfirmationPrompt = 2
 			}
 			else
 			{
-				for (u8 i = 0; i < entryList-1; i++)
+				if (selectedEntry > 0)
 				{
-					if (entryList > 3)
+					if (selectedEntry > 0 && selectedEntry <= entryList && camera.foreground.y.u16 > 0 && selectedTab < 3)
 					{
-						if (selectedTab) == 1
-							verticalScrollOffset += 8
-						else verticalScrollOffset += 7
+						if (entryList > 3)
+						{
+							if (selectedTab) == 1
+								verticalScrollOffset -= 8
+							else verticalScrollOffset -= 7
+						}
+						else if (selectedEntry < entryList)
+							verticalScrollOffset -= 4
 					}
-					else verticalScrollOffset += 4
+					--selectedEntry
 				}
-				selectedEntry = u16(entryList+1)
+				else
+				{
+					if (selectedTab < 3)
+					{
+						for (u8 i = 0; i < entryList-1; i++)
+						{
+							if (entryList > 3)
+							{
+								if (selectedTab) == 1
+									verticalScrollOffset += 8
+								else verticalScrollOffset += 7
+							}
+							else verticalScrollOffset += 4
+						}
+					}
+					selectedEntry = u16(entryList+1)
+				}
 			}
 			playSound(SFX_CLICK)
 		}
 		else if (control.pad1.pressed & CONTROL_DOWN)
 		{
-			if (selectedEntry < u16(1 + entryList))
+			if (Extras.deletionConfirmationPrompt)
 			{
-				if (selectedEntry > 1 - (selectedTab == 2))
-				{
-					if ((camera.foreground.y.u16 < (entryList * 20) - 20 && entryList <= 3) || (entryList > 3 && camera.foreground.y.u16 < u16(entryList * 64) - 64 && selectedTab == 1) || (entryList > 3 && camera.foreground.y.u16 < u16(entryList * 56) - 56 && selectedTab != 1))
-					{
-						if (entryList > 3)
-						{
-							if (selectedTab) == 1
-								verticalScrollOffset += 8
-							else verticalScrollOffset += 7
-						}
-						else verticalScrollOffset += 4
-					}
-				}
-				++selectedEntry
+				if (Extras.deletionConfirmationPrompt == 2)
+					Extras.deletionConfirmationPrompt = 1
+				else Extras.deletionConfirmationPrompt = 2
 			}
 			else
 			{
-				selectedEntry = 0
-				for (u8 i = 0; i < entryList-1; i++)
+				if (selectedEntry < u16(1 + entryList))
 				{
-					if (entryList > 3)
+					if (selectedEntry > 1 - (selectedTab == 2) && selectedTab < 3)
 					{
-						if (selectedTab) == 1
-							verticalScrollOffset -= 8
-						else verticalScrollOffset -= 7
+						if ((camera.foreground.y.u16 < (entryList * 20) - 20 && entryList <= 3) || (entryList > 3 && camera.foreground.y.u16 < u16(entryList * 64) - 64 && selectedTab == 1) || (entryList > 3 && camera.foreground.y.u16 < u16(entryList * 56) - 56 && selectedTab != 1))
+						{
+							if (entryList > 3)
+							{
+								if (selectedTab) == 1
+									verticalScrollOffset += 8
+								else verticalScrollOffset += 7
+							}
+							else verticalScrollOffset += 4
+						}
 					}
-					else verticalScrollOffset -= 4
+					++selectedEntry
+				}
+				else
+				{
+					selectedEntry = 0
+					if (selectedTab < 3)
+					{
+						for (u8 i = 0; i < entryList-1; i++)
+						{
+							if (entryList > 3)
+							{
+								if (selectedTab) == 1
+									verticalScrollOffset -= 8
+								else verticalScrollOffset -= 7
+							}
+							else verticalScrollOffset -= 4
+						}
+					}
 				}
 			}
 			playSound(SFX_CLICK)
@@ -479,11 +558,34 @@ function void Extras.Menu(u8 fadeInMethod)
 		
 		if (Input.buttonPressed(BUTTON_B) || Input.buttonPressed(BUTTON_BACK) || (selectedEntry == entryList + 1 && (Input.buttonPressed(BUTTON_A) || (Input.buttonPressed(BUTTON_START) || Input.buttonPressed(BUTTON_X)))))
 		{
-			result = 2
+			if (Extras.deletionConfirmationPrompt)
+			{
+				playSound(0xad)
+				Extras.deletionConfirmationPrompt = 0
+			}
+			else result = RESULT_GO_BACK
 		}
-		else if ((Input.buttonPressed(BUTTON_A) || Input.buttonPressed(BUTTON_X) || Input.buttonPressed(BUTTON_START)) && selectedEntry > 0 && selectedEntry < u16(1 + Extras.extrasEntryList) && selectedTab == 0)
+		else if ((Input.buttonPressed(BUTTON_A) || Input.buttonPressed(BUTTON_X) || Input.buttonPressed(BUTTON_START)) && selectedEntry > 0 && selectedEntry < u16(1 + entryList) && (selectedTab == 0 || selectedTab == 3))
 		{
-			result = 1
+			if (selectedTab == 3)
+			{
+				if (Extras.deletionConfirmationPrompt == 2)
+				{
+					playSound(0xa1)
+					result = RESULT_DELETE_DATA
+				}
+				else if (Extras.deletionConfirmationPrompt == 0)
+				{
+					playSound(0x63)
+					Extras.deletionConfirmationPrompt = 1
+				}
+				else
+				{
+					playSound(0xad)
+					Extras.deletionConfirmationPrompt = 0
+				}
+			}
+			else result = RESULT_START_GAME
 		}
 	}
 
@@ -496,7 +598,7 @@ function void Extras.Menu(u8 fadeInMethod)
 	else if (result == RESULT_GO_BACK)
 	{
 		playSound(0xad)
-
+		
 		u32 backupA0 = A0
 		FadeOutScreenBlocking()
 		A0 = backupA0
@@ -504,6 +606,33 @@ function void Extras.Menu(u8 fadeInMethod)
 		// Do not fade out music in this case, Data Select music is meant to keep playing
 		Game.returnToMainMenu()
 		yieldExecution()
+	}
+	else if (result == RESULT_DELETE_DATA)
+	{
+		u32 backupA0 = A0
+		FadeOutScreenBlocking()
+		A0 = backupA0
+		
+		if (selectedEntry == 1 || selectedEntry == 4)
+		{
+			System.removePersistentData("s3air_competitionmode", "SRAM_CompetitionRecords", false)
+		}
+		if (selectedEntry == 2 || selectedEntry == 4)
+		{
+			System.removePersistentData("s3air_achievements", "Achievements", false)
+		}
+		if (selectedEntry == 3  || selectedEntry == 4)
+		{
+			System.removePersistentData("s3air_unlocks", "Secrets", false)
+			System.removePersistentData("s3air_unlocks", "FinishedZoneActs", false)
+		}
+		if (selectedEntry == 4)
+		{
+			System.removePersistentData("s3air_saveslots", "SRAM_Saveslots", false)
+			System.removePersistentData("s3air_saveslots", "SRAM_SaveslotsExt", false)
+		}
+		
+		scriptMainEntryPoint()
 	}
 }
 
