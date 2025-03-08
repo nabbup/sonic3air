@@ -3850,7 +3850,12 @@ function void Character.checkForWaterSurface()
 #endif
 
 	if (!level.water_present)
+	{
+		if (char.bubble_shield_bounce == 0 && (char.flags & char.flag.UNDERWATER) > 0)
+			char.flags &= ~char.flag.UNDERWATER
+		
 		return
+	}
 
 	bool wasUnderwaterBefore = (char.flags & char.flag.UNDERWATER) != 0
 	bool isUnderwaterNow = (s16(char.position.y.u16) > s16(water.height.current))
