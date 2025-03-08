@@ -369,6 +369,14 @@ function void fn01a7e4()
 //# address-hook(0x01a7e8) end(0x01a84a)
 function void fn01a7e8()
 {
+	if ((u8[0xffb02b] & char.bonus.SHIELD_LIGHTNING) && (objA0.position.x.u16 < u16[0xffb010] + 0x40) && (objA0.position.x.u16 > u16[0xffb010] - 0x40) && (objA0.position.y.u16 < u16[0xffb014] + 0x40) && (objA0.position.y.u16 > u16[0xffb014] - 0x40))
+	{
+		objA0.update_address = addressof(DynamicRing.Update)
+		objA0.base_state = 0
+		DynamicRing.Update()
+		return
+	}
+	
 	objA0.animation.sprite = spilled_rings.animframe
 	UpdateMovementStraight()
 	objA0.velocity.y += 0x18
