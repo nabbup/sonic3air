@@ -249,6 +249,8 @@ function void fn08df3c()
 function void fn08df52()
 {
 	MoveWithParent()
-	Object.animationProgress(0x08dfbc)
+	if (Game.getSetting(SETTING_CLASSIC_TRANSPARENCY) < 2)
+		objA0.animation.sprite = 7 + (global.framecounter / 2) % 2
+	else Object.animationProgress(0x08dfbc)
 	Child.DrawSprite()
 }
