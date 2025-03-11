@@ -104,13 +104,13 @@ function void fn08b73a()
 	if (objA0.render_flags & render_flag.VISIBLE)
 	{
 		objA0.flags38 ^= 0x01
-		if (objA0.flags38 & 0x01)
+		if (objA0.flags38 & 0x01 || (Game.getSetting(SETTING_CLASSIC_TRANSPARENCY) < 2)) // it should always draw
 		{
 			DrawObject()
 		}
 		else
 		{
-			fn08b598()
+			fn08b598() // why is this here? it's a *bool* for a different object that doesn't even do anything for the object
 		}
 	}
 	else

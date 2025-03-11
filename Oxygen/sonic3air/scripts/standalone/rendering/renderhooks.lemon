@@ -927,6 +927,13 @@ function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
 
 function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16 renderQueue)
 {
+	// ICZ1/2 snow fall
+	if (objA0.update_address == 0x08b73a)
+	{
+		u8 alpha = objA0.flags38 ? 160 : 128
+		Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, alpha)
+		return true
+	}
 	// Explosion of bosses
 	if (objA0.mapping_offset == 0x083ffc && Game.getSetting(SETTING_CLASSIC_TRANSPARENCY) < 2)
 	{
