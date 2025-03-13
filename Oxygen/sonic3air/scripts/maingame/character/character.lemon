@@ -3741,9 +3741,11 @@ function void gainExtraLife()
 
 	if (!Game.getSetting(SETTING_INFINITE_LIVES))
 	{
+		u8 lives_counter_backup = lives_counter
 		lives_counter = min(lives_counter + 1, 99)
 		++hud.dirty.lives
-		playMusic(MUSIC_EXTRALIFE)
+		if (lives_counter_backup != lives_counter)
+			playMusic(MUSIC_EXTRALIFE)
 	}
 #else
 	++lives_counter
