@@ -4146,6 +4146,11 @@ function void releaseSpindash()
 	{
 		char.groundspeed = -char.groundspeed
 	}
+	
+#if STANDALONE
+	// This prevents that annoying bug where you can lose all your speed if you jump one frame after releasing the spin dash
+	char.velocity.x = char.groundspeed
+#endif
 
 	// Tell dust cloud object to disappear again
 	u8[A6 + 0x20] = 0
