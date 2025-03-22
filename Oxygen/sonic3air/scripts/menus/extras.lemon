@@ -298,8 +298,8 @@ function void Extras.DrawMenu(u8 selectedTab, u8 selectedEntry, u8 lastTab)
 			Renderer.drawText(REGULAR_TEXT, 200 - Math.roundToInt(camera.foreground.x.u16 * 1.5) + 990 + 32 - arrowOffset + widescreenOffset, 202 - camera.foreground.y.u16, "<<", SELECTED_HIGHLIGHTED, 5, 0, 0xf000, false, true)
 		}
 		
-		Renderer.drawText(BLUE_TEXT, 200 - Math.roundToInt(camera.foreground.x.u16 * 1.5) + 990 + widescreenOffset, 61 - camera.foreground.y.u16, "* data deletion *", u32(0xff999900 + Extras.opacityAchievements), 5, 0, 0x7002, false, true)
-		Renderer.drawText(SMALL_TEXT, 200 - Math.roundToInt(camera.foreground.x.u16 * 1.5) + 990 + widescreenOffset, 80 - camera.foreground.y.u16, "   Be careful with these options! Once you delete any data, it's gone forever!\nAfter deleting achievements or unlocks data, restart your game to apply changes.", u32(0xffcc9900 + Extras.opacityAchievements), 5, 0, 0x7002, false, true)
+		Renderer.drawText(BLUE_TEXT, 200 - Math.roundToInt(camera.foreground.x.u16 * 1.5) + 990 + widescreenOffset, 61, "* data deletion *", u32(0xff999900 + Extras.opacityAchievements), 5, 0, 0x7002, false, true)
+		Renderer.drawText(SMALL_TEXT, 200 - Math.roundToInt(camera.foreground.x.u16 * 1.5) + 990 + widescreenOffset, 80, "   Be careful with these options! Once you delete any data, it's gone forever!\nAfter deleting achievements or unlocks data, restart your game to apply changes.", u32(0xffcc9900 + Extras.opacityAchievements), 5, 0, 0x7002, false, true)
 		
 		Renderer.drawText(REGULAR_TEXT, 200 - Math.roundToInt(camera.foreground.x.u16 * 1.5) + 990 + widescreenOffset, (112 + 0 * 20), "Delete Competition Mode data", ((selectedEntry == 1) ? SELECTED_HIGHLIGHTED_RED : SELECTED_RED) - 0xff + Extras.opacityAchievements, 5, 0, 0x7002, false, true)
 		Renderer.drawText(REGULAR_TEXT, 200 - Math.roundToInt(camera.foreground.x.u16 * 1.5) + 990 + widescreenOffset, (112 + 1 * 20), "Delete Achievements data", ((selectedEntry == 2) ? SELECTED_HIGHLIGHTED_RED : SELECTED_RED) - 0xff + Extras.opacityAchievements, 5, 0, 0x7002, false, true)
