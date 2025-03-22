@@ -98,6 +98,9 @@ function void fn083708()
 					// Signpost touched ground without hitting a monitor
 					playSound(0x7e)
 					objA0.update_address = addressof(DrawOrUnloadObject)
+				#if STANDALONE
+					Audio.fadeOutChannel(0, 2.75f)
+				#endif
 				}
 			}
 

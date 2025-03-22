@@ -120,6 +120,10 @@ function void fn0865de()
 
 	// "spawnChildObjects(0x083fee)" replaced by:
 	spawnChildObject(0x083d84, 0x00, 0, 0)		// Boss explosion generator
+	
+#if STANDALONE
+	Audio.fadeOutChannel(0, 2.75f)
+#endif
 
 	u8[A1 + 0x2c] = 0x08
 }

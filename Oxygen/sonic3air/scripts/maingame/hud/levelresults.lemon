@@ -32,7 +32,9 @@ function void LevelResults.Update()
 //# address-hook(0x02dae6) end(0x02dbc8)
 function void fn02dae6()
 {
+#if !STANDALONE
 	playMusic(MUSIC_CTRL_FADEOUT)
+#endif
 
 	Kosinski.addToDMAQueue(0x0d6a62, 0xa400)		// Common results graphics
 	if (global.zone_act != 0x1600 && global.act.apparent == 0)
