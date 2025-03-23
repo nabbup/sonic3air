@@ -199,6 +199,16 @@ OptionsMenu::OptionsMenu(MenuBackground& menuBackground) :
 		setupOptionEntry(option::SUPER_PEELOUT,				SharedDatabase::Setting::SETTING_SUPER_PEELOUT);
 		setupOptionEntry(option::DEBUG_MODE,				SharedDatabase::Setting::SETTING_DEBUG_MODE);
 		setupOptionEntry(option::TITLE_SCREEN,				SharedDatabase::Setting::SETTING_TITLE_SCREEN);
+		setupOptionEntry(option::HIDDEN_MONITOR_HINT,		SharedDatabase::Setting::SETTING_HIDDEN_MONITOR_HINT);
+		setupOptionEntry(option::FASTER_PUSH,				SharedDatabase::Setting::SETTING_FASTER_PUSH);
+		setupOptionEntry(option::LEVELRESULT_SCORE,			SharedDatabase::Setting::SETTING_LEVELRESULT_SCORE);
+		setupOptionEntry(option::PLAYER2_OFFSCREEN,			SharedDatabase::Setting::SETTING_PLAYER2_OFFSCREEN);
+		setupOptionEntry(option::AIZ_INTRO_KNUCKLES,		SharedDatabase::Setting::SETTING_AIZ_INTRO_KNUCKLES);
+		setupOptionEntry(option::LBZ_TUBETRANSPORT,			SharedDatabase::Setting::SETTING_LBZ_TUBETRANSPORT);
+		setupOptionEntry(option::MHZ_ELEVATOR,				SharedDatabase::Setting::SETTING_MHZ_ELEVATOR);
+		setupOptionEntry(option::FBZ_ENTERCYLINDER,			SharedDatabase::Setting::SETTING_FBZ_ENTERCYLINDER);
+		setupOptionEntry(option::FBZ_SCREWDOORS,			SharedDatabase::Setting::SETTING_FBZ_SCREWDOORS);
+		setupOptionEntry(option::SOZ_PYRAMID,				SharedDatabase::Setting::SETTING_SOZ_PYRAMID);	
 
 		setupOptionEntry(option::CLASSIC_TRANSPARENCY,		SharedDatabase::Setting::SETTING_CLASSIC_TRANSPARENCY);
 		setupOptionEntry(option::GAME_BRANDING,				SharedDatabase::Setting::SETTING_GAME_BRANDING);
