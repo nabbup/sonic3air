@@ -398,10 +398,6 @@ void OptionsConfig::buildVisuals()
 		configBuilder.addSetting("Monitor Style:", option::MONITOR_STYLE)
 			.addOption("Sonic 1 / 2", 1)
 			.addOption("Sonic 3 & Knuckles", 0);
-
-		configBuilder.addSetting("Show Hidden Monitor Hint:", option::HIDDEN_MONITOR_HINT)
-			.addOption("Off", 0)
-			.addOption("On", 1);
 	}
 
 	CATEGORY("Color Changes")
