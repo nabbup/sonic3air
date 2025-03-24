@@ -476,6 +476,15 @@ namespace
 		return rmx::parseInteger(time_text);
 	}
 
+	uint8 System_getSystemClockWeekday()
+	{
+		const std::time_t current_time = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+		char time_text[64];
+		strftime(time_text, sizeof time_text, "%w", std::localtime(&current_time));
+
+		return rmx::parseInteger(time_text);
+	}
+
 	uint8 System_getSystemClockMonth()
 	{
 		const std::time_t current_time = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
@@ -492,6 +501,14 @@ namespace
 		strftime(time_text, sizeof time_text, "%Y", std::localtime(&current_time));
 
 		return rmx::parseInteger(time_text);
+	}
+
+	uint64 System_getUnixTimestamp()
+	{
+		const auto current_time = std::chrono::system_clock::now();
+		uint64 timestamp = std::chrono::duration_cast<std::chrono::seconds>(current_time.time_since_epoch()).count();
+
+		return timestamp;
 	}
 
 	bool System_hasExternalRawData(lemon::StringRef key)
@@ -1290,8 +1307,10 @@ void LemonScriptBindings::registerBindings(lemon::Module& module)
 		builder.addNativeFunction("System.getSystemClockSeconds", lemon::wrap(&System_getSystemClockSeconds), defaultFlags);
 
 		builder.addNativeFunction("System.getSystemClockDay", lemon::wrap(&System_getSystemClockDay), defaultFlags);
+		builder.addNativeFunction("System.getSystemClockWeekday", lemon::wrap(&System_getSystemClockWeekday), defaultFlags);
 		builder.addNativeFunction("System.getSystemClockMonth", lemon::wrap(&System_getSystemClockMonth), defaultFlags);
 		builder.addNativeFunction("System.getSystemClockYear", lemon::wrap(&System_getSystemClockYear), defaultFlags);
+		builder.addNativeFunction("System.getUnixTimestamp", lemon::wrap(&System_getUnixTimestamp), defaultFlags);
 
 
 		// Access external data
