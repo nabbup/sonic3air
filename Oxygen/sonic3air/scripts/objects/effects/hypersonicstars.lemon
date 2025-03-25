@@ -80,7 +80,7 @@ function void HyperSonicStars.CreateSparks()
 		Effects.CreateSparks()
 
 		// Create a short flash
-		if (Game.getSetting(SETTING_HYPER_FLASH))
+		if (Game.getSetting(SETTING_HYPER_FLASH) && camera.hyper_knux_shake != 0x0114) // Latter check prevents white flash when dropdashing as Hyper Sonic
 			global.whiteflash_timeout = 4
 	}
 	fn0193ec()

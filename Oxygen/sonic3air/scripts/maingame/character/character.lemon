@@ -4245,10 +4245,15 @@ function void releaseDropDash()
 	{
 		// Using upper byte to signal the difference between Hyper Knuckles hitting the wall and Super/Hyper Sonic's drop dash
 		camera.hyper_knux_shake = 0x0114
-
-		Character.ClearEnemiesOnScreen()
+		if (super.active == 0xff) // Only Hyper Sonic should be clearing the screen
+		{
+			u8[0xffffcd7c + 0x20] = 1 // Spawn Sonic's Hyper Sparks (screen shake is checked to eliminate white flash)
+			Character.ClearEnemiesOnScreen()
+		}
 		playSound(0x49)
 	}
+	
+	char.velocity.x = char.groundspeed // Setting this fixes really specific bugs, like cancelling velocity when jumping afterward or breaking walls on occasion.
 
 	Audio.playAudio("dropdash_release", AudioContext.CONTEXT_SOUND)
 #if STANDALONE
