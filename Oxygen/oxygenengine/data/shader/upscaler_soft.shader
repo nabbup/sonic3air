@@ -56,12 +56,14 @@ void main()
 
 	fy = clamp(fy * PixelFactor, -0.5, 0.5);
 	uv.y = (iy + fy) / GameResolution.y;
-
-	vec4 color = texture(MainTexture, uv);
+	
 	if (CRTesque >= 1.0)
 	{
-		color = texture(MainTexture, uv + vec2(-0.00125, -0.00125));
+		uv.x = ix / GameResolution.x;
+		uv.y = iy / GameResolution.y;
 	}
+	
+	vec4 color = texture(MainTexture, uv);
 		
 #ifdef USE_SCANLINES
 	color.rgb *= colorMultiplier;
