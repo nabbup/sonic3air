@@ -972,7 +972,7 @@ function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16
 	}
 
 	// Hyper Sonic stars
-	if (objA0.update_address == 0x0193ec || objA0.update_address == 0x0193ca)
+	if ((objA0.update_address == 0x0193ec || objA0.update_address == 0x0193ca) && Game.getSetting(SETTING_CLASSIC_TRANSPARENCY) < 2)
 	{
 		// Draw not fully opaque
 		u8 alpha = 0xff
