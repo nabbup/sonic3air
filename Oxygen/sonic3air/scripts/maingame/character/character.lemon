@@ -806,22 +806,27 @@ function bool UpdateTailsFlight_innerA()
 	bool canAscend = (char.velocity.y >= -0x100 && tails.flight_countdown > 0 && ((char.flags & char.flag.UNDERWATER) == 0 || !tails.carrying))
 
 #if STANDALONE
-	// Allow for holding [up] to gain height
-	if ((control.tails.state & CONTROL_UP) && canAscend && char.velocity.y >= -0xf8)
+	// Allow for holding [up (or any jump button without holding down)] to gain height
+	if ((control.tails.state & CONTROL_UP || (control.tails.state & CONTROL_ABC && !(control.tails.state & CONTROL_DOWN))) && canAscend && char.velocity.y >= -0xf8)
 	{
-		char.double_jump_state = 0x1f
+		char.double_jump_state = 0x10
 	}
 
-	// Cancel flight ("Tails Drop"): Stop flying and roll into a ball again
-	else if (Game.getSetting(SETTING_CANCEL_FLIGHT) && (control.tails.state & CONTROL_DOWN) && (control.tails.state & CONTROL_ABC))
+	else if (control.tails.state & CONTROL_DOWN)
 	{
-		char.double_jump_state = 0
-		char.state = char.state.ROLLING
-		char.jumping = 0			// Clear this flag to prevent a new flight while falling
+		// Cancel flight ("Tails Drop"): Stop flying and roll into a ball again
+		if (Game.getSetting(SETTING_CANCEL_FLIGHT) && (control.tails.state & CONTROL_ABC))
+		{
+			char.double_jump_state = 0
+			char.state = char.state.ROLLING
+			char.jumping = 0			// Clear this flag to prevent a new flight while falling
 
-		Tails.CheckDropSonic()
-		updateTailsInAir_shared()
-		return false
+			Tails.CheckDropSonic()
+			updateTailsInAir_shared()
+			return false
+		}
+		else // Superstars-like increased gravity
+			char.velocity.y += 0x12
 	}
 #endif
 
