@@ -144,10 +144,10 @@ function void MainMenuBG.drawMenuBackground()
 		MainMenuBG.separatorPosition = 0
 	if ((getScreenWidth() / 2) - (MainMenuBG.scrollOffset * 4) > 0)
 	{
-		for (u16 i2; i2 < getScreenHeight(); i2 += 6)
+		for (u16 i2; i2 < getScreenHeight(); i2 += 18)
 		{
-			Renderer.setViewport((getScreenWidth() / 2) - (i2 / 6) - (MainMenuBG.scrollOffset * 4), i2, getScreenWidth() * 2, 6, 0xf000 + i2)
-			SpriteHandle spr = Renderer.addSpriteHandle("bg_dataselect", s16(getScreenWidth() - 512) / 2, 0,0xf002 + i2)
+			Renderer.setViewport((getScreenWidth() / 2) - (i2 / 6) - (MainMenuBG.scrollOffset * 4), i2, getScreenWidth() * 2, 18, 0xf000 + i2)
+			SpriteHandle spr = Renderer.addSpriteHandle("bg_dataselect", s16(getScreenWidth() - 512) / 2, 0,0xf001 + i2)
 			spr.setBlendMode(BlendMode.OPAQUE)
 			spr.setPriorityFlag(true)
 			Renderer.resetViewport(0xf002 + i2)
@@ -156,7 +156,7 @@ function void MainMenuBG.drawMenuBackground()
 		for (u16 i3; i3 < getScreenHeight(); i3 += 3)
 		{
 			Renderer.setViewport((getScreenWidth() / 2) - (i3 / 6) - 8 - (MainMenuBG.scrollOffset * 4), i3, getScreenWidth(), 6, 0xff00 + i3)
-			SpriteHandle separator = Renderer.addSpriteHandle("mainmenu_bg_separator", (getScreenWidth() / 2) - (i3 / 6) - (MainMenuBG.scrollOffset * 4), MainMenuBG.separatorPosition, 0xff02 + i3)
+			SpriteHandle separator = Renderer.addSpriteHandle("mainmenu_bg_separator", (getScreenWidth() / 2) - (i3 / 6) - (MainMenuBG.scrollOffset * 4), MainMenuBG.separatorPosition, 0xff01 + i3)
 			separator.setPriorityFlag(true)
 			Renderer.resetViewport(0xff02 + i3)
 		}
