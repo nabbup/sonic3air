@@ -326,6 +326,13 @@ GameMenuEntries::UpdateResult GameMenuEntries::update()
 			return UpdateResult::ENTRY_CHANGED;
 		}
 
+		const InputManager::ControllerScheme& controller = InputManager::instance().getController(0);
+		if (mSelectedEntryIndex != 0 && mNavigation == Navigation::VERTICAL && (controller.L.justPressedOrRepeat() || controller.R.justPressedOrRepeat()))
+		{
+			setSelectedIndexByValue(0);
+			return UpdateResult::ENTRY_CHANGED;
+		}
+
 		const int optionChange = getOptionChangeByInput();
 		if (optionChange != 0)
 		{
@@ -365,9 +372,9 @@ int GameMenuEntries::getOptionChangeByInput() const
 	int optionChange = 0;
 	if (mNavigation == Navigation::VERTICAL)
 	{
-		if (controller.Left.justPressedOrRepeat())
+		if (controller.Left.justPressedOrRepeat() || controller.L.justPressedOrRepeat())
 			--optionChange;
-		if (controller.Right.justPressedOrRepeat())
+		if (controller.Right.justPressedOrRepeat() || controller.R.justPressedOrRepeat())
 			++optionChange;
 	}
 	else

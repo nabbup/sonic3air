@@ -377,7 +377,7 @@ function void Extras.Menu(u8 fadeInMethod)
 		
 		if (selectedEntry == 0)
 		{
-			if (control.pad1.pressed & CONTROL_LEFT && selectedTab > 0 && Extras.deletionConfirmationPrompt == 0)
+			if ((control.pad1.pressed & CONTROL_LEFT || Input.buttonPressed(BUTTON_L)) && selectedTab > 0 && Extras.deletionConfirmationPrompt == 0)
 			{
 				if (selectedTab == 3)
 				{
@@ -386,13 +386,17 @@ function void Extras.Menu(u8 fadeInMethod)
 				--selectedTab
 				playSound(0xb7)
 			}
-			else if (control.pad1.pressed & CONTROL_RIGHT && selectedTab < 3 && Extras.deletionConfirmationPrompt == 0)
+			else if ((control.pad1.pressed & CONTROL_RIGHT || Input.buttonPressed(BUTTON_R)) && selectedTab < 3 && Extras.deletionConfirmationPrompt == 0)
 			{
 				++selectedTab
 				playSound(0xb7)
 				if (selectedTab == 3)
 					Audio.fadeOutChannel(0, 0.25f)
 			}
+		}
+		else if (Input.buttonPressed(BUTTON_L) || Input.buttonPressed(BUTTON_R))
+		{
+			selectedEntry = 0
 		}
 		
 		if (control.pad1.pressed & CONTROL_UP)
