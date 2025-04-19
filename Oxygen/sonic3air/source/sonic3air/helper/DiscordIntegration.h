@@ -28,7 +28,6 @@ public:
 		uint32	mRecordTime = 0xffffffff;		// In frames
 
 		std::string mModdedDetails;
-		std::string mDetailedDetails;
 		std::string mModdedState;
 		std::string mModdedLargeImage;
 		std::string mModdedSmallImage;
@@ -73,16 +72,12 @@ public:
 public:
 	static void startup();
 	static void shutdown();
-	static void resetModdedApplicationId();
 	static void update();
 
 	static void updateInfo(Game::Mode gameMode, uint32 subMode, EmulatorInterface& emulatorInterface);
 
 	static void setModdedDetails(std::string_view text);
 	static void setModdedState(std::string_view text);
-	static void setDetailsPlus(std::string_view text);
 	static void setModdedLargeImage(std::string_view imageName);
 	static void setModdedSmallImage(std::string_view imageName);
-	static void setModdedApplicationID(std::string_view applicationId);
-	std::string mModdedApplicationId;
 };

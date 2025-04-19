@@ -62,7 +62,7 @@ void main()
 		uv.x = ix / GameResolution.x;
 		uv.y = iy / GameResolution.y;
 	}
-
+	
 	vec4 color = texture(MainTexture, uv);
 		
 #ifdef USE_SCANLINES

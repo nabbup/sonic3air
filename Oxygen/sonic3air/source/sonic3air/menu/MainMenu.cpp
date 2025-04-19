@@ -102,8 +102,6 @@ void MainMenu::setBaseState(BaseState baseState)
 
 void MainMenu::onFadeIn()
 {
-	DiscordIntegration::resetModdedApplicationId();
-
 	mState = State::APPEAR;
 
 	mMenuBackground->showPreview(false);

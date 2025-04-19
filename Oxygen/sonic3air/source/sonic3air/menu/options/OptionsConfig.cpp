@@ -740,12 +740,6 @@ void OptionsConfig::buildOther()
 			.addOption("Disabled", 0)
 			.addOption("Sonic 3 & Knuckles", 1)
 			.addOption("Sonic Origins", 2);
-
-	#if (defined(PLATFORM_WINDOWS) && !defined(__GNUC__)) || (defined(PLATFORM_LINUX) && defined(USE_DISCORD)) || (defined(PLATFORM_MAC) && !defined(NO_DISCORD))
-		configBuilder.addSetting("Discord RPC Details:", option::DISCORD_RPC_DETAILS)
-			.addOption("Basic", 0)
-			.addOption("Detailed", 1);
-	#endif
 	}
 }
 

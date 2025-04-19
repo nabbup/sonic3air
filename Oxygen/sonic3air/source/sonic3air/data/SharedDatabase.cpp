@@ -348,7 +348,6 @@ void SharedDatabase::setupSettings()
 	addSetting(IDPARAMS(Setting::SETTING_NEW_SOUND_CUES), Setting::SerializationType::ALWAYS);
 	addSetting(IDPARAMS(Setting::SETTING_INSTA_SHIELD_STYLE), Setting::SerializationType::ALWAYS);
 	addSetting(IDPARAMS(Setting::SETTING_TITLE_SCREEN_MENU_OPTIONS), Setting::SerializationType::ALWAYS);
-	addSetting(IDPARAMS(Setting::SETTING_DISCORD_RPC_DETAILS), Setting::SerializationType::ALWAYS);
 
 	// Hidden settings
 	addSetting(IDPARAMS(Setting::SETTING_DROPDASH), Setting::SerializationType::HIDDEN);

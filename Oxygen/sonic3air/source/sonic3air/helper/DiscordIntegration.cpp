@@ -43,7 +43,6 @@
 void DiscordIntegration::startup()
 {
 #ifdef SUPPORT_DISCORD
-	ModdedApplicationID.mModdedApplicationId = "";
 	const discord::Result result = discord::Core::Create(648262663750549506, DiscordCreateFlags_NoRequireDiscord, &core);
 	if (result == discord::Result::Ok)
 	{
@@ -58,19 +57,7 @@ void DiscordIntegration::shutdown()
 #ifdef SUPPORT_DISCORD
 	if (active)
 	{
-		ModdedApplicationID.mModdedApplicationId = "";
 		SAFE_DELETE(core);
-	}
-#endif
-}
-
-void DiscordIntegration::resetModdedApplicationId()
-{
-#ifdef SUPPORT_DISCORD
-	if (!ModdedApplicationID.mModdedApplicationId.empty())
-	{
-		DiscordIntegration::shutdown();
-		DiscordIntegration::startup();
 	}
 #endif
 }
@@ -210,101 +197,96 @@ void DiscordIntegration::updateInfo(Game::Mode gameMode, uint32 subMode, Emulato
 		case Game::Mode::ACT_SELECT:
 		case Game::Mode::TIME_ATTACK:
 		{
-			details = currentInfo.mDetailedDetails;
-
-			if (currentInfo.mDetailedDetails.empty())
+			if (currentInfo.mCharacters != 0xff)
 			{
-				if (currentInfo.mCharacters != 0xff)
+				if (currentInfo.mGameMode == Game::Mode::TIME_ATTACK)
+				{
+					if (currentInfo.mSubMode == 0x11)
+					{
+						details += " (Sonic - Max Control)";  smallImage = "character_sonic";
+					}
+					else
+					{
+						switch (currentInfo.mCharacters)
+						{
+						case 1:  details += " (Sonic)";		smallImage = "character_sonic";  break;
+						case 2:  details += " (Tails)";		smallImage = "character_tails";  break;
+						case 3:  details += " (Knuckles)";	smallImage = "character_knuckles";  break;
+						}
+					}
+				}
+				else
+				{
+					if (!details.empty())
+						details += ", ";
+
+					switch (currentInfo.mCharacters)
+					{
+					case 0:  details += "Sonic & Tails";	smallImage = "character_sonic_tails";	  break;
+					case 1:  details += "Sonic";			smallImage = "character_sonic";			  break;
+					case 2:  details += "Tails";			smallImage = "character_tails";			  break;
+					case 3:  details += "Knuckles";			smallImage = "character_knuckles";		  break;
+					case 4:  details += "Knuckles & Tails";	smallImage = "character_knuckles_tails";  break;
+					}
+				}
+			}
+
+			if (currentInfo.mZoneAct != 0xffff)
+			{
+				const SharedDatabase::Zone* zone = SharedDatabase::getZoneByInternalIndex(currentInfo.mZoneAct >> 8);
+				if (nullptr != zone)
 				{
 					if (currentInfo.mGameMode == Game::Mode::TIME_ATTACK)
 					{
-						if (currentInfo.mSubMode == 0x11)
+						String initials = zone->mInitials;
+						initials.upperCase();
+						state += *initials;
+						const bool multipleActs = (zone->mActsNormal >= 2);
+						if (multipleActs)
 						{
-							details += " (Sonic - Max Control)";  smallImage = "character_sonic";
-						}
-						else
-						{
-							switch (currentInfo.mCharacters)
-							{
-							case 1:  details += " (Sonic)";		smallImage = "character_sonic";  break;
-							case 2:  details += " (Tails)";		smallImage = "character_tails";  break;
-							case 3:  details += " (Knuckles)";	smallImage = "character_knuckles";  break;
-							}
+							state = state + " " + ((currentInfo.mZoneAct & 1) ? "2" : "1");
 						}
 					}
 					else
 					{
-						if (!details.empty())
-							details += ", ";
-
-						switch (currentInfo.mCharacters)
+						state += zone->mDisplayName;
+						const bool multipleActs = (zone->mActsNormal >= 2);
+						if (multipleActs)
 						{
-						case 0:  details += "Sonic & Tails";	smallImage = "character_sonic_tails";	  break;
-						case 1:  details += "Sonic";			smallImage = "character_sonic";			  break;
-						case 2:  details += "Tails";			smallImage = "character_tails";			  break;
-						case 3:  details += "Knuckles";			smallImage = "character_knuckles";		  break;
-						case 4:  details += "Knuckles & Tails";	smallImage = "character_knuckles_tails";  break;
+							state = state + " Act " + ((currentInfo.mZoneAct & 1) ? "2" : "1");
 						}
 					}
-				}
 
-				if (currentInfo.mZoneAct != 0xffff)
+					largeImage = zone->mShortName;
+				}
+			}
+
+			if (currentInfo.mChaosEmeralds != 0xff)
+			{
+				if (currentInfo.mGameMode != Game::Mode::TIME_ATTACK && currentInfo.mChaosEmeralds > 0)
 				{
-					const SharedDatabase::Zone* zone = SharedDatabase::getZoneByInternalIndex(currentInfo.mZoneAct >> 8);
-					if (nullptr != zone)
+					const bool showSuperEmeralds = (currentInfo.mSuperEmeralds > 0 && currentInfo.mSuperEmeralds != 0xff);
+					const int count = showSuperEmeralds ? currentInfo.mSuperEmeralds  : currentInfo.mChaosEmeralds;
+					const char* type = showSuperEmeralds ? "Super" : "Chaos";
+
+					if (count == 7)
 					{
-						if (currentInfo.mGameMode == Game::Mode::TIME_ATTACK)
-						{
-							String initials = zone->mInitials;
-							initials.upperCase();
-							state += *initials;
-							const bool multipleActs = (zone->mActsNormal >= 2);
-							if (multipleActs)
-							{
-								state = state + " " + ((currentInfo.mZoneAct & 1) ? "2" : "1");
-							}
-						}
-						else
-						{
-							state += zone->mDisplayName;
-							const bool multipleActs = (zone->mActsNormal >= 2);
-							if (multipleActs)
-							{
-								state = state + " Act " + ((currentInfo.mZoneAct & 1) ? "2" : "1");
-							}
-						}
-
-						largeImage = zone->mShortName;
+						details = details + " (All " + type + " Emeralds)";
 					}
-				}
-
-				if (currentInfo.mChaosEmeralds != 0xff)
-				{
-					if (currentInfo.mGameMode != Game::Mode::TIME_ATTACK && currentInfo.mChaosEmeralds > 0)
+					else if (count == 1)
 					{
-						const bool showSuperEmeralds = (currentInfo.mSuperEmeralds > 0 && currentInfo.mSuperEmeralds != 0xff);
-						const int count = showSuperEmeralds ? currentInfo.mSuperEmeralds  : currentInfo.mChaosEmeralds;
-						const char* type = showSuperEmeralds ? "Super" : "Chaos";
-
-						if (count == 7)
-						{
-							details = details + " (All " + type + " Emeralds)";
-						}
-						else if (count == 1)
-						{
-							details = details + " (1 " + type + " Emerald)";
-						}
-						else
-						{
-							details = details + " (" + (std::to_string(count)) + " " + type + " Emeralds)";
-						}
+						details = details + " (1 " + type + " Emerald)";
+					}
+					else
+					{
+						details = details + " (" + (std::to_string(count)) + " " + type + " Emeralds)";
 					}
 				}
+			}
 
-				if (currentInfo.mRecordTime != 0xffffffff)
-				{
-					state = state + ", Best Time: " + TimeAttackData::getTimeString(currentInfo.mRecordTime);
-				}
+			if (currentInfo.mRecordTime != 0xffffffff)
+			{
+				state = state + ", Best Time: " + TimeAttackData::getTimeString(currentInfo.mRecordTime);
 			}
 
 			break;
@@ -394,13 +376,6 @@ void DiscordIntegration::setModdedState(std::string_view text)
 #endif
 }
 
-void DiscordIntegration::setDetailsPlus(std::string_view text)
-{
-#ifdef SUPPORT_DISCORD
-	newInfo.mDetailedDetails = text;
-#endif
-}
-
 void DiscordIntegration::setModdedLargeImage(std::string_view imageName)
 {
 #ifdef SUPPORT_DISCORD
@@ -412,23 +387,5 @@ void DiscordIntegration::setModdedSmallImage(std::string_view imageName)
 {
 #ifdef SUPPORT_DISCORD
 	newInfo.mModdedSmallImage = imageName;
-#endif
-}
-
-void DiscordIntegration::setModdedApplicationID(std::string_view applicationId)
-{
-#ifdef SUPPORT_DISCORD
-	if (ModdedApplicationID.mModdedApplicationId != applicationId)
-	{
-		DiscordIntegration::shutdown();
-		ModdedApplicationID.mModdedApplicationId = applicationId;
-		discord::ClientId Id = rmx::parseInteger(applicationId);
-		const discord::Result result = discord::Core::Create(Id, DiscordCreateFlags_NoRequireDiscord, &core);
-		if (result == discord::Result::Ok)
-		{
-			active = true;
-			core->ActivityManager().UpdateActivity(activity, [](discord::Result result) {});
-		}
-	}
 #endif
 }
