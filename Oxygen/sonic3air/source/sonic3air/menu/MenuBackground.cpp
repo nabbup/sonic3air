@@ -182,8 +182,8 @@ void MenuBackground::render()
 	const float normalizedTitleLeft = normalizedSplitAlter;
 	const float normalizedTitleRight = std::min(normalizedSplitLight, normalizedSplitBlue);
 
-	const float splitMin = -30.0f;
-	const float splitMax = 430.0f;
+	const float splitMin = -60.0f;
+	const float splitMax = 460.0f;
 	const float splitLight = interpolate(splitMin, splitMax, saturate(normalizedSplitLight));
 	const float splitBlue = interpolate(splitMin, splitMax, saturate(normalizedSplitBlue));
 	const float splitAlter = interpolate(splitMin, splitMax, saturate(normalizedSplitAlter));
@@ -206,46 +206,21 @@ void MenuBackground::render()
 			LemonScriptRuntime& runtime = Application::instance().getSimulation().getCodeExec().getLemonScriptRuntime();
 			static const lemon::FlyweightString SCROLL_OFFSET_NAME("MainMenuBG.scrollOffset");
 			static const lemon::FlyweightString LOGO_POSITION_NAME("MainMenuBG.logoPosition");
+			static const lemon::FlyweightString MENU_POSITION_NAME("MainMenuBG.menuPosition");
+			static const lemon::FlyweightString MODMENU_POSITION_NAME("MainMenuBG.modMenuPosition");
 			runtime.setGlobalVariableValue<int64>(SCROLL_OFFSET_NAME, roundToInt(-mBackgroundLayer.mCurrentPosition * 150.0f));
 			runtime.setGlobalVariableValue<int64>(LOGO_POSITION_NAME, roundToInt(interpolate(splitMin, splitMax, normalizedTitleRight) - 91.0f));
+			runtime.setGlobalVariableValue<int64>(MENU_POSITION_NAME, roundToInt(splitLight + 16.0f));
+			runtime.setGlobalVariableValue<int64>(MODMENU_POSITION_NAME, roundToInt(splitAlter + 16.0f));
 			mAnimatedBackgroundActive = true;
 		}
 
-		if (splitLight < splitBlue)
+		if (splitLight < splitBlue && !Game::instance().isInMainMenuMode())
 		{
-			if (!Game::instance().isInMainMenuMode())
-			{
-				detail::drawQuad(drawer, splitLight, splitBlue, global::mDataSelectBackground);
-			}
-		}
-
-		if (splitBlue < splitMax)
-		{
-			detail::drawQuad(drawer, splitBlue, splitMax, global::mLevelSelectBackground);
-		}
-
-		if (splitAlter > splitMin)
-		{
-			detail::drawQuad(drawer, splitMin, splitAlter, global::mDataSelectAltBackground);
+			detail::drawQuad(drawer, splitLight, splitBlue, global::mDataSelectBackground);
 		}
 	}
-
-	// Separators
-	drawer.setSamplingMode(SamplingMode::BILINEAR);
-	drawer.setWrapMode(TextureWrapMode::REPEAT);
-	{
-		const float separatorAnimationOffset = -mAnimationTimer * 3.0f;
-
-		if (splitBlue > splitMin && splitBlue < splitMax)
-		{
-			detail::drawSeparator(drawer, splitBlue, separatorAnimationOffset, true);
-		}
-
-		if (splitAlter > splitMin && splitAlter < splitMax)
-		{
-			detail::drawSeparator(drawer, splitAlter, separatorAnimationOffset, true);
-		}
-	}
+	
 	drawer.setSamplingMode(SamplingMode::POINT);
 	drawer.setWrapMode(TextureWrapMode::CLAMP);
 

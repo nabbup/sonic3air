@@ -3,5 +3,7 @@
 	"bg_dataselect": { "File": "dataselect_bg.bmp" },
 
 	// Main Menu
-	"sonic3air_logo": { "File": "sonic3air_logo.png", "Rect": "0,0,150,24", "Center": "75,12" }
+	"sonic3air_logo": { "File": "sonic3air_logo.png", "Rect": "0,0,150,24", "Center": "75,12" },
+	// Mods Menu BG
+	"bg_dataselect_dark": { "File": "dataselect_dark_bg.png" },
 }

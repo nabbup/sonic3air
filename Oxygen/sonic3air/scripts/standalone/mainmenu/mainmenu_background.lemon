@@ -14,7 +14,10 @@
 
 global s16 MainMenuBG.scrollOffset		// Scrolling x-position; usually 0, except during certain transitions
 global s16 MainMenuBG.logoPosition		// "Sonic 3 A.I.R." logo x-position
-global s16 MainMenuBG.separatorPosition		// Scrolling separater y-position
+
+global s16 MainMenuBG.menuPosition		// Main Menu x-position
+global s16 MainMenuBG.modMenuPosition		// Mods Menu x-position
+global s16 MainMenuBG.separatorPosition	// Scrolling separator y-position
 
 function void MainMenuBG.Run()
 {
@@ -142,29 +145,65 @@ function void MainMenuBG.drawMenuBackground()
 		MainMenuBG.separatorPosition += 1
 	if (MainMenuBG.separatorPosition) > 16
 		MainMenuBG.separatorPosition = 0
-	if ((getScreenWidth() / 2) - (MainMenuBG.scrollOffset * 4) > 0)
+	if (MainMenuBG.menuPosition > -100)
 	{
 		for (u16 i2; i2 < getScreenHeight(); i2 += 18)
 		{
-			Renderer.setViewport((getScreenWidth() / 2) - (i2 / 6) - (MainMenuBG.scrollOffset * 4), i2, getScreenWidth() * 2, 18, 0xf000 + i2)
-			SpriteHandle spr = Renderer.addSpriteHandle("bg_dataselect", s16(getScreenWidth() - 512) / 2, 0,0xf001 + i2)
+			Renderer.setViewport(-(i2 / 6) + MainMenuBG.menuPosition, i2, getScreenWidth() * 2, 18, 0xe000 + i2)
+			SpriteHandle spr = Renderer.addSpriteHandle("bg_dataselect", s16(getScreenWidth() - 512) / 2, 0,0xe001 + i2)
 			spr.setBlendMode(BlendMode.OPAQUE)
 			spr.setPriorityFlag(true)
-			Renderer.resetViewport(0xf002 + i2)
+			Renderer.resetViewport(0xe002 + i2)
 		}
 	
 		for (u16 i3; i3 < getScreenHeight(); i3 += 3)
 		{
-			Renderer.setViewport((getScreenWidth() / 2) - (i3 / 6) - 8 - (MainMenuBG.scrollOffset * 4), i3, getScreenWidth(), 6, 0xff00 + i3)
-			SpriteHandle separator = Renderer.addSpriteHandle("mainmenu_bg_separator", (getScreenWidth() / 2) - (i3 / 6) - (MainMenuBG.scrollOffset * 4), MainMenuBG.separatorPosition, 0xff01 + i3)
+			Renderer.setViewport(-(i3 / 6) - 8 + MainMenuBG.menuPosition, i3, getScreenWidth(), 6, 0xef00 + i3)
+			SpriteHandle separator = Renderer.addSpriteHandle("mainmenu_bg_separator", -(i3 / 6) + MainMenuBG.menuPosition, MainMenuBG.separatorPosition, 0xef01 + i3)
 			separator.setPriorityFlag(true)
-			Renderer.resetViewport(0xff02 + i3)
+			Renderer.resetViewport(0xef02 + i3)
 		}
 	}
-	else
+	else if (MainMenuBG.menuPosition <= 0)
 	{
-		SpriteHandle spr = Renderer.addSpriteHandle("bg_dataselect", s16(getScreenWidth() - 512) / 2, 0,0xf002)
+		SpriteHandle spr = Renderer.addSpriteHandle("bg_dataselect", s16(getScreenWidth() - 512) / 2, 0,0xe002)
 		spr.setBlendMode(BlendMode.OPAQUE)
 		spr.setPriorityFlag(true)
+	}
+	
+	LogDec = stringformat("%d", MainMenuBG.menuPosition - getScreenWidth() / 2)
+	LogDec = stringformat("%d", MainMenuBG.modMenuPosition)
+	
+	if (MainMenuBG.modMenuPosition > 0)
+	{
+		if (MainMenuBG.modMenuPosition < getScreenWidth())
+		{
+			for (u16 i2 = 0; i2 < getScreenHeight(); i2 += 18)
+			{
+				if (-(i2 / 6) + MainMenuBG.modMenuPosition > 0)
+				{
+					Renderer.setViewport(0, i2, -(i2 / 6) + MainMenuBG.modMenuPosition, 18, 0xf000 + i2)
+					SpriteHandle spr = Renderer.addSpriteHandle("bg_dataselect_dark", s16(getScreenWidth() - 512) / 2, 0,0xf001 + i2)
+					spr.setBlendMode(BlendMode.OPAQUE)
+					spr.setPriorityFlag(true)
+					Renderer.resetViewport(0xf002 + i2)
+				}
+			}
+			
+			for (u16 i3 = 0; i3 < getScreenHeight(); i3 += 3)
+			{
+				Renderer.setViewport(0, i3, -(i3 / 6) + MainMenuBG.modMenuPosition + 8, 6, 0xff00 + i3)
+				SpriteHandle separator = Renderer.addSpriteHandle("mainmenu_bg_separator", -(i3 / 6) + MainMenuBG.modMenuPosition + 2, MainMenuBG.separatorPosition, 0xff01 + i3)
+				separator.setPriorityFlag(true)
+				separator.setFlipX(true)
+				Renderer.resetViewport(0xff02 + i3)
+			}
+		}
+		else
+		{
+			SpriteHandle spr = Renderer.addSpriteHandle("bg_dataselect_dark", s16(getScreenWidth() - 512) / 2, 0,0xf002)
+			spr.setBlendMode(BlendMode.OPAQUE)
+			spr.setPriorityFlag(true)
+		}
 	}
 }
