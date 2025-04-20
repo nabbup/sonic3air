@@ -171,9 +171,6 @@ function void MainMenuBG.drawMenuBackground()
 		spr.setPriorityFlag(true)
 	}
 	
-	LogDec = stringformat("%d", MainMenuBG.menuPosition - getScreenWidth() / 2)
-	LogDec = stringformat("%d", MainMenuBG.modMenuPosition)
-	
 	if (MainMenuBG.modMenuPosition > 0)
 	{
 		if (MainMenuBG.modMenuPosition < getScreenWidth())
