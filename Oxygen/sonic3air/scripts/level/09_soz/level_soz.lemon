@@ -1992,7 +1992,10 @@ function void SOZ.drawDarkSandPit(u16 px, u16 py, u16 width)
 	
 	for (u16 i = 0; i < width; i += 0x80)
 	{
-		Renderer.drawCustomSprite("obj_dark_sand_pit_overlay", px + i - camera.foreground.x.u16, py + 0x38 - camera.foreground.y.u16, 0, SPRITE_FLAG_PRIO, 0x8000)
+		SpriteHandle sandpit = Renderer.addSpriteHandle("obj_dark_sand_pit_overlay", px + i, py + 0x38, 0x8000)
+		sandpit.setFlags(0x40 | 0x20)
+		sandpit.setBlendMode(4)
+		sandpit.setAddedColor(0.25, 1, 1)
 	}
 }
 #endif
