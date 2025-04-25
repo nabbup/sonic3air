@@ -32,9 +32,7 @@ function void LevelResults.Update()
 //# address-hook(0x02dae6) end(0x02dbc8)
 function void fn02dae6()
 {
-#if !STANDALONE
 	playMusic(MUSIC_CTRL_FADEOUT)
-#endif
 
 	Kosinski.addToDMAQueue(0x0d6a62, 0xa400)		// Common results graphics
 	if (global.zone_act != 0x1600 && global.act.apparent == 0)
@@ -184,14 +182,20 @@ function void LevelResults.UpdateBonusCounting()
 	if (objA0.countdown_value != 0)
 	{
 		--objA0.countdown_value
+	#if STANDALONE
+		if (objA0.countdown_value == 260)
+			playMusic(MUSIC_LEVELCLEAR)
+	#endif
+		
 		if (objA0.countdown_value != 289)
 			return
 
 		// Reset char.drown_countdown for both characters
 		u8[0xffffb000 + 0x2c] = 30
 		u8[0xffffb04a + 0x2c] = 30
-
+	#if !STANDALONE
 		playMusic(MUSIC_LEVELCLEAR)
+	#endif
 		return
 	}
 
