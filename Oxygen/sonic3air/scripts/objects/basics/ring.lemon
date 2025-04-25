@@ -323,6 +323,21 @@ function void fn01a75c()
 					objA0.position.y.u16 += D1.u16
 					objA0.velocity.y = (objA0.velocity.y >> 2) - objA0.velocity.y
 				}
+			#if STANDALONE
+				// Check collision against walls
+				CheckHitboxCollisionLeft()
+				if (D1.s16 < 0)
+				{
+					objA0.position.x.u16 -= D1.u16
+					objA0.velocity.x = -objA0.velocity.x
+				}
+				CheckHitboxCollisionRight()
+				if (D1.s16 < 0)
+				{
+					objA0.position.x.u16 -= D1.u16
+					objA0.velocity.x = -objA0.velocity.x
+				}
+			#endif
 			}
 
 			if ((spilled_rings.speed == 0) || (objA0.position.y.u16 > move_area.bottom.current + getScreenHeight()))
@@ -395,6 +410,21 @@ function void fn01a7e8()
 					objA0.position.y.u16 -= D1.u16
 					objA0.velocity.y = (objA0.velocity.y >> 2) - objA0.velocity.y
 				}
+			#if STANDALONE
+				// Check collision against walls
+				CheckHitboxCollisionLeft()
+				if (D1.s16 < 0)
+				{
+					objA0.position.x.u16 -= D1.u16
+					objA0.velocity.x = -objA0.velocity.x
+				}
+				CheckHitboxCollisionRight()
+				if (D1.s16 < 0)
+				{
+					objA0.position.x.u16 -= D1.u16
+					objA0.velocity.x = -objA0.velocity.x
+				}
+			#endif
 			}
 
 			if ((spilled_rings.speed == 0) || (objA0.position.y.u16 > move_area.bottom.current + getScreenHeight()))
