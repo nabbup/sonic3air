@@ -54,7 +54,7 @@ function void fn0418e4()
 #if STANDALONE
 	// Avoid one-pixel-jittering of character when pushing the fully pushed switch
 	//  -> But not for the variant that is meant to be pushed by a rock; it leads to the rock not being held in place
-	if ((objA0.subtype2c & 0x80) == 0)
+	if ((objA0.subtype2c & 0x80) == 0 && Game.getSetting(SETTING_FASTER_PUSH))
 		++D0.u16
 #endif
 	D0.u16 >>= 2
