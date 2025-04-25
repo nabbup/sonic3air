@@ -954,6 +954,23 @@ function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16
 		return true
 	}
 	
+	// Bugernaut wings
+	if (objA0.update_address == 0x087a2a && size != 0x09 && Game.getSetting(SETTING_CLASSIC_TRANSPARENCY) < 2)
+	{
+		Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 192)
+		Renderer.drawVdpSpriteWithAlpha(px+1, py, size, index, renderQueue, 180)
+		return true
+	}
+	
+	// Small Bugernaut wings
+	if (objA0.update_address == 0x087abc && size != 0x05 && Game.getSetting(SETTING_CLASSIC_TRANSPARENCY) < 2)
+	{
+		Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 160)
+		Renderer.drawVdpSpriteWithAlpha(px+1, py, size, index, renderQueue, 144)
+		return true
+	}
+	
+	// Dragonfly wings
 	if (objA0.update_address == 0x08df52 && Game.getSetting(SETTING_CLASSIC_TRANSPARENCY) < 2)
 	{
 		Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 127)
@@ -961,6 +978,7 @@ function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16
 		return true
 	}
 	
+	// ICZ 2 boss freezer clouds
 	if (objA0.mapping_offset == 0x362cb4 && Game.getSetting(SETTING_CLASSIC_TRANSPARENCY) < 2)
 	{
 		if (objA0.animation.sprite == 0x0f || objA0.animation.sprite == 0x0a)
