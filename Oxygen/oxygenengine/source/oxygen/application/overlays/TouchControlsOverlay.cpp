@@ -10,6 +10,7 @@
 #include "oxygen/application/overlays/TouchControlsOverlay.h"
 #include "oxygen/application/Application.h"
 #include "oxygen/application/EngineMain.h"
+#include "oxygen/simulation/EmulatorInterface.h"
 #include "oxygen/helper/FileHelper.h"
 #include "oxygen/rendering/utils/RenderUtils.h"
 #include "oxygen/resources/SpriteCollection.h"
@@ -156,15 +157,21 @@ void TouchControlsOverlay::update(float timeElapsed)
 
 	mAutoHideTimer += timeElapsed;
 
+	float maxVisibility = EmulatorInterface::instance().readMemory8(0xfff7ca) ? 0.5f : 1.0f;
+
 	// Update visibility
 	{
 		const InputManager::InputType lastInputType = mInputManager->getLastInputType();
 		const bool shouldBeVisible = !mForceHidden && (lastInputType == InputManager::InputType::TOUCH || lastInputType == InputManager::InputType::NONE) && (mAutoHideTimer < 4.0f);
 		if (shouldBeVisible)
 		{
-			if (mVisibility < 1.0f)
+			if (mVisibility < maxVisibility)
 			{
 				mVisibility = saturate(mVisibility + timeElapsed / 0.2f);
+			}
+			else if (mVisibility > maxVisibility + 0.2f)
+			{
+				mVisibility = saturate(mVisibility - timeElapsed / 0.2f);
 			}
 		}
 		else
